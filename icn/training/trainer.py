@@ -63,6 +63,9 @@ class ICNTrainer:
         self.best_metric = None
         self.early_stopping_counter = 0
         
+        # Logging (setup first, needed by other components)
+        self.logger = self._setup_logging()
+        
         # Components
         self.loss_computer = ICNLossComputer()
         self.benign_manifold = None
@@ -74,9 +77,6 @@ class ICNTrainer:
         
         # Mixed precision
         self.scaler = GradScaler() if config.use_mixed_precision else None
-        
-        # Logging
-        self.logger = self._setup_logging()
         
         # Checkpointing
         self.checkpoint_dir = Path(config.output_dir)
