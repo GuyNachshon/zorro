@@ -143,19 +143,15 @@ class ICNLossComputer:
         """
         batch_losses = []
         
-        for i, units in enumerate(local_outputs):
-            unit_losses = []
-            for unit_output in units:
-                # Use fixed intent distribution
-                fixed_dist = unit_output.fixed_intent_dist
-                target = intent_labels[i].float()
-                
-                # Binary cross entropy with label smoothing
-                loss = F.binary_cross_entropy(fixed_dist, target, reduction='mean')
-                unit_losses.append(loss)
+        for i, local_output in enumerate(local_outputs):
+            # local_output is a LocalIntentOutput with batch dimension for units
+            # fixed_intent_dist is [n_units, n_fixed_intents]
+            fixed_dist = local_output.fixed_intent_dist
+            target = intent_labels[i].float().unsqueeze(0).expand(fixed_dist.shape[0], -1)
             
-            if unit_losses:
-                batch_losses.append(torch.stack(unit_losses).mean())
+            # Binary cross entropy with label smoothing - mean over units
+            loss = F.binary_cross_entropy(fixed_dist, target, reduction='mean')
+            batch_losses.append(loss)
         
         return torch.stack(batch_losses).mean() if batch_losses else torch.tensor(0.0)
     
@@ -176,28 +172,29 @@ class ICNLossComputer:
         convergence_losses = []
         
         for i in benign_indices:
-            units = local_outputs[i]
+            local_output = local_outputs[i]
             global_dist = global_output[i]
             
-            # Compute KL divergence between local and global for each unit
-            unit_divergences = []
-            for unit_output in units:
-                # Combine fixed and latent distributions
-                local_combined = torch.cat([
-                    unit_output.fixed_intent_dist,
-                    unit_output.latent_intent_dist
-                ], dim=-1)
-                
-                # KL divergence: KL(local || global)
-                kl_div = F.kl_div(
-                    torch.log(local_combined + 1e-8),
-                    global_dist,
-                    reduction='batchmean'
-                )
-                unit_divergences.append(kl_div)
+            # Combine fixed and latent distributions for all units
+            # local_output.fixed_intent_dist: [n_units, n_fixed_intents]
+            # local_output.latent_intent_dist: [n_units, n_latent_intents]
+            local_combined = torch.cat([
+                local_output.fixed_intent_dist,
+                local_output.latent_intent_dist
+            ], dim=-1)  # [n_units, n_total_intents]
+            
+            # Expand global distribution to match units
+            global_expanded = global_dist.unsqueeze(0).expand(local_combined.shape[0], -1)
+            
+            # KL divergence for each unit: KL(local || global)
+            kl_div = F.kl_div(
+                torch.log(local_combined + 1e-8),
+                global_expanded,
+                reduction='none'
+            ).sum(dim=-1)  # [n_units]
             
             # Average divergence across units (should be small for benign)
-            avg_divergence = torch.stack(unit_divergences).mean()
+            avg_divergence = kl_div.mean()
             convergence_losses.append(avg_divergence)
         
         # Also penalize slow convergence (if convergence took many iterations)
@@ -227,26 +224,27 @@ class ICNLossComputer:
         margin_losses = []
         
         for i in compromised_indices:
-            units = local_outputs[i]
+            local_output = local_outputs[i]
             global_dist = global_output[i]
             
-            # Find maximum divergence across units (the malicious unit)
-            max_divergence = torch.tensor(0.0, device=global_dist.device)
+            # Combine fixed and latent distributions for all units
+            local_combined = torch.cat([
+                local_output.fixed_intent_dist,
+                local_output.latent_intent_dist
+            ], dim=-1)  # [n_units, n_total_intents]
             
-            for unit_output in units:
-                local_combined = torch.cat([
-                    unit_output.fixed_intent_dist,
-                    unit_output.latent_intent_dist
-                ], dim=-1)
-                
-                # KL divergence: KL(local || global)
-                kl_div = F.kl_div(
-                    torch.log(local_combined + 1e-8),
-                    global_dist,
-                    reduction='batchmean'
-                )
-                
-                max_divergence = torch.max(max_divergence, kl_div)
+            # Expand global distribution to match units
+            global_expanded = global_dist.unsqueeze(0).expand(local_combined.shape[0], -1)
+            
+            # KL divergence for each unit: KL(local || global)
+            kl_divergences = F.kl_div(
+                torch.log(local_combined + 1e-8),
+                global_expanded,
+                reduction='none'
+            ).sum(dim=-1)  # [n_units]
+            
+            # Find maximum divergence (the malicious unit should have high divergence)
+            max_divergence = torch.max(kl_divergences)
             
             # Margin loss: max(0, margin - max_divergence)
             # We want max_divergence to be at least 'margin'
@@ -325,10 +323,12 @@ class ICNLossComputer:
         all_embeddings = []
         
         # Collect all latent distributions and embeddings
-        for units in local_outputs:
-            for unit_output in units:
-                all_latent_dists.append(unit_output.latent_intent_dist)
-                all_embeddings.append(unit_output.unit_embeddings)
+        for local_output in local_outputs:
+            # local_output is a LocalIntentOutput with batch dimensions for units
+            n_units = local_output.latent_intent_dist.shape[0]
+            for unit_idx in range(n_units):
+                all_latent_dists.append(local_output.latent_intent_dist[unit_idx])
+                all_embeddings.append(local_output.unit_embeddings[unit_idx])
         
         if len(all_latent_dists) < 2:
             return torch.tensor(0.0)
