@@ -11,7 +11,7 @@ import logging
 sys.path.append(str(Path(__file__).parent))
 
 from icn.training.trainer import ICNTrainer
-from icn.training.config import ICNConfig
+from icn.training.config import create_training_config
 
 def main():
     """Run quick ICN training test with limited data."""
@@ -21,50 +21,20 @@ def main():
     print("=" * 50)
     
     # Create config with limited data for testing
-    config = ICNConfig(
-        # Model config
-        vocab_size=50265,
-        embedding_dim=768,
-        n_fixed_intents=15,
-        n_latent_intents=10,
-        hidden_dim=512,
-        max_seq_length=512,
-        max_iterations=6,
-        convergence_threshold=0.01,
-        use_pretrained=True,
-        model_name="microsoft/codebert-base",
-        
-        # Training config - MUCH smaller for quick test
-        batch_size=2,
+    config = create_training_config(
+        experiment_name="icn_quick_test",
+        batch_size=2,  # Very small batch for quick test
         learning_rate=2e-5,
-        encoder_lr=1e-5,
-        weight_decay=0.01,
-        num_epochs=1,  # Just 1 epoch for testing
-        warmup_ratio=0.1,
-        max_grad_norm=1.0,
-        
-        # Data config - VERY limited data for quick test
-        benign_samples=50,     # Much smaller
-        malicious_samples=50,  # Much smaller
-        test_split=0.2,
-        val_split=0.1,
-        max_units_per_package=20,
-        
-        # Quick curriculum - skip most stages for testing
-        curriculum_stages=[
-            {"name": "intent_pretraining", "epochs": 1, "sample_types": ["benign"]},
-            {"name": "malicious_training", "epochs": 1, "sample_types": ["benign", "malicious_intent"]},
-        ],
-        
-        # Hardware/logging
-        use_cuda=True,
-        use_mixed_precision=True,
-        checkpoint_dir="./checkpoints",
-        log_dir="./logs",
-        use_wandb=False,  # Disable wandb for quick test
-        save_every_epochs=1,
-        eval_every_epochs=1
+        max_epochs=1,  # Just 1 epoch for testing
+        use_gpu=True
     )
+    
+    # Override some settings for quick test
+    config.dataloader_num_workers = 0  # Avoid multiprocessing issues
+    config.report_to = []  # Disable wandb
+    config.logging_steps = 1
+    config.eval_steps = 10
+    config.save_steps = 50
     
     try:
         trainer = ICNTrainer(config)
