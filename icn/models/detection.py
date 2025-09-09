@@ -408,6 +408,13 @@ class PlausibilityDetector(nn.Module):
         
         confidence = 0.5 * distance_score + 0.3 * diversity_score + 0.2 * entropy_score
         return min(max(confidence, 0.0), 1.0)
+    
+    def get_prototypes(self) -> torch.Tensor:
+        """Return the benign prototypes for loss computation."""
+        if not self.manifold_fitted:
+            # Return dummy prototypes if manifold not fitted yet
+            return torch.zeros_like(self.benign_prototypes)
+        return self.benign_prototypes
 
 
 class DualDetectionSystem(nn.Module):
