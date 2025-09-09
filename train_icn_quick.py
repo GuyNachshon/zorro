@@ -101,7 +101,7 @@ def main():
         
         # Test one training epoch
         print("\n🏋️  Testing training step...")
-        trainer.train()
+        trainer.train_curriculum()
         print("✅ Training completed successfully!")
         
         print("\n🎉 All tests passed! ICN training pipeline is working correctly.")
