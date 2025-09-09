@@ -63,15 +63,31 @@ def main():
         )
         
         # Get just a few samples for quick testing
-        print("  Loading 10 benign samples...")
-        benign_samples = data_preparator.prepare_benign_samples(target_count=10)
+        print("  Loading and processing 5 benign samples...")
+        raw_benign = data_preparator.get_benign_samples(target_count=5)
+        benign_processed = []
+        for sample in raw_benign[:5]:  # Take first 5
+            processed = data_preparator.process_single_benign_sample(sample)
+            if processed:
+                benign_processed.append(processed)
         
-        print("  Loading 10 malicious samples...")
-        malicious_samples = data_preparator.prepare_malicious_samples(target_count=10)
+        print("  Loading and processing 5 malicious samples...")
+        raw_malicious_dict = data_preparator.get_malicious_samples(max_samples=5)
+        malicious_processed = []
+        for samples_list in raw_malicious_dict.values():
+            for sample in samples_list:
+                if len(malicious_processed) >= 5:
+                    break
+                processed = data_preparator.process_single_malicious_sample(sample)
+                if processed:
+                    malicious_processed.append(processed)
+            if len(malicious_processed) >= 5:
+                break
         
         # Combine for training
-        train_packages = benign_samples + malicious_samples
-        print(f"✅ Prepared {len(train_packages)} total samples")
+        train_packages = benign_processed + malicious_processed
+        print(f"✅ Prepared {len(train_packages)} total processed packages")
+        print(f"   Benign: {len(benign_processed)}, Malicious: {len(malicious_processed)}")
         
         # Create trainer
         print("\n🏋️  Creating ICN trainer...")
