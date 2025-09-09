@@ -102,9 +102,9 @@ class ICNDataPreparator:
                 logger.warning(f"Failed to load benign cache: {e}")
         
         # Collect new benign samples
-        benign_samples = self.benign_collector.collect_popular_packages(
-            target_count=target_count,
-            cache_dir=self.benign_cache_path
+        benign_samples = self.benign_collector.collect_balanced_dataset(
+            total_samples=target_count,
+            output_dir=self.benign_cache_path
         )
         
         # Save to cache
@@ -140,7 +140,8 @@ class ICNDataPreparator:
                 extracted_path = self.malicious_extractor.extract_sample(sample, temp_path)
                 
                 # Parse the extracted package
-                code_units = self.parser.parse_package(extracted_path)
+                package_analysis = self.parser.parse_package(extracted_path, sample.name, sample.ecosystem)
+                code_units = package_analysis.units if hasattr(package_analysis, 'units') else []
                 
                 if not code_units or len(code_units) == 0:
                     logger.warning(f"No code units found in {sample.name}")
@@ -180,7 +181,8 @@ class ICNDataPreparator:
                 return None
             
             # Parse the package
-            code_units = self.parser.parse_package(sample.local_path)
+            package_analysis = self.parser.parse_package(sample.local_path, sample.name, sample.ecosystem)
+            code_units = package_analysis.units if hasattr(package_analysis, 'units') else []
             
             if not code_units or len(code_units) == 0:
                 logger.warning(f"No code units found in {sample.name}")

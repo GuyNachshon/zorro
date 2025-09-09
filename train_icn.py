@@ -103,6 +103,8 @@ def main():
     logger.info(f"   Batch size: {args.batch_size}")
     logger.info(f"   Learning rate: {args.learning_rate}")
     
+    experiment_tracker = None  # Initialize to avoid UnboundLocalError
+    
     try:
         # Step 1: Prepare training dataset
         logger.info("📊 Phase 1: Dataset Preparation")
