@@ -620,7 +620,8 @@ class UnifiedParser:
         # Extract API features from unit's api_categories
         api_features = [0.0] * 15  # 15 API categories
         if unit.api_categories:
-            for category, count in unit.api_categories.items():
+            # api_categories is a set, not a dict
+            for category in unit.api_categories:
                 # Map category names to indices
                 category_idx = {
                     'net.outbound': 0, 'net.inbound': 1, 'fs.read': 2, 'fs.write': 3,
@@ -628,7 +629,7 @@ class UnifiedParser:
                     'installer': 8, 'encoding': 9, 'config': 10, 'logging': 11,
                     'database': 12, 'auth': 13, 'benign': 14
                 }.get(category, 14)
-                api_features[category_idx] = min(count / 10.0, 1.0)  # Normalize
+                api_features[category_idx] = 1.0  # Binary indicator
         
         # Extract AST features (simplified)
         ast_features = [0.0] * 50

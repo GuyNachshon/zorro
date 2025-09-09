@@ -89,9 +89,12 @@ class ICNDataPreparator:
                     sample = BenignSample(
                         name=sample_data['name'],
                         ecosystem=sample_data['ecosystem'],
-                        version=sample_data.get('version'),
-                        source_url=sample_data.get('source_url'),
-                        local_path=Path(sample_data['local_path']) if sample_data.get('local_path') else None
+                        version=sample_data.get('version', '1.0.0'),
+                        download_count=sample_data.get('download_count', 0),
+                        category=sample_data.get('category', 'popular'),
+                        download_url=sample_data.get('source_url', ''),
+                        extracted_path=Path(sample_data['local_path']) if sample_data.get('local_path') else None,
+                        metadata=sample_data.get('metadata', {})
                     )
                     benign_samples.append(sample)
                 
