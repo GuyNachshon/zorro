@@ -39,14 +39,16 @@ def create_icn_model(config) -> ICNModel:
     """Create and initialize ICN model."""
     
     model = ICNModel(
-        model_name=config.model_name,
-        embedding_dim=config.embedding_dim,
-        hidden_dim=config.hidden_dim,
-        n_fixed_intents=config.n_fixed_intents,
-        n_latent_intents=config.n_latent_intents,
-        max_seq_length=config.max_seq_length,
-        max_convergence_iterations=config.max_convergence_iterations,
-        convergence_threshold=config.convergence_threshold
+        model_name=getattr(config, 'model_name', 'microsoft/codebert-base'),
+        embedding_dim=getattr(config, 'embedding_dim', 768),
+        hidden_dim=getattr(config, 'hidden_dim', 512),
+        n_fixed_intents=getattr(config, 'n_fixed_intents', 15),
+        n_latent_intents=getattr(config, 'n_latent_intents', 10),
+        max_seq_length=getattr(config, 'max_seq_length', 512),
+        max_iterations=getattr(config, 'max_iterations', 6),
+        convergence_threshold=getattr(config, 'convergence_threshold', 0.01),
+        use_pretrained=getattr(config, 'use_pretrained', True),
+        vocab_size=getattr(config, 'vocab_size', 50265)
     )
     
     # Move to appropriate device

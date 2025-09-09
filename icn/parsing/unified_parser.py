@@ -597,6 +597,60 @@ class UnifiedParser:
         return info
 
 
+    def compute_unit_features(self, unit: CodeUnit, max_seq_length: int = 512) -> Dict[str, Any]:
+        """Compute features for a code unit for use in ICN model."""
+        import torch
+        
+        # Simple tokenization (in practice, use a proper tokenizer)
+        tokens = unit.tokens if unit.tokens else self._tokenize(unit.raw_content, "unknown")
+        
+        # Create input_ids (simplified - in practice use proper tokenizer)
+        input_ids = [hash(token) % 50000 for token in tokens[:max_seq_length]]
+        while len(input_ids) < max_seq_length:
+            input_ids.append(0)  # Padding
+        
+        # Create attention mask
+        attention_mask = [1] * min(len(tokens), max_seq_length)
+        attention_mask.extend([0] * (max_seq_length - len(attention_mask)))
+        
+        # Extract phase ID based on unit phase
+        phase_map = {"install": 0, "import": 1, "runtime": 2}
+        phase_id = phase_map.get(unit.phase, 2)  # Default to runtime
+        
+        # Extract API features from unit's api_categories
+        api_features = [0.0] * 15  # 15 API categories
+        if unit.api_categories:
+            for category, count in unit.api_categories.items():
+                # Map category names to indices
+                category_idx = {
+                    'net.outbound': 0, 'net.inbound': 1, 'fs.read': 2, 'fs.write': 3,
+                    'proc.spawn': 4, 'eval': 5, 'crypto': 6, 'sys.env': 7,
+                    'installer': 8, 'encoding': 9, 'config': 10, 'logging': 11,
+                    'database': 12, 'auth': 13, 'benign': 14
+                }.get(category, 14)
+                api_features[category_idx] = min(count / 10.0, 1.0)  # Normalize
+        
+        # Extract AST features (simplified)
+        ast_features = [0.0] * 50
+        # Use basic heuristics for now
+        code = unit.raw_content.lower()
+        ast_features[0] = min(code.count('def ') / 10.0, 1.0)  # Functions
+        ast_features[1] = min(code.count('class ') / 10.0, 1.0)  # Classes
+        ast_features[2] = min(code.count('if ') / 10.0, 1.0)  # Conditionals
+        ast_features[3] = min(code.count('for ') / 10.0, 1.0)  # Loops
+        ast_features[4] = min(code.count('import ') / 10.0, 1.0)  # Imports
+        ast_features[5] = unit.obfuscation_score if unit.obfuscation_score else 0.0
+        ast_features[6] = unit.entropy if unit.entropy else 0.0
+        
+        return {
+            'input_ids': torch.tensor(input_ids, dtype=torch.long),
+            'attention_mask': torch.tensor(attention_mask, dtype=torch.long),
+            'phase_id': phase_id,
+            'api_features': api_features,
+            'ast_features': ast_features
+        }
+
+
 if __name__ == "__main__":
     # Test the parser
     parser = UnifiedParser()
