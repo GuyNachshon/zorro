@@ -127,10 +127,11 @@ class ICNTrainer:
         if hasattr(self.model.local_estimator, 'encoder'):
             encoder_params = list(self.model.local_estimator.encoder.parameters())
         
-        # Other model parameters
+        # Other model parameters (use id() to compare parameter identity, not tensor values)
+        encoder_param_ids = {id(p) for p in encoder_params}
         other_params = [
             p for p in self.model.parameters() 
-            if p not in encoder_params
+            if id(p) not in encoder_param_ids
         ]
         
         # Base learning rate from stage config

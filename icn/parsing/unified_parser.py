@@ -605,7 +605,7 @@ class UnifiedParser:
         tokens = unit.tokens if unit.tokens else self._tokenize(unit.raw_content, "unknown")
         
         # Create input_ids (simplified - in practice use proper tokenizer)
-        input_ids = [hash(token) % 50000 for token in tokens[:max_seq_length]]
+        input_ids = [hash(token) % 50265 for token in tokens[:max_seq_length]]
         while len(input_ids) < max_seq_length:
             input_ids.append(0)  # Padding
         
