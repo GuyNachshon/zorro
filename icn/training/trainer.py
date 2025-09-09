@@ -95,7 +95,7 @@ class ICNTrainer:
             device = torch.device(self.config.device)
         
         if device.type == "cuda":
-            torch.cuda.set_device(device)
+            torch.cuda.set_device(device.index if device.index is not None else 0)
             self.logger.info(f"Using GPU: {torch.cuda.get_device_name(device)}")
         
         return device
