@@ -115,8 +115,8 @@ class ICNDataPreparator:
                     'name': sample.name,
                     'ecosystem': sample.ecosystem,
                     'version': sample.version,
-                    'source_url': sample.source_url,
-                    'local_path': str(sample.local_path) if sample.local_path else None
+                    'source_url': getattr(sample, 'download_url', ''),
+                    'local_path': str(sample.extracted_path) if hasattr(sample, 'extracted_path') and sample.extracted_path else None
                 })
             
             with open(cache_file, 'w') as f:
@@ -154,18 +154,23 @@ class ICNDataPreparator:
                 # Convert category to SampleType
                 sample_type = SampleType.COMPROMISED_LIB if sample.category == "compromised_lib" else SampleType.MALICIOUS_INTENT
                 
-                # Create processed package
+                # Compute features first
+                features = self._compute_features_for_units(code_units)
+                
+                # Create processed package with all required fields
                 processed = ProcessedPackage(
                     name=sample.name,
                     ecosystem=sample.ecosystem,
                     sample_type=sample_type,
                     units=code_units,
+                    input_ids=features['input_ids'],
+                    attention_masks=features['attention_masks'],
+                    phase_ids=features['phase_ids'],
+                    api_features=features['api_features'],
+                    ast_features=features['ast_features'],
                     malicious_label=1.0,  # All malicious samples get label 1
                     package_hash=f"{sample.ecosystem}_{sample.name}_{sample.version or 'unknown'}"
                 )
-                
-                # Compute features using parser
-                self._compute_package_features(processed)
                 
                 return processed
                 
@@ -176,12 +181,14 @@ class ICNDataPreparator:
     def process_single_benign_sample(self, sample: BenignSample) -> Optional[ProcessedPackage]:
         """Process a single benign sample into a ProcessedPackage."""
         try:
-            if not sample.local_path or not sample.local_path.exists():
-                logger.warning(f"Benign sample {sample.name} not found at {sample.local_path}")
+            # Use extracted_path instead of local_path
+            sample_path = getattr(sample, 'extracted_path', None)
+            if not sample_path or not sample_path.exists():
+                logger.warning(f"Benign sample {sample.name} not found at {sample_path}")
                 return None
             
             # Parse the package
-            package_analysis = self.parser.parse_package(sample.local_path, sample.name, sample.ecosystem)
+            package_analysis = self.parser.parse_package(sample_path, sample.name, sample.ecosystem)
             code_units = package_analysis.units if hasattr(package_analysis, 'units') else []
             
             if not code_units or len(code_units) == 0:
@@ -192,24 +199,75 @@ class ICNDataPreparator:
             if len(code_units) > self.max_units_per_package:
                 code_units = code_units[:self.max_units_per_package]
             
-            # Create processed package
+            # Compute features first
+            features = self._compute_features_for_units(code_units)
+            
+            # Create processed package with all required fields
             processed = ProcessedPackage(
                 name=sample.name,
                 ecosystem=sample.ecosystem,
                 sample_type=SampleType.BENIGN,
                 units=code_units,
+                input_ids=features['input_ids'],
+                attention_masks=features['attention_masks'],
+                phase_ids=features['phase_ids'],
+                api_features=features['api_features'],
+                ast_features=features['ast_features'],
                 malicious_label=0.0,  # All benign samples get label 0
                 package_hash=f"{sample.ecosystem}_{sample.name}_{sample.version or 'unknown'}"
             )
-            
-            # Compute features using parser
-            self._compute_package_features(processed)
             
             return processed
             
         except Exception as e:
             logger.error(f"Failed to process benign sample {sample.name}: {e}")
             return None
+    
+    def _compute_features_for_units(self, code_units: List[CodeUnit]) -> Dict[str, torch.Tensor]:
+        """Compute features for a list of code units and return as tensors."""
+        if not code_units:
+            # Return empty tensors if no units
+            return {
+                'input_ids': torch.zeros((1, self.max_seq_length), dtype=torch.long),
+                'attention_masks': torch.zeros((1, self.max_seq_length), dtype=torch.long),
+                'phase_ids': torch.zeros((1,), dtype=torch.long),
+                'api_features': torch.zeros((1, 15), dtype=torch.float),
+                'ast_features': torch.zeros((1, 50), dtype=torch.float)
+            }
+        
+        input_ids_list = []
+        attention_masks_list = []
+        phase_ids_list = []
+        api_features_list = []
+        ast_features_list = []
+        
+        for unit in code_units:
+            try:
+                # Use parser to compute features for each unit
+                features = self.parser.compute_unit_features(unit, max_seq_length=self.max_seq_length)
+                
+                input_ids_list.append(features['input_ids'])
+                attention_masks_list.append(features['attention_mask'])
+                phase_ids_list.append(features.get('phase_id', 0))
+                api_features_list.append(features.get('api_features', [0.0] * 15))
+                ast_features_list.append(features.get('ast_features', [0.0] * 50))
+            except Exception as e:
+                logger.warning(f"Failed to compute features for unit: {e}")
+                # Add default features
+                input_ids_list.append(torch.zeros(self.max_seq_length, dtype=torch.long))
+                attention_masks_list.append(torch.zeros(self.max_seq_length, dtype=torch.long))
+                phase_ids_list.append(0)
+                api_features_list.append([0.0] * 15)
+                ast_features_list.append([0.0] * 50)
+        
+        # Stack into tensors
+        return {
+            'input_ids': torch.stack(input_ids_list),
+            'attention_masks': torch.stack(attention_masks_list),
+            'phase_ids': torch.tensor(phase_ids_list, dtype=torch.long),
+            'api_features': torch.tensor(api_features_list, dtype=torch.float),
+            'ast_features': torch.tensor(ast_features_list, dtype=torch.float)
+        }
     
     def _compute_package_features(self, package: ProcessedPackage):
         """Compute features for a processed package."""
