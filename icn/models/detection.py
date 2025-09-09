@@ -291,10 +291,10 @@ class PlausibilityDetector(nn.Module):
             dummy_results = []
             for i in range(batch_size):
                 dummy_results.append(DetectionResult(
-                    distance=torch.tensor(0.5),
-                    score=torch.tensor(0.5),
-                    is_plausible=True,
-                    explanation="Manifold not fitted - dummy result"
+                    score=0.5,
+                    evidence={"status": "manifold_not_fitted"},
+                    channel=DetectionChannel.PLAUSIBILITY,
+                    confidence=0.0
                 ))
             return dummy_results
         
