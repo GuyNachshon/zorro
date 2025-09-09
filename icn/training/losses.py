@@ -149,8 +149,10 @@ class ICNLossComputer:
             fixed_dist = local_output.fixed_intent_dist
             target = intent_labels[i].float().unsqueeze(0).expand(fixed_dist.shape[0], -1)
             
-            # Binary cross entropy with label smoothing - mean over units
-            loss = F.binary_cross_entropy(fixed_dist, target, reduction='mean')
+            # Binary cross entropy with logits (safe for autocast)
+            # Convert probabilities back to logits for safe mixed precision
+            fixed_logits = torch.logit(torch.clamp(fixed_dist, min=1e-7, max=1-1e-7))
+            loss = F.binary_cross_entropy_with_logits(fixed_logits, target, reduction='mean')
             batch_losses.append(loss)
         
         return torch.stack(batch_losses).mean() if batch_losses else torch.tensor(0.0)
