@@ -340,22 +340,20 @@ class ICNDataPreparator:
         
         logger.info(f"Processing {len(all_malicious)} malicious samples...")
         
-        # Process malicious samples with parallel processing
+        # Process malicious samples (sequential for now to avoid multiprocessing issues)
         successful_malicious = 0
-        with ProcessPoolExecutor(max_workers=self.parallel_workers) as executor:
-            future_to_sample = {
-                executor.submit(self.process_single_malicious_sample, sample): sample
-                for sample in all_malicious
-            }
-            
-            for future in as_completed(future_to_sample):
-                processed = future.result()
+        for i, sample in enumerate(all_malicious):
+            try:
+                processed = self.process_single_malicious_sample(sample)
                 if processed:
                     processed_packages.append(processed)
                     successful_malicious += 1
                     
-                    if successful_malicious % 100 == 0:
-                        logger.info(f"✅ Processed {successful_malicious}/{len(all_malicious)} malicious samples")
+                if (i + 1) % 10 == 0 or (i + 1) == len(all_malicious):
+                    logger.info(f"  Processed {i+1}/{len(all_malicious)} malicious samples ({successful_malicious} successful)")
+            except Exception as e:
+                logger.warning(f"Failed to process {sample.name}: {e}")
+                continue
         
         logger.info(f"🦠 Completed malicious processing: {successful_malicious}/{len(all_malicious)} successful")
         
@@ -364,20 +362,18 @@ class ICNDataPreparator:
         benign_samples = self.get_benign_samples(target_benign_count)
         
         successful_benign = 0
-        with ProcessPoolExecutor(max_workers=self.parallel_workers) as executor:
-            future_to_sample = {
-                executor.submit(self.process_single_benign_sample, sample): sample
-                for sample in benign_samples
-            }
-            
-            for future in as_completed(future_to_sample):
-                processed = future.result()
+        for i, sample in enumerate(benign_samples):
+            try:
+                processed = self.process_single_benign_sample(sample)
                 if processed:
                     processed_packages.append(processed)
                     successful_benign += 1
                     
-                    if successful_benign % 100 == 0:
-                        logger.info(f"✅ Processed {successful_benign}/{len(benign_samples)} benign samples")
+                if (i + 1) % 10 == 0 or (i + 1) == len(benign_samples):
+                    logger.info(f"  Processed {i+1}/{len(benign_samples)} benign samples ({successful_benign} successful)")
+            except Exception as e:
+                logger.warning(f"Failed to process {sample.name}: {e}")
+                continue
         
         logger.info(f"🟢 Completed benign processing: {successful_benign}/{len(benign_samples)} successful")
         
