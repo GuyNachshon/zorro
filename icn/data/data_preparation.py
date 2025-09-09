@@ -11,6 +11,7 @@ from typing import Dict, List, Optional, Tuple, Any
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import tempfile
 import shutil
+import torch
 
 from .malicious_extractor import MaliciousExtractor, PackageSample
 from .benign_collector import BenignCollector, BenignSample
