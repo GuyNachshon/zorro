@@ -302,7 +302,7 @@ class GlobalIntentIntegrator(nn.Module):
         
         # Apply mask and softmax
         if unit_masks is not None:
-            similarity = similarity.masked_fill(~unit_masks, -1e9)
+            similarity = similarity.masked_fill(~unit_masks, -1e4)
         
         attention_weights = F.softmax(similarity, dim=-1)
         
