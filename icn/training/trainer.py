@@ -19,7 +19,7 @@ import os
 
 # Import ICN components
 from ..models.icn_model import ICNModel, ICNInput, ICNOutput
-from ..training.losses import ICNLossComputer, BenignManifoldModel
+from ..training.losses import ICNLossComputer, BenignManifoldModel, SampleType
 from ..training.config import TrainingConfig, CurriculumConfig, CurriculumStageConfig
 from ..training.wandb_config import ExperimentTracker, CurriculumStageTracker
 from ..training.dataloader import create_icn_dataloader, CurriculumStage, ProcessedPackage
