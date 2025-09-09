@@ -123,12 +123,16 @@ class ICNLossComputer:
         
         # 5. Compute weighted total loss
         total_loss = torch.tensor(0.0, device=global_embeddings.device)
+        weighted_losses = {}
+        
         for loss_name, loss_value in losses.items():
             if loss_value is not None:
                 weighted_loss = self.loss_weights[loss_name] * loss_value
                 total_loss += weighted_loss
-                losses[f'{loss_name}_weighted'] = weighted_loss
+                weighted_losses[f'{loss_name}_weighted'] = weighted_loss
         
+        # Add weighted losses back to the dictionary
+        losses.update(weighted_losses)
         losses['total'] = total_loss
         return losses
     
