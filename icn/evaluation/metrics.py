@@ -42,8 +42,13 @@ class ICNMetrics:
         # Convert to numpy arrays if needed
         if isinstance(predictions, torch.Tensor):
             predictions = predictions.detach().cpu().numpy()
+        elif isinstance(predictions, list):
+            predictions = np.array(predictions)
+        
         if isinstance(labels, torch.Tensor):
             labels = labels.detach().cpu().numpy()
+        elif isinstance(labels, list):
+            labels = np.array(labels)
         
         # Ensure we have valid data
         if len(predictions) == 0 or len(labels) == 0:
