@@ -12,6 +12,8 @@ sys.path.append(str(Path(__file__).parent))
 
 from icn.training.trainer import ICNTrainer
 from icn.training.config import create_training_config
+from icn.models.icn_model import ICNModel
+from icn.data.data_preparation import ICNDataPreparator
 
 def main():
     """Run quick ICN training test with limited data."""
@@ -37,20 +39,51 @@ def main():
     config.save_steps = 50
     
     try:
-        trainer = ICNTrainer(config)
+        # Create model
+        print("\n🏗️  Creating ICN model...")
+        model = ICNModel(
+            vocab_size=50265,
+            embedding_dim=config.embedding_dim,
+            n_fixed_intents=config.n_fixed_intents,
+            n_latent_intents=config.n_latent_intents,
+            hidden_dim=config.hidden_dim,
+            max_seq_length=config.max_seq_length,
+            max_iterations=config.max_convergence_iterations,
+            convergence_threshold=config.convergence_threshold,
+            use_pretrained=config.use_pretrained,
+            model_name=config.model_name
+        )
+        print("✅ ICN model created successfully")
+        
+        # Prepare minimal data
+        print("\n📂 Preparing minimal test data...")
+        data_preparator = ICNDataPreparator(
+            malicious_dataset_path="malicious-software-packages-dataset",
+            benign_cache_path="data/benign_samples"
+        )
+        
+        # Get just a few samples for quick testing
+        print("  Loading 10 benign samples...")
+        benign_samples = data_preparator.prepare_benign_samples(target_count=10)
+        
+        print("  Loading 10 malicious samples...")
+        malicious_samples = data_preparator.prepare_malicious_samples(target_count=10)
+        
+        # Combine for training
+        train_packages = benign_samples + malicious_samples
+        print(f"✅ Prepared {len(train_packages)} total samples")
+        
+        # Create trainer
+        print("\n🏋️  Creating ICN trainer...")
+        trainer = ICNTrainer(
+            model=model,
+            config=config,
+            train_packages=train_packages,
+            eval_packages=train_packages[:5]  # Use first 5 for eval
+        )
         print("✅ ICN Trainer created successfully")
         
-        # Test data loading
-        print("\n📂 Testing data loading...")
-        trainer.prepare_data()
-        print("✅ Data loading completed")
-        
-        # Test model setup
-        print("\n🏗️  Testing model setup...")
-        trainer.setup_model()
-        print("✅ Model setup completed")
-        
-        # Test one training step
+        # Test one training epoch
         print("\n🏋️  Testing training step...")
         trainer.train()
         print("✅ Training completed successfully!")
