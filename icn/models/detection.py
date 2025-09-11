@@ -413,7 +413,13 @@ class PlausibilityDetector(nn.Module):
         """Return the benign prototypes for loss computation."""
         if not self.manifold_fitted:
             # Return dummy prototypes if manifold not fitted yet
-            return torch.zeros_like(self.benign_prototypes)
+            # Make sure they're on the same device as the model
+            if self.benign_prototypes is not None:
+                return torch.zeros_like(self.benign_prototypes)
+            else:
+                # Create dummy prototypes on the correct device
+                device = next(self.parameters()).device if list(self.parameters()) else torch.device('cpu')
+                return torch.zeros((10, self.embedding_dim), device=device)
         return self.benign_prototypes
 
 

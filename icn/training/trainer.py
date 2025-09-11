@@ -497,7 +497,7 @@ class ICNTrainer:
             sample_types=sample_types,
             intent_labels=batch.intent_labels,
             malicious_labels=batch.malicious_labels,
-            benign_manifold=self.model.detection_system.plausibility_detector.get_prototypes(self.device) if self.model.detection_system.plausibility_detector.manifold_fitted else None,
+            benign_manifold=self.model.detection_system.plausibility_detector.get_prototypes() if self.model.detection_system.plausibility_detector.manifold_fitted else None,
             convergence_history=[state.global_intent_dist for state in output.global_output.convergence_history]
         )
         
