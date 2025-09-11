@@ -274,6 +274,9 @@ class BalancedSampler(Sampler):
             
             # Add benign samples
             for _ in range(benign_per_batch):
+                if not self.benign_indices:
+                    # No benign samples available, skip
+                    break
                 if benign_idx < len(self.benign_indices):
                     batch.append(self.benign_indices[benign_idx])
                     benign_idx += 1
