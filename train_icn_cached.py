@@ -18,6 +18,39 @@ from icn.training.config import create_training_config
 from icn.models.icn_model import ICNModel
 from icn.training.dataloader import ProcessedPackage
 
+def fix_package_tensors(package: ProcessedPackage) -> ProcessedPackage:
+    """Fix any data structure issues in cached packages."""
+    # Convert lists to tensors if needed (for backward compatibility)
+    if isinstance(package.input_ids, list):
+        # Handle list of tensors
+        if package.input_ids and torch.is_tensor(package.input_ids[0]):
+            package.input_ids = torch.stack(package.input_ids)
+        else:
+            package.input_ids = torch.tensor(package.input_ids, dtype=torch.long)
+    
+    if isinstance(package.attention_masks, list):
+        if package.attention_masks and torch.is_tensor(package.attention_masks[0]):
+            package.attention_masks = torch.stack(package.attention_masks)
+        else:
+            package.attention_masks = torch.tensor(package.attention_masks, dtype=torch.long)
+    
+    if isinstance(package.phase_ids, list):
+        package.phase_ids = torch.tensor(package.phase_ids, dtype=torch.long)
+    
+    if isinstance(package.api_features, list):
+        if package.api_features and torch.is_tensor(package.api_features[0]):
+            package.api_features = torch.stack(package.api_features)
+        else:
+            package.api_features = torch.tensor(package.api_features, dtype=torch.float)
+    
+    if isinstance(package.ast_features, list):
+        if package.ast_features and torch.is_tensor(package.ast_features[0]):
+            package.ast_features = torch.stack(package.ast_features)
+        else:
+            package.ast_features = torch.tensor(package.ast_features, dtype=torch.float)
+    
+    return package
+
 def load_cached_dataset(dataset_name: str = "small") -> List[ProcessedPackage]:
     """Load a pre-cached dataset."""
     cache_file = Path(f"data/cached_datasets/icn_dataset_{dataset_name}.pt")
@@ -34,7 +67,14 @@ def load_cached_dataset(dataset_name: str = "small") -> List[ProcessedPackage]:
     print(f"    Malicious: {data['n_malicious']}")
     print(f"    Benign: {data['n_benign']}")
     
-    return data['packages']
+    # Fix any data structure issues in cached packages
+    packages = data['packages']
+    fixed_packages = []
+    for pkg in packages:
+        fixed_pkg = fix_package_tensors(pkg)
+        fixed_packages.append(fixed_pkg)
+    
+    return fixed_packages
 
 def main():
     """Run ICN training with cached data."""

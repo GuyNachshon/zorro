@@ -105,17 +105,18 @@ def prepare_and_save_datasets():
 
 def move_package_to_cpu(package: ProcessedPackage) -> ProcessedPackage:
     """Move all tensors in a package to CPU for storage."""
-    # Create new package with CPU tensors
+    # Create new package with CPU tensors - preserve tensor structure!
     return ProcessedPackage(
         name=package.name,
         ecosystem=package.ecosystem,
         sample_type=package.sample_type,
         units=package.units,
-        input_ids=[t.cpu() if torch.is_tensor(t) else t for t in package.input_ids],
-        attention_masks=[t.cpu() if torch.is_tensor(t) else t for t in package.attention_masks],
-        phase_ids=[t.cpu() if torch.is_tensor(t) else t for t in package.phase_ids],
-        api_features=[t.cpu() if torch.is_tensor(t) else t for t in package.api_features],
-        ast_features=[t.cpu() if torch.is_tensor(t) else t for t in package.ast_features],
+        # These should be tensors, not lists!
+        input_ids=package.input_ids.cpu() if torch.is_tensor(package.input_ids) else package.input_ids,
+        attention_masks=package.attention_masks.cpu() if torch.is_tensor(package.attention_masks) else package.attention_masks,
+        phase_ids=package.phase_ids.cpu() if torch.is_tensor(package.phase_ids) else package.phase_ids,
+        api_features=package.api_features.cpu() if torch.is_tensor(package.api_features) else package.api_features,
+        ast_features=package.ast_features.cpu() if torch.is_tensor(package.ast_features) else package.ast_features,
         malicious_label=package.malicious_label,
         intent_labels=package.intent_labels.cpu() if torch.is_tensor(package.intent_labels) else package.intent_labels,
         manifest_embedding=package.manifest_embedding.cpu() if torch.is_tensor(package.manifest_embedding) else package.manifest_embedding
