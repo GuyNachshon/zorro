@@ -305,16 +305,18 @@ class BalancedSampler(Sampler):
             
             # Add malicious_intent samples
             for _ in range(malicious_intent_per_batch):
+                if not self.malicious_indices:
+                    # No malicious samples available, skip
+                    break
                 if malicious_idx < len(self.malicious_indices):
                     batch.append(self.malicious_indices[malicious_idx])
                     malicious_idx += 1
                 else:
                     malicious_idx = 0
-                    if self.shuffle and self.malicious_indices:
+                    if self.shuffle:
                         random.shuffle(self.malicious_indices)
-                    if self.malicious_indices:
-                        batch.append(self.malicious_indices[malicious_idx])
-                        malicious_idx += 1
+                    batch.append(self.malicious_indices[malicious_idx])
+                    malicious_idx += 1
             
             if self.shuffle:
                 random.shuffle(batch)
