@@ -245,6 +245,9 @@ class ICNTrainer:
                     manifest_embeddings=pkg.manifest_embedding.unsqueeze(0) if pkg.manifest_embedding is not None else None
                 )
                 
+                # Move batch to device before forward pass!
+                batch_input = self._move_batch_to_device(batch_input)
+                
                 # Forward pass to get global embedding
                 output = self.model(batch_input)
                 benign_embeddings.append(output.global_output.final_global_embedding[0])
