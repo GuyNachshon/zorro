@@ -195,7 +195,7 @@ def train_amil_model(config=None, data_path=None, batch_size=32, learning_rate=2
         # Quick evaluation
         if val_samples:
             logger.info("Running quick evaluation...")
-            evaluator = AMILEvaluator(trainer.model, eval_config, amil_config)
+            evaluator = AMILEvaluator(trainer.model, trainer.feature_extractor, eval_config)
             eval_results = evaluator.evaluate_classification(val_samples[:50])  # Quick eval
 
             logger.info(f"Validation AUC: {eval_results.get('roc_auc', 0.0):.3f}")
