@@ -507,6 +507,10 @@ class AMILFeatureExtractor(nn.Module):
             return_tensors="pt"
         )
         
+        # Move tokenized inputs to same device as model
+        device = next(self.code_model.parameters()).device
+        tokenized = {k: v.to(device) for k, v in tokenized.items()}
+
         # Extract embeddings
         with torch.no_grad():
             outputs = self.code_model(**tokenized)
