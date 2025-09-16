@@ -112,9 +112,10 @@ class MultiHeadAttentionMIL(nn.Module):
         attention_weights = self.dropout(attention_weights)
         
         # Weighted sum of values
-        weighted_values = torch.bmm(attention_weights.unsqueeze(-2), V.transpose(0, 1))  # (num_heads, 1, head_dim)
-        weighted_values = weighted_values.squeeze(-2).transpose(0, 1).contiguous()  # (1, num_heads * head_dim)
-        weighted_values = weighted_values.view(embed_dim)  # (embed_dim,)
+        # attention_weights: (num_heads, num_units), V: (num_heads, num_units, head_dim)
+        weighted_values = torch.bmm(attention_weights.unsqueeze(-2), V)  # (num_heads, 1, head_dim)
+        weighted_values = weighted_values.squeeze(-2)  # (num_heads, head_dim)
+        weighted_values = weighted_values.transpose(0, 1).contiguous().view(-1)  # (num_heads * head_dim,)
         
         # Output projection
         package_embedding = self.out_proj(weighted_values)
