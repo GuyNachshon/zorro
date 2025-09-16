@@ -210,6 +210,15 @@ class AMILModel(nn.Module):
         probabilities = torch.sigmoid(logits)
         predictions = (probabilities > 0.5).float()
         
+        # Compute top-K attention analysis
+        k = min(self.config.max_units_per_package // 10, num_units, 10)  # Top-10 or fewer
+        top_k_weights, top_k_indices = torch.topk(attention_weights, k=k, dim=0)
+
+        # Prepare top-K unit names if available
+        top_k_unit_names = None
+        if return_attention and unit_names:
+            top_k_unit_names = [unit_names[idx.item()] for idx in top_k_indices]
+
         # Prepare output
         output = AMILOutput(
             package_logits=logits,
@@ -217,13 +226,12 @@ class AMILModel(nn.Module):
             package_prediction=predictions,
             attention_weights=attention_weights,
             attention_scores=attention_weights,  # Same as weights after softmax
+            top_k_indices=top_k_indices,
+            top_k_weights=top_k_weights,
             package_embedding=package_embedding,
+            top_k_unit_names=top_k_unit_names,
             num_units=num_units
         )
-        
-        # Add top-K attention analysis
-        if return_attention:
-            self._add_top_k_analysis(output, unit_names)
         
         return output
     
