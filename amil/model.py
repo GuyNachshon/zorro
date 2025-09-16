@@ -20,25 +20,25 @@ logger = logging.getLogger(__name__)
 @dataclass
 class AMILOutput:
     """Output from AMIL model with interpretability information."""
-    
+
     # Core predictions
     package_logits: torch.Tensor  # Raw logits
     package_probability: torch.Tensor  # Sigmoid probabilities
     package_prediction: torch.Tensor  # Binary prediction (0/1)
-    
+
     # Attention information for interpretability
     attention_weights: torch.Tensor  # Per-unit attention weights
     attention_scores: torch.Tensor  # Raw attention scores before softmax
-    
+
     # Top-K most attended units
     top_k_indices: torch.Tensor  # Indices of top-K units
     top_k_weights: torch.Tensor  # Attention weights of top-K units
-    top_k_unit_names: Optional[List[str]] = None  # Names of top-K units (if available)
-    
+
     # Package-level embedding
     package_embedding: torch.Tensor  # Weighted sum of unit embeddings
-    
-    # Metadata
+
+    # Optional fields with defaults (must come last)
+    top_k_unit_names: Optional[List[str]] = None  # Names of top-K units (if available)
     num_units: int = 0
     processing_time: Optional[float] = None
 

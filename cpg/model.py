@@ -12,7 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.data import Data, Batch
 from torch_geometric.nn import GINConv, GATConv, global_mean_pool, global_max_pool, global_add_pool
-from torch_geometric.nn.attention import GlobalAttention
+from torch_geometric.nn import GlobalAttention
 
 from .config import CPGConfig
 from .feature_extractor import CPGFeatureExtractor

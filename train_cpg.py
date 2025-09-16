@@ -17,7 +17,7 @@ sys.path.append(str(Path(__file__).parent))
 
 from cpg.config import create_default_config, save_config_to_json, load_config_from_json
 from cpg.model import create_cpg_model
-from cpg.trainer import CPGTrainer, PackageGraph
+from cpg.trainer import CPGTrainer, PackageSample
 from cpg.evaluator import CPGEvaluator
 
 logger = logging.getLogger(__name__)
@@ -46,23 +46,21 @@ def create_sample_data():
     logger.info("Creating sample training data...")
     
     # Sample benign package graph
-    benign_sample = PackageGraph(
+    benign_sample = PackageSample(
         package_name="sample-utils",
         ecosystem="npm",
         label=0,
-        nodes=[],
-        edges=[],
+        graph_data=None,  # Will be created by trainer
         sample_type="benign",
         metadata={}
     )
-    
+
     # Sample malicious package graph
-    malicious_sample = PackageGraph(
+    malicious_sample = PackageSample(
         package_name="malicious-stealer",
-        ecosystem="npm", 
+        ecosystem="npm",
         label=1,
-        nodes=[],
-        edges=[],
+        graph_data=None,  # Will be created by trainer
         sample_type="malicious_intent",
         metadata={}
     )

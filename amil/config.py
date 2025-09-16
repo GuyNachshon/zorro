@@ -231,3 +231,33 @@ def validate_config(amil_config: AMILConfig, training_config: TrainingConfig) ->
         print(f"Warning: Total loss weights ({total_loss_weight:.3f}) outside recommended range [0.5, 2.0]")
     
     return True
+
+
+def save_config_to_json(amil_config: AMILConfig, training_config: TrainingConfig,
+                       eval_config: EvaluationConfig, filepath: str):
+    """Save configuration to JSON file."""
+    import json
+    from dataclasses import asdict
+
+    config_dict = {
+        "amil_config": asdict(amil_config),
+        "training_config": asdict(training_config),
+        "evaluation_config": asdict(eval_config)
+    }
+
+    with open(filepath, 'w') as f:
+        json.dump(config_dict, f, indent=2, default=str)
+
+
+def load_config_from_json(filepath: str) -> Tuple[AMILConfig, TrainingConfig, EvaluationConfig]:
+    """Load configuration from JSON file."""
+    import json
+
+    with open(filepath, 'r') as f:
+        config_dict = json.load(f)
+
+    amil_config = AMILConfig(**config_dict["amil_config"])
+    training_config = TrainingConfig(**config_dict["training_config"])
+    eval_config = EvaluationConfig(**config_dict["evaluation_config"])
+
+    return amil_config, training_config, eval_config
