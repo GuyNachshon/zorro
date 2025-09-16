@@ -121,7 +121,8 @@ class CPGFeatureExtractor(nn.Module):
             
             # 2. Node type embedding
             type_id = self._get_node_type_id(node_type)
-            type_features = self.node_type_embedding(torch.tensor(type_id))
+            device = next(self.node_type_embedding.parameters()).device
+            type_features = self.node_type_embedding(torch.tensor(type_id).to(device))
             features.append(type_features)
             
             # 3. API features
@@ -195,7 +196,8 @@ class CPGFeatureExtractor(nn.Module):
         else:
             api_id = self.api_to_id['unknown']
         
-        api_embedding = self.api_embedding(torch.tensor(api_id))
+        device = next(self.api_embedding.parameters()).device
+        api_embedding = self.api_embedding(torch.tensor(api_id).to(device))
         
         # Add binary features for API categories
         api_flags = torch.zeros(len(self.config.risky_apis))
@@ -286,7 +288,8 @@ class CPGFeatureExtractor(nn.Module):
         
         for edge_type_str in edge_attr:
             edge_type_id = self.edge_type_to_id.get(edge_type_str, self.edge_type_to_id['unknown'])
-            edge_embedding = self.edge_type_embedding(torch.tensor(edge_type_id))
+            device = next(self.edge_type_embedding.parameters()).device
+            edge_embedding = self.edge_type_embedding(torch.tensor(edge_type_id).to(device))
             edge_features.append(edge_embedding)
         
         if edge_features:
