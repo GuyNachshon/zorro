@@ -1,0 +1,76 @@
+api_keys: {}
+data:
+  data_path: null
+  include_categories:
+  - benign
+  - compromised_lib
+  - malicious_intent
+  max_samples_per_category: 100
+  test_split_ratio: 0.3
+  use_cached_data: true
+description: Evaluation of local ICN/AMIL models vs baselines
+enable_statistical_testing: true
+execution:
+  cost_limit_usd: 0.0
+  delay_between_requests: 0.1
+  max_concurrent_requests: 4
+  max_retries: 3
+  requests_per_minute: 60
+  retry_failed: true
+  timeout_seconds: 120
+models:
+- enabled: true
+  hf_model_id: null
+  model_path: checkpoints/icn_model.pth
+  name: icn
+  openrouter_id: null
+  parameters: {}
+  type: icn
+- enabled: true
+  hf_model_id: null
+  model_path: checkpoints/amil_model.pth
+  name: amil
+  openrouter_id: null
+  parameters: {}
+  type: amil
+- enabled: true
+  hf_model_id: null
+  model_path: null
+  name: heuristic_baseline
+  openrouter_id: null
+  parameters:
+    baseline_type: heuristic
+  type: baseline
+- enabled: true
+  hf_model_id: null
+  model_path: null
+  name: random_baseline
+  openrouter_id: null
+  parameters:
+    baseline_type: random
+  type: baseline
+name: local_models_only
+output:
+  create_heatmaps: true
+  create_ranking_charts: true
+  create_scatter_plots: true
+  generate_csv_export: false
+  generate_json_summary: true
+  generate_markdown_report: true
+  output_directory: local_models_results
+  save_analysis: true
+  save_raw_results: true
+  save_visualizations: true
+prompts:
+  custom_prompts: {}
+  few_shot: false
+  few_shot_examples_count: 3
+  file_by_file: false
+  max_tokens:
+    few_shot: 1500
+    file_by_file: 800
+    reasoning: 2000
+    zero_shot: 1000
+  reasoning: false
+  zero_shot: false
+statistical_significance_level: 0.05

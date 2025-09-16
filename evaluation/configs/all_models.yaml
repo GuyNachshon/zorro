@@ -1,0 +1,89 @@
+name: "all_models_comprehensive"
+description: "Comprehensive evaluation of ALL model types - external, local, and baselines"
+
+# All supported model types
+models:
+  # External OpenRouter models
+  - name: gpt4o
+    type: openrouter
+    openrouter_id: openai/gpt-4o
+    enabled: true
+
+  - name: claude
+    type: openrouter
+    openrouter_id: anthropic/claude-3.5-sonnet
+    enabled: true
+
+  - name: qwen_coder
+    type: openrouter
+    openrouter_id: qwen/qwen-3-coder-32b-instruct
+    enabled: true
+
+  # Local trained models (will be trained if not exist)
+  - name: icn_model
+    type: icn
+    enabled: false  # Disable for now until ICN integration is complete
+
+  - name: amil_model
+    type: amil
+    enabled: true
+    parameters:
+      batch_size: 32
+      learning_rate: 2e-4
+      max_units: 50
+
+  - name: cpg_model
+    type: cpg
+    enabled: true
+    parameters:
+      batch_size: 16
+      learning_rate: 1e-4
+      hidden_dim: 256
+      num_layers: 3
+
+  - name: neobert_model
+    type: neobert
+    enabled: true
+    parameters:
+      batch_size: 8
+      learning_rate: 5e-5
+      max_length: 512
+      pooling_strategy: attention
+
+  # Baseline models
+  - name: heuristic_baseline
+    type: baseline
+    parameters:
+      baseline_type: heuristic
+
+  - name: random_baseline
+    type: baseline
+    parameters:
+      baseline_type: random
+
+# Prompt strategies (for external models only)
+prompts:
+  zero_shot: true
+  few_shot: true
+  reasoning: true
+  file_by_file: false  # Expensive
+
+# Data configuration
+data:
+  max_samples_per_category: 30  # Moderate for comprehensive test
+  use_cached_data: true
+
+# Execution settings
+execution:
+  cost_limit_usd: 20.0  # External models cost
+  max_concurrent_requests: 2
+
+# Output settings
+output:
+  output_directory: "all_models_results"
+  save_visualizations: true
+  generate_markdown_report: true
+
+# Statistical analysis
+enable_statistical_testing: true
+statistical_significance_level: 0.05

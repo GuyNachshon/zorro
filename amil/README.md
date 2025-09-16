@@ -56,6 +56,9 @@ from amil.trainer import AMILTrainer
 trainer = AMILTrainer(model, feature_extractor, config, training_config)
 trainer.train(train_samples)
 
+# save model 
+trainer.save_model("trained_amil.pth", push_to_hub=True, repo_name="amil-malicious-package-detection")
+
 # For inference
 from amil.model import predict_package
 result = predict_package(model, feature_extractor, package_files)
