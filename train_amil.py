@@ -140,13 +140,8 @@ def train_amil_model(config=None, data_path=None, batch_size=32, learning_rate=2
         logger.info("Creating minimal sample data for testing...")
         train_samples, val_samples = create_sample_data()
 
-    # Create model
-    logger.info("Creating AMIL model...")
-    model = create_amil_model(amil_config, device)
-    logger.info(f"Model created with {sum(p.numel() for p in model.parameters()):,} parameters")
-
-    # Create trainer
-    trainer = AMILTrainer(model, training_config, amil_config)
+    # Create trainer (includes model creation)
+    trainer = AMILTrainer(amil_config, training_config)
 
     # Resume from checkpoint if specified
     if resume and Path(resume).exists():
@@ -174,7 +169,7 @@ def train_amil_model(config=None, data_path=None, batch_size=32, learning_rate=2
         # Quick evaluation
         if val_samples:
             logger.info("Running quick evaluation...")
-            evaluator = AMILEvaluator(model, eval_config, amil_config)
+            evaluator = AMILEvaluator(trainer.model, eval_config, amil_config)
             eval_results = evaluator.evaluate_classification(val_samples[:50])  # Quick eval
 
             logger.info(f"Validation AUC: {eval_results.get('roc_auc', 0.0):.3f}")
