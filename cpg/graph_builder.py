@@ -106,8 +106,8 @@ class CPGBuilder:
         PY_LANGUAGE = Language(tspython.language())
         JS_LANGUAGE = Language(tsjavascript.language())
         
-        self.python_parser.set_language(PY_LANGUAGE)
-        self.js_parser.set_language(JS_LANGUAGE)
+        self.python_parser.language = PY_LANGUAGE
+        self.js_parser.language = JS_LANGUAGE
         
         # Risky API patterns
         self.risky_apis = set(config.risky_apis)
