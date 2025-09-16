@@ -40,31 +40,37 @@ def test_function_calls():
     from train_cpg import train_cpg_model
     from train_neobert import train_neobert_model
 
-    # Test AMIL (quick test)
+    # Test AMIL (quick test on GPU with device fixes applied)
     try:
         print("🎯 Testing AMIL training...")
         results = train_amil_model(
             save_dir="test_checkpoints/amil",
             log_level="WARNING",  # Reduce log noise
-            batch_size=4,         # Small batch for quick test
+            batch_size=2,         # Small batch for quick test
+            device="auto"         # Let it use CUDA if available
         )
         print(f"✅ AMIL training completed: {results.get('training_completed', False)}")
     except Exception as e:
         print(f"❌ AMIL training failed: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
-    # Test CPG (quick test)
+    # Test CPG (quick test on GPU)
     try:
         print("🎯 Testing CPG training...")
         results = train_cpg_model(
             save_dir="test_checkpoints/cpg",
             log_level="WARNING",
-            batch_size=4,
-            hidden_dim=64,  # Smaller for quick test
+            batch_size=2,
+            hidden_dim=64,        # Reasonable size for GPU
+            device="auto"         # Let it use CUDA if available
         )
         print(f"✅ CPG training completed: {results.get('training_completed', False)}")
     except Exception as e:
         print(f"❌ CPG training failed: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
     # Test NeoBERT (quick test)
