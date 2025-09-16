@@ -528,13 +528,20 @@ class AMILFeatureExtractor(nn.Module):
             embeddings = self.get_code_embeddings([features])
             features.code_embedding = embeddings[0]
         
+        # Ensure all feature tensors are on the same device as code embedding
+        device = features.code_embedding.device
+        api_features = features.api_features.to(device)
+        entropy_features = features.entropy_features.to(device)
+        phase_features = features.phase_features.to(device)
+        metadata_features = features.metadata_features.to(device)
+
         # Concatenate all features
         feature_tensor = torch.cat([
             features.code_embedding,      # 768-dim
-            features.api_features,        # 20-dim
-            features.entropy_features,    # 5-dim  
-            features.phase_features,      # 3-dim
-            features.metadata_features    # 10-dim
+            api_features,                 # 20-dim
+            entropy_features,             # 5-dim
+            phase_features,               # 3-dim
+            metadata_features             # 10-dim
         ], dim=0)
         
         # Project through fusion network
