@@ -337,7 +337,7 @@ class CPGBuilder:
             
             # Add edges
             for source, target, data in file_graph.edges(data=True):
-                edge_type = data.get('edge_type', 'unknown')
+                edge_type = data.pop('edge_type', 'unknown')  # Remove from data dict
                 cpg.add_edge(source, target, edge_type, **data)
         
         # Add inter-file edges (imports, exports)
