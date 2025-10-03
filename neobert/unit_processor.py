@@ -186,14 +186,22 @@ class UnitProcessor:
             
             return self._process_file_as_units(file_path, content, package_name, ecosystem)
     
-    def _process_file_as_units(self, 
+    def _process_file_as_units(self,
                               file_path: str,
                               content: str,
                               package_name: str,
                               ecosystem: str) -> List[PackageUnit]:
         """Process entire file as single unit, with chunking if needed."""
-        
-        # Tokenize content
+
+        # For very large files, estimate if we'll need chunking before tokenizing
+        # This avoids tokenizer warnings about long sequences
+        estimated_tokens = len(content) // 4  # Rough estimate: 4 chars per token
+
+        if estimated_tokens > self.config.max_tokens_per_unit * 3:
+            # File is definitely too large - use character-based chunking first
+            return self._chunk_large_file(file_path, content, package_name, ecosystem)
+
+        # Tokenize content for moderately sized files
         tokens = self.tokenizer.tokenize(content)
         
         units = []
@@ -248,7 +256,14 @@ class UnitProcessor:
             # Skip very small functions
             if len(func_content.strip()) < self.config.min_unit_tokens:
                 continue
-            
+
+            # For very large functions, estimate tokens first
+            estimated_tokens = len(func_content) // 4
+            if estimated_tokens > self.config.max_tokens_per_unit * 10:
+                # Function is too large - skip it or truncate drastically
+                logger.debug(f"Skipping very large function {func_name} in {file_path}")
+                continue
+
             # Tokenize function
             tokens = self.tokenizer.tokenize(func_content)
             
@@ -280,6 +295,62 @@ class UnitProcessor:
         
         return units
     
+    def _chunk_large_file(self,
+                         file_path: str,
+                         content: str,
+                         package_name: str,
+                         ecosystem: str) -> List[PackageUnit]:
+        """Handle very large files by chunking on character boundaries before tokenization."""
+
+        chunks = []
+        # Approximate character count per chunk (4 chars/token * 512 tokens = 2048 chars)
+        chars_per_chunk = self.config.max_tokens_per_unit * 4
+        overlap_chars = self.config.chunk_overlap * 4
+
+        start = 0
+        chunk_index = 0
+
+        while start < len(content):
+            end = min(start + chars_per_chunk, len(content))
+            chunk_content = content[start:end]
+
+            # Now tokenize this manageable chunk
+            tokens = self.tokenizer.tokenize(chunk_content)
+
+            # If still too long (rare), truncate at token level
+            if len(tokens) > self.config.max_tokens_per_unit:
+                tokens = tokens[:self.config.max_tokens_per_unit]
+
+            if len(tokens) < self.config.min_unit_tokens:
+                break
+
+            token_ids = self.tokenizer.convert_tokens_to_ids(tokens)
+
+            unit = PackageUnit(
+                unit_id=self._generate_unit_id(package_name, file_path, chunk_index),
+                unit_name=f"{Path(file_path).name}_chunk_{chunk_index}",
+                unit_type="file",
+                source_file=file_path,
+                raw_content=chunk_content,
+                tokens=tokens,
+                token_ids=token_ids,
+                chunk_index=chunk_index,
+                is_truncated=(end < len(content))
+            )
+
+            self._extract_features(unit, ecosystem)
+            chunks.append(unit)
+
+            start += chars_per_chunk - overlap_chars
+            chunk_index += 1
+
+            # Safety limit to avoid processing enormous files
+            if chunk_index >= 50:  # Max 50 chunks per file
+                logger.warning(f"File {file_path} too large, limiting to 50 chunks")
+                break
+
+        return chunks
+
     def _create_chunks(self,
                       file_path: str,
                       content: str,

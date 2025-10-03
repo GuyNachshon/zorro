@@ -61,6 +61,10 @@ def setup_logging(log_level: str = "INFO"):
     import warnings
     warnings.filterwarnings("ignore", message="Token indices sequence length is longer than.*")
 
+    # Also suppress transformers library warnings
+    import transformers
+    transformers.logging.set_verbosity_error()
+
 
 def create_sample_data():
     """Create sample training data for demonstration."""
