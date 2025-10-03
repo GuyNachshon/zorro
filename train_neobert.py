@@ -340,11 +340,19 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
         samples_to_process = all_malicious_samples[:max_malicious]
         click.echo(f"  Will process {click.style(str(len(samples_to_process)), fg='cyan', bold=True)} total malicious samples")
 
-        # Progress bar for processing samples
-        with tqdm(total=len(samples_to_process),
-                 desc=f"  Processing malicious",
-                 unit="pkg",
-                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
+        # Progress bar for processing samples with Rich
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn("•"),
+            TextColumn("{task.completed}/{task.total} packages"),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+            console=console
+        ) as progress:
+            task = progress.add_task("[red]Processing malicious packages", total=len(samples_to_process))
 
             for sample in samples_to_process:
                 # Extract if needed
@@ -359,7 +367,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
                         sample.extracted_path = temp_dir
                     except Exception as e:
                         logger.debug(f"Failed to extract {sample.name}: {e}")
-                        pbar.update(1)
+                        progress.update(task, advance=1)
                         continue
 
                 # Process package
@@ -376,8 +384,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
 
                 total_malicious_units += len(units)
                 malicious_count += 1
-                pbar.set_postfix({"units": total_malicious_units})
-                pbar.update(1)
+                progress.update(task, advance=1, description=f"[red]Processing malicious packages ({total_malicious_units:,} units)")
 
         click.echo(click.style(f"  ✓ Processed {malicious_count} malicious packages → {total_malicious_units} units", fg="green"))
 
@@ -404,15 +411,23 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
         benign_count = 0
         total_benign_units = 0
 
-        # Progress bar for processing benign samples
-        with tqdm(total=min(len(benign_samples), max_benign),
-                 desc="  Processing benign",
-                 unit="pkg",
-                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
+        # Progress bar for processing benign samples with Rich
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+            TextColumn("•"),
+            TextColumn("{task.completed}/{task.total} packages"),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+            console=console
+        ) as progress:
+            task = progress.add_task("[green]Processing benign packages", total=min(len(benign_samples), max_benign))
 
             for sample in benign_samples[:max_benign]:
                 if not sample.extracted_path or not sample.extracted_path.exists():
-                    pbar.update(1)
+                    progress.update(task, advance=1)
                     continue
 
                 # Process package
@@ -428,8 +443,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
 
                 total_benign_units += len(units)
                 benign_count += 1
-                pbar.set_postfix({"units": total_benign_units})
-                pbar.update(1)
+                progress.update(task, advance=1, description=f"[green]Processing benign packages ({total_benign_units:,} units)")
 
                 if benign_count >= max_benign:
                     break
