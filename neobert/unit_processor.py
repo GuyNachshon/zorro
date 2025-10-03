@@ -344,12 +344,43 @@ class UnitProcessor:
             start += chars_per_chunk - overlap_chars
             chunk_index += 1
 
-            # Safety limit to avoid processing enormous files
-            if chunk_index >= 50:  # Max 50 chunks per file
-                logger.warning(f"File {file_path} too large, limiting to 50 chunks")
+            # For very large files, use sampling instead of processing everything
+            if chunk_index >= 100:  # Max 100 chunks per file
+                # Switch to sampling: take beginning, middle, end
+                logger.debug(f"File {file_path} very large, using sampling strategy")
+                chunks = self._sample_large_file_chunks(chunks, max_chunks=50)
                 break
 
         return chunks
+
+    def _sample_large_file_chunks(self, chunks: List[PackageUnit], max_chunks: int = 50) -> List[PackageUnit]:
+        """Sample chunks from a very large file: beginning, middle, end."""
+        if len(chunks) <= max_chunks:
+            return chunks
+
+        # Take first 20%, middle 60%, last 20%
+        first_count = max_chunks // 5
+        middle_count = max_chunks * 3 // 5
+        last_count = max_chunks - first_count - middle_count
+
+        sampled = []
+
+        # Beginning chunks (suspicious install code often at start)
+        sampled.extend(chunks[:first_count])
+
+        # Middle chunks (spaced sampling)
+        middle_start = len(chunks) // 4
+        middle_end = 3 * len(chunks) // 4
+        step = (middle_end - middle_start) // middle_count if middle_count > 0 else 1
+        for i in range(middle_count):
+            idx = middle_start + i * step
+            if idx < len(chunks):
+                sampled.append(chunks[idx])
+
+        # End chunks (malicious cleanup code often at end)
+        sampled.extend(chunks[-last_count:])
+
+        return sampled
 
     def _create_chunks(self,
                       file_path: str,

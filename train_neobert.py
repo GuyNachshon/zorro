@@ -167,13 +167,23 @@ def read_package_files(package_path: Path, ecosystem: str) -> Dict[str, str]:
     else:
         extensions = {".js", ".ts", ".jsx", ".tsx", ".py"}
 
+    # Only skip dependencies and version control
+    skip_patterns = [
+        "node_modules/", "__pycache__/", ".git/",  # Dependencies
+        ".pyc", ".pyo",  # Python bytecode
+        ".map",  # Source maps (not executable)
+    ]
+
     # Walk through package directory
     for file_path in package_path.rglob("*"):
         if not file_path.is_file():
             continue
 
-        # Skip node_modules, __pycache__, etc.
-        if any(p in file_path.parts for p in ["node_modules", "__pycache__", ".git", "dist", "build"]):
+        # Check if should skip
+        file_str = str(file_path)
+        relative_str = str(file_path.relative_to(package_path))
+
+        if any(pattern in file_str or pattern in relative_str for pattern in skip_patterns):
             continue
 
         # Check if it's a code file
