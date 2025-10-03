@@ -34,10 +34,10 @@ logger = logging.getLogger(__name__)
 
 def setup_logging(log_level: str = "INFO"):
     """Setup logging configuration."""
-    
+
     # Create logs directory
     Path("logs/neobert").mkdir(parents=True, exist_ok=True)
-    
+
     # Configure logging
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
@@ -47,6 +47,11 @@ def setup_logging(log_level: str = "INFO"):
             logging.StreamHandler()
         ]
     )
+
+    # Suppress tokenizer warnings about sequence length
+    # (UnitProcessor handles chunking, these warnings are expected)
+    import warnings
+    warnings.filterwarnings("ignore", message="Token indices sequence length is longer than.*")
 
 
 def create_sample_data():
@@ -238,54 +243,55 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
         malicious_count = 0
         total_malicious_units = 0
 
+        # Collect all malicious samples from both categories
+        all_malicious_samples = []
         for category in ["compromised_lib", "malicious_intent"]:
             samples = categorized.get(category, [])
             click.echo(f"  Found {click.style(str(len(samples)), fg='cyan')} {category} samples")
+            all_malicious_samples.extend(samples)
 
-            # Progress bar for processing samples
-            with tqdm(total=min(len(samples), max_malicious // 2),
-                     desc=f"  Processing {category}",
-                     unit="pkg",
-                     bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
+        # Take up to max_malicious samples total
+        samples_to_process = all_malicious_samples[:max_malicious]
+        click.echo(f"  Will process {click.style(str(len(samples_to_process)), fg='cyan', bold=True)} total malicious samples")
 
-                for sample in samples[:max_malicious // 2]:  # Split between categories
-                    # Extract if needed
-                    if sample.file_path.suffix == ".zip":
-                        import tempfile
-                        import zipfile
+        # Progress bar for processing samples
+        with tqdm(total=len(samples_to_process),
+                 desc=f"  Processing malicious",
+                 unit="pkg",
+                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]") as pbar:
 
-                        temp_dir = Path(tempfile.mkdtemp())
-                        try:
-                            with zipfile.ZipFile(sample.file_path, 'r') as zf:
-                                zf.extractall(temp_dir, pwd=b"infected")
-                            sample.extracted_path = temp_dir
-                        except Exception as e:
-                            logger.debug(f"Failed to extract {sample.name}: {e}")
-                            pbar.update(1)
-                            continue
+            for sample in samples_to_process:
+                # Extract if needed
+                if sample.file_path.suffix == ".zip":
+                    import tempfile
+                    import zipfile
 
-                    # Process package
-                    pkg_path = sample.extracted_path or sample.file_path
-                    units = process_package_to_units(
-                        pkg_path, sample.name, sample.ecosystem,
-                        processor
-                    )
+                    temp_dir = Path(tempfile.mkdtemp())
+                    try:
+                        with zipfile.ZipFile(sample.file_path, 'r') as zf:
+                            zf.extractall(temp_dir, pwd=b"infected")
+                        sample.extracted_path = temp_dir
+                    except Exception as e:
+                        logger.debug(f"Failed to extract {sample.name}: {e}")
+                        pbar.update(1)
+                        continue
 
-                    # Add label (malicious=1)
-                    for unit in units:
-                        unit.malicious_label = 1.0
-                        all_units.append(unit)
+                # Process package
+                pkg_path = sample.extracted_path or sample.file_path
+                units = process_package_to_units(
+                    pkg_path, sample.name, sample.ecosystem,
+                    processor
+                )
 
-                    total_malicious_units += len(units)
-                    malicious_count += 1
-                    pbar.set_postfix({"units": total_malicious_units})
-                    pbar.update(1)
+                # Add label (malicious=1)
+                for unit in units:
+                    unit.malicious_label = 1.0
+                    all_units.append(unit)
 
-                    if malicious_count >= max_malicious:
-                        break
-
-            if malicious_count >= max_malicious:
-                break
+                total_malicious_units += len(units)
+                malicious_count += 1
+                pbar.set_postfix({"units": total_malicious_units})
+                pbar.update(1)
 
         click.echo(click.style(f"  ✓ Processed {malicious_count} malicious packages → {total_malicious_units} units", fg="green"))
 
@@ -355,9 +361,17 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
     train_malicious = sum(1 for u in train_samples if getattr(u, 'malicious_label', 0) > 0.5)
     val_malicious = sum(1 for u in val_samples if getattr(u, 'malicious_label', 0) > 0.5)
 
+    # Chunking statistics
+    total_chunks = sum(u.total_chunks for u in all_units)
+    chunked_units = sum(1 for u in all_units if u.total_chunks > 1)
+    truncated_units = sum(1 for u in all_units if u.is_truncated)
+
     click.echo(click.style("\n✅ Data loading complete!", fg="green", bold=True))
     click.echo(f"  Train: {click.style(str(len(train_samples)), fg='cyan')} units ({click.style(str(train_malicious), fg='red')} malicious, {click.style(str(len(train_samples) - train_malicious), fg='green')} benign)")
     click.echo(f"  Val:   {click.style(str(len(val_samples)), fg='cyan')} units ({click.style(str(val_malicious), fg='red')} malicious, {click.style(str(len(val_samples) - val_malicious), fg='green')} benign)")
+    click.echo(f"  📊 Chunking: {click.style(str(chunked_units), fg='yellow')} multi-chunk units, {click.style(str(total_chunks), fg='yellow')} total chunks")
+    if truncated_units > 0:
+        click.echo(f"  ⚠️  {click.style(str(truncated_units), fg='yellow')} units were truncated")
 
     return train_samples, val_samples
 
