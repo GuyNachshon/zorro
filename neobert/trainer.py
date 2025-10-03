@@ -14,11 +14,19 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
 import numpy as np
 from sklearn.metrics import roc_auc_score, f1_score, precision_recall_fscore_support
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn
+from rich.live import Live
+from rich.layout import Layout
+from rich import box
 
 from .config import NeoBERTConfig, TrainingConfig
 from .unit_processor import PackageUnit
 
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 class NeoBERTDataset(Dataset):
@@ -145,6 +153,14 @@ class NeoBERTTrainer:
 
         num_epochs = 10  # Simplified - just one stage
 
+        # Training header
+        console.print(Panel.fit(
+            "[bold cyan]Starting NeoBERT Training[/bold cyan]\n"
+            f"Epochs: {num_epochs} | Batch Size: {self.training_config.batch_size} | "
+            f"LR: {self.training_config.learning_rate:.0e}",
+            border_style="cyan"
+        ))
+
         for epoch in range(num_epochs):
             # Training phase
             self.model.train()
@@ -152,43 +168,54 @@ class NeoBERTTrainer:
             train_preds = []
             train_labels = []
 
-            pbar = tqdm(train_loader, desc=f"Epoch {epoch+1}/{num_epochs} [Train]")
-            for batch in pbar:
-                token_ids = batch['token_ids'].to(self.device)
-                attention_mask = batch['attention_mask'].to(self.device)
-                labels = batch['labels'].to(self.device)
+            # Create progress bar
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[progress.description]{task.description}"),
+                BarColumn(),
+                TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                TimeElapsedColumn(),
+                TimeRemainingColumn(),
+                console=console
+            ) as progress:
+                task = progress.add_task(f"[cyan]Epoch {epoch+1}/{num_epochs} [Train]", total=len(train_loader))
 
-                # Forward pass
-                optimizer.zero_grad()
-                outputs = self.model(token_ids, attention_mask)
+                for batch in train_loader:
+                    token_ids = batch['token_ids'].to(self.device)
+                    attention_mask = batch['attention_mask'].to(self.device)
+                    labels = batch['labels'].to(self.device)
 
-                # Get logits
-                if isinstance(outputs, dict):
-                    logits = outputs['logits'].squeeze(-1)
-                else:
-                    logits = outputs.squeeze(-1)
+                    # Forward pass
+                    optimizer.zero_grad()
+                    outputs = self.model(token_ids, attention_mask)
 
-                # Compute loss
-                loss = criterion(logits, labels)
+                    # Get logits
+                    if isinstance(outputs, dict):
+                        logits = outputs['logits'].squeeze(-1)
+                    else:
+                        logits = outputs.squeeze(-1)
 
-                # Backward pass
-                loss.backward()
+                    # Compute loss
+                    loss = criterion(logits, labels)
 
-                # Gradient clipping
-                torch.nn.utils.clip_grad_norm_(
-                    self.model.parameters(),
-                    self.training_config.gradient_clip_norm
-                )
+                    # Backward pass
+                    loss.backward()
 
-                optimizer.step()
-                scheduler.step()
+                    # Gradient clipping
+                    torch.nn.utils.clip_grad_norm_(
+                        self.model.parameters(),
+                        self.training_config.gradient_clip_norm
+                    )
 
-                # Track metrics
-                train_loss += loss.item()
-                train_preds.extend(torch.sigmoid(logits).detach().cpu().numpy())
-                train_labels.extend(labels.cpu().numpy())
+                    optimizer.step()
+                    scheduler.step()
 
-                pbar.set_postfix({'loss': f'{loss.item():.4f}'})
+                    # Track metrics
+                    train_loss += loss.item()
+                    train_preds.extend(torch.sigmoid(logits).detach().cpu().numpy())
+                    train_labels.extend(labels.cpu().numpy())
+
+                    progress.update(task, advance=1, description=f"[cyan]Epoch {epoch+1}/{num_epochs} [Train] Loss: {loss.item():.4f}")
 
             avg_train_loss = train_loss / len(train_loader)
             train_auc = roc_auc_score(train_labels, train_preds)
@@ -196,21 +223,30 @@ class NeoBERTTrainer:
             # Validation phase
             val_loss, val_auc, val_f1, val_metrics = self.evaluate(val_loader, criterion)
 
-            # Log metrics
-            logger.info(f"Epoch {epoch+1}/{num_epochs}")
-            logger.info(f"  Train Loss: {avg_train_loss:.4f}, Train AUC: {train_auc:.4f}")
-            logger.info(f"  Val Loss: {val_loss:.4f}, Val AUC: {val_auc:.4f}, Val F1: {val_f1:.4f}")
-
             # Save history
             history['train_loss'].append(avg_train_loss)
             history['val_loss'].append(val_loss)
             history['val_auc'].append(val_auc)
             history['val_f1'].append(val_f1)
 
+            # Create metrics table
+            metrics_table = Table(title=f"Epoch {epoch+1}/{num_epochs} Results", box=box.ROUNDED, show_header=True, header_style="bold magenta")
+            metrics_table.add_column("Metric", style="cyan")
+            metrics_table.add_column("Train", justify="right")
+            metrics_table.add_column("Val", justify="right")
+            metrics_table.add_column("Best", justify="right", style="green")
+
+            metrics_table.add_row("Loss", f"{avg_train_loss:.4f}", f"{val_loss:.4f}", f"{min(history['val_loss']):.4f}")
+            metrics_table.add_row("AUC", f"{train_auc:.4f}", f"[bold]{val_auc:.4f}[/bold]", f"[bold green]{max(history['val_auc']):.4f}[/bold green]")
+            metrics_table.add_row("F1", "-", f"{val_f1:.4f}", f"{max(history['val_f1']):.4f}")
+            metrics_table.add_row("Precision", "-", f"{val_metrics['precision']:.4f}", "-")
+            metrics_table.add_row("Recall", "-", f"{val_metrics['recall']:.4f}", "-")
+
+            console.print(metrics_table)
+
             # Save best model
             if val_auc > best_val_auc:
                 best_val_auc = val_auc
-                best_model_path = Path(self.training_config.batch_size) / f"neobert_epoch{epoch+1}_auc{val_auc:.4f}.pth"
                 best_model_path = "checkpoints/neobert/neobert_best.pth"
 
                 # Create directory
@@ -225,7 +261,7 @@ class NeoBERTTrainer:
                     'val_f1': val_f1,
                 }, best_model_path)
 
-                logger.info(f"  💾 Saved best model to {best_model_path}")
+                console.print(f"[green]💾 Saved best model (AUC: {val_auc:.4f})[/green]\n")
 
         # Training complete
         results = {

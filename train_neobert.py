@@ -14,6 +14,13 @@ import torch
 import sys
 import click
 from tqdm import tqdm
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn
+from rich import print as rprint
+
+console = Console()
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent))
@@ -399,12 +406,42 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
     chunked_units = sum(1 for u in all_units if u.total_chunks > 1)
     truncated_units = sum(1 for u in all_units if u.is_truncated)
 
-    click.echo(click.style("\n✅ Data loading complete!", fg="green", bold=True))
-    click.echo(f"  Train: {click.style(str(len(train_samples)), fg='cyan')} units ({click.style(str(train_malicious), fg='red')} malicious, {click.style(str(len(train_samples) - train_malicious), fg='green')} benign)")
-    click.echo(f"  Val:   {click.style(str(len(val_samples)), fg='cyan')} units ({click.style(str(val_malicious), fg='red')} malicious, {click.style(str(len(val_samples) - val_malicious), fg='green')} benign)")
-    click.echo(f"  📊 Chunking: {click.style(str(chunked_units), fg='yellow')} multi-chunk units, {click.style(str(total_chunks), fg='yellow')} total chunks")
-    if truncated_units > 0:
-        click.echo(f"  ⚠️  {click.style(str(truncated_units), fg='yellow')} units were truncated")
+    # Create summary table
+    table = Table(title="✅ Dataset Summary", show_header=True, header_style="bold magenta")
+    table.add_column("Split", style="cyan", justify="center")
+    table.add_column("Total Units", justify="right", style="bold")
+    table.add_column("Malicious", justify="right", style="red")
+    table.add_column("Benign", justify="right", style="green")
+    table.add_column("Balance", justify="right")
+
+    train_ratio = f"{train_malicious/(len(train_samples) - train_malicious):.2f}:1" if len(train_samples) - train_malicious > 0 else "N/A"
+    val_ratio = f"{val_malicious/(len(val_samples) - val_malicious):.2f}:1" if len(val_samples) - val_malicious > 0 else "N/A"
+
+    table.add_row(
+        "Train",
+        f"{len(train_samples):,}",
+        f"{train_malicious:,}",
+        f"{len(train_samples) - train_malicious:,}",
+        train_ratio
+    )
+    table.add_row(
+        "Val",
+        f"{len(val_samples):,}",
+        f"{val_malicious:,}",
+        f"{len(val_samples) - val_malicious:,}",
+        val_ratio
+    )
+
+    console.print("\n")
+    console.print(table)
+
+    # Chunking info panel
+    chunking_info = f"""[yellow]Multi-chunk units:[/yellow] {chunked_units:,} ({chunked_units/len(all_units)*100:.1f}%)
+[yellow]Total chunks:[/yellow] {total_chunks:,}
+[yellow]Truncated units:[/yellow] {truncated_units:,} ({truncated_units/len(all_units)*100:.1f}%)"""
+
+    console.print(Panel(chunking_info, title="📊 Chunking Statistics", border_style="yellow"))
+    console.print("\n")
 
     return train_samples, val_samples
 

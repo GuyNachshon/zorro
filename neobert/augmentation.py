@@ -66,10 +66,15 @@ class CodeAugmenter:
         new_unit.unit_id = f"{unit.unit_id}_minified"
         new_unit.unit_name = f"{unit.unit_name}_minified"
 
-        # Re-tokenize
+        # Re-tokenize and truncate to 512
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         tokens = tokenizer.tokenize(content)
+
+        # Truncate to max 512 tokens
+        if len(tokens) > 512:
+            tokens = tokens[:512]
+
         new_unit.tokens = tokens
         new_unit.token_ids = tokenizer.convert_tokens_to_ids(tokens)
 
@@ -94,10 +99,15 @@ class CodeAugmenter:
         new_unit.unit_id = f"{unit.unit_id}_no_comments"
         new_unit.unit_name = f"{unit.unit_name}_no_comments"
 
-        # Re-tokenize
+        # Re-tokenize and truncate to 512
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         tokens = tokenizer.tokenize(content)
+
+        # Truncate to max 512 tokens
+        if len(tokens) > 512:
+            tokens = tokens[:512]
+
         new_unit.tokens = tokens
         new_unit.token_ids = tokenizer.convert_tokens_to_ids(tokens)
 
@@ -134,10 +144,15 @@ class CodeAugmenter:
         new_unit.unit_id = f"{unit.unit_id}_renamed"
         new_unit.unit_name = f"{unit.unit_name}_renamed"
 
-        # Re-tokenize
+        # Re-tokenize and truncate to 512
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         tokens = tokenizer.tokenize(content)
+
+        # Truncate to max 512 tokens
+        if len(tokens) > 512:
+            tokens = tokens[:512]
+
         new_unit.tokens = tokens
         new_unit.token_ids = tokenizer.convert_tokens_to_ids(tokens)
 
@@ -166,10 +181,15 @@ class CodeAugmenter:
         new_unit.unit_id = f"{unit.unit_id}_whitespace"
         new_unit.unit_name = f"{unit.unit_name}_whitespace"
 
-        # Re-tokenize
+        # Re-tokenize and truncate to 512
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         tokens = tokenizer.tokenize(content)
+
+        # Truncate to max 512 tokens
+        if len(tokens) > 512:
+            tokens = tokens[:512]
+
         new_unit.tokens = tokens
         new_unit.token_ids = tokenizer.convert_tokens_to_ids(tokens)
 
@@ -201,10 +221,15 @@ class CodeAugmenter:
         new_unit.unit_id = f"{unit.unit_id}_splitstr"
         new_unit.unit_name = f"{unit.unit_name}_splitstr"
 
-        # Re-tokenize
+        # Re-tokenize and truncate to 512
         from transformers import AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
         tokens = tokenizer.tokenize(content)
+
+        # Truncate to max 512 tokens
+        if len(tokens) > 512:
+            tokens = tokens[:512]
+
         new_unit.tokens = tokens
         new_unit.token_ids = tokenizer.convert_tokens_to_ids(tokens)
 
