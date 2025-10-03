@@ -9,6 +9,7 @@ import logging
 import os
 import pickle
 from pathlib import Path
+from typing import Dict
 import torch
 import sys
 import click
@@ -25,7 +26,7 @@ from neobert.unit_processor import UnitProcessor
 
 from icn.data.malicious_extractor import MaliciousExtractor, PackageSample
 from icn.data.benign_collector import BenignSample
-from icn.parsing.code_reader import CodeReader
+from icn.parsing.unified_parser import UnifiedParser
 
 
 logger = logging.getLogger(__name__)
@@ -137,15 +138,46 @@ def load_benign_samples_from_cache(cache_path: str = "data/benign_samples",
     return benign_samples
 
 
+def read_package_files(package_path: Path, ecosystem: str) -> Dict[str, str]:
+    """Read all code files from a package directory."""
+    file_contents = {}
+
+    # Define file extensions based on ecosystem
+    if ecosystem == "npm":
+        extensions = {".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"}
+    elif ecosystem == "pypi":
+        extensions = {".py"}
+    else:
+        extensions = {".js", ".ts", ".jsx", ".tsx", ".py"}
+
+    # Walk through package directory
+    for file_path in package_path.rglob("*"):
+        if not file_path.is_file():
+            continue
+
+        # Skip node_modules, __pycache__, etc.
+        if any(p in file_path.parts for p in ["node_modules", "__pycache__", ".git", "dist", "build"]):
+            continue
+
+        # Check if it's a code file
+        if file_path.suffix in extensions or file_path.name in ["package.json", "setup.py"]:
+            try:
+                content = file_path.read_text(encoding='utf-8', errors='ignore')
+                relative_path = str(file_path.relative_to(package_path))
+                file_contents[relative_path] = content
+            except Exception as e:
+                logger.debug(f"Failed to read {file_path}: {e}")
+                continue
+
+    return file_contents
+
+
 def process_package_to_units(package_path: Path, package_name: str, ecosystem: str,
-                             processor: UnitProcessor, code_reader: CodeReader) -> list[PackageUnit]:
+                             processor: UnitProcessor) -> list[PackageUnit]:
     """Process a package directory into PackageUnit objects."""
     try:
         # Read all code files from package
-        file_contents = code_reader.read_package_files(
-            package_path=package_path,
-            ecosystem=ecosystem
-        )
+        file_contents = read_package_files(package_path, ecosystem)
 
         if not file_contents:
             logger.debug(f"No files found in {package_name}")
@@ -193,7 +225,6 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
         neobert_config, _, _ = create_default_config()
 
     processor = UnitProcessor(neobert_config)
-    code_reader = CodeReader()
 
     all_units = []
 
@@ -237,7 +268,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
                     pkg_path = sample.extracted_path or sample.file_path
                     units = process_package_to_units(
                         pkg_path, sample.name, sample.ecosystem,
-                        processor, code_reader
+                        processor
                     )
 
                     # Add label (malicious=1)
@@ -284,7 +315,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
                 # Process package
                 units = process_package_to_units(
                     sample.extracted_path, sample.name, sample.ecosystem,
-                    processor, code_reader
+                    processor
                 )
 
                 # Add label (benign=0)
