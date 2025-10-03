@@ -249,31 +249,25 @@ def auto_collect_benign_if_needed(benign_cache_path: str, max_benign: int,
         console.print(f"[yellow]   Auto-collecting to reach target...[/yellow]\n")
 
         # Initialize collector
-        collector = BenignCollector(
-            cache_dir=benign_cache_path,
-            download_timeout=30
-        )
+        collector = BenignCollector()
 
-        # Calculate split between PyPI and npm
-        pypi_needed = int(needed * 0.6)  # 60% PyPI
-        npm_needed = needed - pypi_needed  # 40% npm
+        # Collect balanced dataset (70% npm, 30% PyPI, 50/50 popular/longtail)
+        console.print(f"[cyan]Collecting {needed:,} benign packages (this may take a while)...[/cyan]")
+        try:
+            from pathlib import Path
+            output_path = Path(benign_cache_path)
+            output_path.mkdir(parents=True, exist_ok=True)
 
-        # Collect PyPI
-        if pypi_needed > 0:
-            console.print(f"[cyan]Collecting {pypi_needed:,} PyPI packages...[/cyan]")
-            try:
-                collector.collect_pypi_popular(max_packages=pypi_needed // 2)
-                collector.collect_pypi_longtail(max_packages=pypi_needed // 2)
-            except Exception as e:
-                console.print(f"[red]PyPI collection failed: {e}[/red]")
-
-        # Collect npm
-        if npm_needed > 0:
-            console.print(f"[cyan]Collecting {npm_needed:,} npm packages...[/cyan]")
-            try:
-                collector.collect_npm_popular(max_packages=npm_needed)
-            except Exception as e:
-                console.print(f"[red]npm collection failed: {e}[/red]")
+            collected_samples = collector.collect_balanced_dataset(
+                total_samples=needed,
+                npm_ratio=0.6,  # 60% npm, 40% PyPI
+                popular_ratio=0.5,  # 50% popular, 50% longtail
+                output_dir=output_path
+            )
+            console.print(f"[green]✓ Successfully collected {len(collected_samples):,} packages[/green]")
+        except Exception as e:
+            console.print(f"[red]Collection failed: {e}[/red]")
+            logger.debug("", exc_info=True)
 
         # Re-check count
         final_count = len(load_benign_samples_from_cache(benign_cache_path, max_samples=999999))

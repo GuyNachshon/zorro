@@ -183,24 +183,32 @@ class NeoBERTTrainer:
                 for batch_idx, batch in enumerate(train_loader):
                     labels = batch['labels'].to(self.device)
 
-                    # Get PackageUnits from batch (stored in dataset)
-                    # Since we can't pass units through DataLoader easily, we need to reconstruct
-                    # For now, we'll extract the indices and get units from dataset
+                    # Get PackageUnits from batch
+                    # Note: Each sample in train_samples is already a single PackageUnit
+                    # We need to process each one separately since the model expects
+                    # a list of units belonging to ONE package
                     batch_start = batch_idx * self.training_config.batch_size
                     batch_end = min(batch_start + self.training_config.batch_size, len(train_samples))
-                    batch_units = train_samples[batch_start:batch_end]
 
-                    # Forward pass
+                    # Forward pass - process each unit individually
                     optimizer.zero_grad()
-                    outputs = self.model(batch_units)
+                    batch_logits = []
 
-                    # Get logits
-                    if hasattr(outputs, 'logits'):
-                        logits = outputs.logits.squeeze(-1)
-                    elif isinstance(outputs, dict):
-                        logits = outputs['logits'].squeeze(-1)
-                    else:
-                        logits = outputs.squeeze(-1)
+                    for i in range(batch_start, batch_end):
+                        # Wrap single unit in a list (model expects List[PackageUnit])
+                        single_unit = [train_samples[i]]
+                        output = self.model(single_unit)
+
+                        # Extract logit
+                        if hasattr(output, 'logits'):
+                            logit = output.logits
+                        else:
+                            logit = output
+
+                        batch_logits.append(logit)
+
+                    # Stack logits into batch tensor
+                    logits = torch.stack(batch_logits)
 
                     # Compute loss
                     loss = criterion(logits, labels)
@@ -303,18 +311,25 @@ class NeoBERTTrainer:
                 # Get PackageUnits for this batch
                 batch_start = batch_idx * self.training_config.batch_size
                 batch_end = min(batch_start + self.training_config.batch_size, len(val_samples))
-                batch_units = val_samples[batch_start:batch_end]
 
-                # Forward pass
-                outputs = self.model(batch_units)
+                # Forward pass - process each unit individually
+                batch_logits = []
 
-                # Get logits
-                if hasattr(outputs, 'logits'):
-                    logits = outputs.logits.squeeze(-1)
-                elif isinstance(outputs, dict):
-                    logits = outputs['logits'].squeeze(-1)
-                else:
-                    logits = outputs.squeeze(-1)
+                for i in range(batch_start, batch_end):
+                    # Wrap single unit in a list
+                    single_unit = [val_samples[i]]
+                    output = self.model(single_unit)
+
+                    # Extract logit
+                    if hasattr(output, 'logits'):
+                        logit = output.logits
+                    else:
+                        logit = output
+
+                    batch_logits.append(logit)
+
+                # Stack logits
+                logits = torch.stack(batch_logits)
 
                 # Compute loss
                 loss = criterion(logits, labels)
