@@ -158,10 +158,12 @@ class AttentionPooling(BasePooling):
         Q = Q.view(batch_size, num_units, self.num_heads, self.head_dim).transpose(1, 2)
         K = K.view(batch_size, num_units, self.num_heads, self.head_dim).transpose(1, 2)
         V = V.view(batch_size, num_units, self.num_heads, self.head_dim).transpose(1, 2)
-        
+
         # Compute attention scores using context vector as query
-        context_expanded = self.context_vector.unsqueeze(0).unsqueeze(0).unsqueeze(0)
-        context_expanded = context_expanded.expand(batch_size, self.num_heads, 1, self.head_dim)
+        # Reshape context vector for multi-head attention
+        context_reshaped = self.context_vector.view(self.num_heads, self.head_dim)  # (num_heads, head_dim)
+        context_expanded = context_reshaped.unsqueeze(0).unsqueeze(2)  # (1, num_heads, 1, head_dim)
+        context_expanded = context_expanded.expand(batch_size, -1, -1, -1)  # (batch_size, num_heads, 1, head_dim)
         
         # Attention scores: context_vector @ K^T
         attention_scores = torch.matmul(context_expanded, K.transpose(-2, -1))  # (batch_size, num_heads, 1, num_units)
