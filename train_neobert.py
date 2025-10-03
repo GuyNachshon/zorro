@@ -27,6 +27,7 @@ from neobert.unit_processor import UnitProcessor
 from icn.data.malicious_extractor import MaliciousExtractor, PackageSample
 from icn.data.benign_collector import BenignSample
 from icn.parsing.unified_parser import UnifiedParser
+from neobert.augmentation import augment_benign_samples
 
 
 logger = logging.getLogger(__name__)
@@ -347,6 +348,38 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
     if not all_units:
         click.echo(click.style("✗ No training data loaded! Falling back to sample data.", fg="red"))
         return create_sample_data()
+
+    # Balance dataset with augmentation
+    malicious_units = [u for u in all_units if getattr(u, 'malicious_label', 0) > 0.5]
+    benign_units = [u for u in all_units if getattr(u, 'malicious_label', 0) < 0.5]
+
+    click.echo(click.style(f"\n⚖️  Balancing dataset...", fg="blue"))
+    click.echo(f"  Original: {click.style(str(len(malicious_units)), fg='red')} malicious, {click.style(str(len(benign_units)), fg='green')} benign")
+
+    # If benign units are less than malicious, augment them
+    if len(benign_units) < len(malicious_units):
+        target_benign = len(malicious_units)  # Match malicious count
+        click.echo(f"  Need {click.style(str(target_benign - len(benign_units)), fg='yellow')} more benign units")
+        click.echo(f"  Augmenting benign samples...")
+
+        # Get augmentation types from config
+        if neobert_config is None:
+            aug_types = ["minification", "comment_removal", "whitespace_variation", "string_concat"]
+        else:
+            from neobert.config import TrainingConfig
+            temp_config = TrainingConfig()
+            aug_types = temp_config.augmentation_types
+
+        augmented_benign = augment_benign_samples(
+            benign_units,
+            target_count=target_benign,
+            augmentation_types=aug_types
+        )
+
+        click.echo(f"  ✓ Augmented to {click.style(str(len(augmented_benign)), fg='green')} benign units")
+
+        # Replace benign units with augmented
+        all_units = malicious_units + augmented_benign
 
     # Shuffle and split
     import random
