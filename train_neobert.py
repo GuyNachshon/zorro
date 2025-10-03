@@ -32,7 +32,7 @@ from neobert.evaluator import NeoBERTEvaluator
 from neobert.unit_processor import UnitProcessor
 
 from icn.data.malicious_extractor import MaliciousExtractor, PackageSample
-from icn.data.benign_collector import BenignSample
+from icn.data.benign_collector import BenignSample, BenignCollector
 from icn.parsing.unified_parser import UnifiedParser
 from neobert.augmentation import augment_benign_samples
 
@@ -210,22 +210,100 @@ def process_package_to_units(package_path: Path, package_name: str, ecosystem: s
         return []
 
 
+
+def auto_collect_benign_if_needed(benign_cache_path: str, max_benign: int,
+                                  actual_malicious: int, default_ratio: float = 3.0):
+    """
+    Automatically collect benign packages if we don't have enough.
+
+    Args:
+        benign_cache_path: Path to benign cache
+        max_benign: User-requested max benign packages
+        actual_malicious: Actual number of malicious packages being used
+        default_ratio: Default benign:malicious ratio (3:1)
+
+    Returns:
+        Number of benign packages available
+    """
+    # Check current benign count
+    current_benign = len(load_benign_samples_from_cache(benign_cache_path, max_samples=999999))
+
+    # Calculate needed amount based on ratio
+    recommended_benign = int(actual_malicious * default_ratio)
+    target_benign = max(max_benign, recommended_benign)
+
+    # Show status
+    console.print(Panel(
+        f"[cyan]Benign packages available:[/cyan] {current_benign:,}\n"
+        f"[cyan]Malicious packages using:[/cyan] {actual_malicious:,}\n"
+        f"[cyan]Recommended benign (3:1):[/cyan] {recommended_benign:,}\n"
+        f"[cyan]Target benign:[/cyan] {target_benign:,}",
+        title="📊 Dataset Check",
+        border_style="cyan"
+    ))
+
+    # If we need more, auto-collect
+    if current_benign < target_benign:
+        needed = target_benign - current_benign
+        console.print(f"\n[yellow]⚠️  Need {needed:,} more benign packages![/yellow]")
+        console.print(f"[yellow]   Auto-collecting to reach target...[/yellow]\n")
+
+        # Initialize collector
+        collector = BenignCollector(
+            cache_dir=benign_cache_path,
+            download_timeout=30
+        )
+
+        # Calculate split between PyPI and npm
+        pypi_needed = int(needed * 0.6)  # 60% PyPI
+        npm_needed = needed - pypi_needed  # 40% npm
+
+        # Collect PyPI
+        if pypi_needed > 0:
+            console.print(f"[cyan]Collecting {pypi_needed:,} PyPI packages...[/cyan]")
+            try:
+                collector.collect_pypi_popular(max_packages=pypi_needed // 2)
+                collector.collect_pypi_longtail(max_packages=pypi_needed // 2)
+            except Exception as e:
+                console.print(f"[red]PyPI collection failed: {e}[/red]")
+
+        # Collect npm
+        if npm_needed > 0:
+            console.print(f"[cyan]Collecting {npm_needed:,} npm packages...[/cyan]")
+            try:
+                collector.collect_npm_popular(max_packages=npm_needed)
+            except Exception as e:
+                console.print(f"[red]npm collection failed: {e}[/red]")
+
+        # Re-check count
+        final_count = len(load_benign_samples_from_cache(benign_cache_path, max_samples=999999))
+        console.print(f"\n[green]✓ Collected packages. Total benign: {final_count:,}[/green]\n")
+        return final_count
+    else:
+        console.print(f"[green]✓ Sufficient benign packages available[/green]\n")
+        return current_benign
+
+
 def load_full_training_data(malicious_dataset_path: str = "malicious-software-packages-dataset",
                             benign_cache_path: str = "data/benign_samples",
                             max_malicious: int = 100,
                             max_benign: int = 100,
                             val_split: float = 0.2,
-                            neobert_config = None):
+                            neobert_config = None,
+                            auto_collect_benign: bool = True,
+                            benign_ratio: float = 3.0):
     """
     Load full training data from malicious dataset and benign cache.
 
     Args:
         malicious_dataset_path: Path to malicious package dataset
         benign_cache_path: Path to benign package cache
-        max_malicious: Maximum malicious samples to load
-        max_benign: Maximum benign samples to load
+        max_malicious: Maximum malicious samples to load (None = use all)
+        max_benign: Maximum benign samples to load (None = use ratio)
         val_split: Validation split ratio
         neobert_config: NeoBERT configuration for unit processing
+        auto_collect_benign: Automatically collect benign packages if needed
+        benign_ratio: Desired benign:malicious ratio (default 3:1)
 
     Returns:
         train_samples, val_samples as lists of PackageUnit objects
@@ -306,9 +384,20 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
     except Exception as e:
         click.echo(click.style(f"  ✗ Failed to load malicious samples: {e}", fg="red"))
         logger.debug("", exc_info=True)
+        malicious_count = 0
+
+    # Auto-collect benign if needed
+    if auto_collect_benign and malicious_count > 0:
+        click.echo("\n")
+        auto_collect_benign_if_needed(
+            benign_cache_path=benign_cache_path,
+            max_benign=max_benign,
+            actual_malicious=malicious_count,
+            default_ratio=benign_ratio
+        )
 
     # Load benign samples
-    click.echo(click.style(f"\n📦 Loading benign samples from {benign_cache_path}...", fg="yellow"))
+    click.echo(click.style(f"📦 Loading benign samples from {benign_cache_path}...", fg="yellow"))
     try:
         benign_samples = load_benign_samples_from_cache(benign_cache_path, max_benign)
 
