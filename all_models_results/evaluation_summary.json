@@ -438,7 +438,7 @@
       "create_ranking_charts": true
     },
     "api_keys": {
-      "openrouter": "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"
+      "openrouter": "" # REDACTED
     },
     "statistical_significance_level": 0.05,
     "enable_statistical_testing": true
