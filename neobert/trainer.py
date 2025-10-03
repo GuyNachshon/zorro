@@ -180,17 +180,24 @@ class NeoBERTTrainer:
             ) as progress:
                 task = progress.add_task(f"[cyan]Epoch {epoch+1}/{num_epochs} [Train]", total=len(train_loader))
 
-                for batch in train_loader:
-                    token_ids = batch['token_ids'].to(self.device)
-                    attention_mask = batch['attention_mask'].to(self.device)
+                for batch_idx, batch in enumerate(train_loader):
                     labels = batch['labels'].to(self.device)
+
+                    # Get PackageUnits from batch (stored in dataset)
+                    # Since we can't pass units through DataLoader easily, we need to reconstruct
+                    # For now, we'll extract the indices and get units from dataset
+                    batch_start = batch_idx * self.training_config.batch_size
+                    batch_end = min(batch_start + self.training_config.batch_size, len(train_samples))
+                    batch_units = train_samples[batch_start:batch_end]
 
                     # Forward pass
                     optimizer.zero_grad()
-                    outputs = self.model(token_ids, attention_mask)
+                    outputs = self.model(batch_units)
 
                     # Get logits
-                    if isinstance(outputs, dict):
+                    if hasattr(outputs, 'logits'):
+                        logits = outputs.logits.squeeze(-1)
+                    elif isinstance(outputs, dict):
                         logits = outputs['logits'].squeeze(-1)
                     else:
                         logits = outputs.squeeze(-1)
@@ -221,7 +228,7 @@ class NeoBERTTrainer:
             train_auc = roc_auc_score(train_labels, train_preds)
 
             # Validation phase
-            val_loss, val_auc, val_f1, val_metrics = self.evaluate(val_loader, criterion)
+            val_loss, val_auc, val_f1, val_metrics = self.evaluate(val_loader, criterion, val_samples)
 
             # Save history
             history['train_loss'].append(avg_train_loss)
@@ -282,7 +289,7 @@ class NeoBERTTrainer:
 
         return results
 
-    def evaluate(self, dataloader, criterion):
+    def evaluate(self, dataloader, criterion, val_samples):
         """Evaluate model on validation set."""
         self.model.eval()
         total_loss = 0.0
@@ -290,16 +297,21 @@ class NeoBERTTrainer:
         all_labels = []
 
         with torch.no_grad():
-            for batch in dataloader:
-                token_ids = batch['token_ids'].to(self.device)
-                attention_mask = batch['attention_mask'].to(self.device)
+            for batch_idx, batch in enumerate(dataloader):
                 labels = batch['labels'].to(self.device)
 
+                # Get PackageUnits for this batch
+                batch_start = batch_idx * self.training_config.batch_size
+                batch_end = min(batch_start + self.training_config.batch_size, len(val_samples))
+                batch_units = val_samples[batch_start:batch_end]
+
                 # Forward pass
-                outputs = self.model(token_ids, attention_mask)
+                outputs = self.model(batch_units)
 
                 # Get logits
-                if isinstance(outputs, dict):
+                if hasattr(outputs, 'logits'):
+                    logits = outputs.logits.squeeze(-1)
+                elif isinstance(outputs, dict):
                     logits = outputs['logits'].squeeze(-1)
                 else:
                     logits = outputs.squeeze(-1)
