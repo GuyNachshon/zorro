@@ -9,9 +9,10 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any, Union
 import logging
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
-
+load_dotenv()
 
 @dataclass
 class ModelConfig:
@@ -25,6 +26,9 @@ class ModelConfig:
 
     # HuggingFace specific
     hf_model_id: Optional[str] = None
+    hf_base_model_id: Optional[str] = None  # For PEFT models - the base model
+    hf_adapter_id: Optional[str] = None     # For PEFT models - the adapter/LoRA weights
+    use_peft: bool = False                  # Whether this is a PEFT model
 
     # Local model specific
     model_path: Optional[str] = None
@@ -172,6 +176,9 @@ class EvaluationConfig:
                     'enabled': m.enabled,
                     'openrouter_id': m.openrouter_id,
                     'hf_model_id': m.hf_model_id,
+                    'hf_base_model_id': m.hf_base_model_id,
+                    'hf_adapter_id': m.hf_adapter_id,
+                    'use_peft': m.use_peft,
                     'model_path': m.model_path,
                     'parameters': m.parameters
                 } for m in self.models
@@ -238,6 +245,17 @@ class EvaluationConfig:
             if not model.model_path:
                 # It's OK if no path is provided - models can be trained on demand
                 pass
+
+        # Check HuggingFace PEFT models have required fields
+        hf_models = [m for m in enabled_models if m.type == "huggingface"]
+        for model in hf_models:
+            if model.use_peft:
+                if not model.hf_base_model_id:
+                    issues.append(f"PEFT model '{model.name}' missing hf_base_model_id")
+                if not model.hf_adapter_id:
+                    issues.append(f"PEFT model '{model.name}' missing hf_adapter_id")
+            elif not model.hf_model_id:
+                issues.append(f"HuggingFace model '{model.name}' missing hf_model_id")
 
         # Check data configuration
         if self.data.max_samples_per_category <= 0:
@@ -377,10 +395,46 @@ def create_example_configs():
         output=OutputConfig(output_directory="local_models_results")
     )
 
+    # HuggingFace models with PEFT config
+    hf_peft_config = EvaluationConfig(
+        name="huggingface_peft_models",
+        description="Evaluation of HuggingFace models including PEFT adapters",
+        models=[
+            # Regular HuggingFace model
+            ModelConfig(
+                name="codebert_base",
+                type="huggingface",
+                hf_model_id="microsoft/codebert-base-mlm",
+                use_peft=False
+            ),
+            # PEFT model like the one you mentioned
+            ModelConfig(
+                name="endorlabs_malicious_classifier",
+                type="huggingface",
+                hf_base_model_id="microsoft/codebert-base-mlm",
+                hf_adapter_id="endorlabs/malicious-package-classifier-bert-mal-only",
+                use_peft=True
+            ),
+            # Compare with local models
+            ModelConfig(name="amil", type="amil", model_path="checkpoints/amil_model.pth"),
+            ModelConfig(name="random_baseline", type="baseline", parameters={"baseline_type": "random"})
+        ],
+        prompts=PromptConfig(
+            zero_shot=True,
+            few_shot=False,
+            reasoning=False,
+            file_by_file=False
+        ),
+        data=DataConfig(max_samples_per_category=30),
+        execution=ExecutionConfig(cost_limit_usd=5.0, max_concurrent_requests=2),
+        output=OutputConfig(output_directory="hf_peft_results")
+    )
+
     # Save example configs
     save_config(quick_config, configs_dir / "quick_test.yaml")
     save_config(external_config, configs_dir / "external_comprehensive.yaml")
     save_config(local_config, configs_dir / "local_models.yaml")
+    save_config(hf_peft_config, configs_dir / "huggingface_peft.yaml")
 
     logger.info(f"✅ Created example configurations in {configs_dir}/")
 

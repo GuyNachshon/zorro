@@ -20,54 +20,75 @@ execution:
   timeout_seconds: 120
 models:
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: gpt4o
   openrouter_id: openai/gpt-4o
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: o1_preview
   openrouter_id: openai/o1-preview
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: claude
   openrouter_id: anthropic/claude-3.5-sonnet
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: gemini_pro
   openrouter_id: google/gemini-pro-1.5
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: qwen_coder
   openrouter_id: qwen/qwen-3-coder-32b-instruct
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: deepseek
   openrouter_id: deepseek/deepseek-coder-v2-instruct
   parameters: {}
   type: openrouter
+  use_peft: false
 - enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
   hf_model_id: null
   model_path: null
   name: llama33
   openrouter_id: meta-llama/llama-3.3-70b-instruct
   parameters: {}
   type: openrouter
+  use_peft: false
 name: external_models_comprehensive
 output:
   create_heatmaps: true

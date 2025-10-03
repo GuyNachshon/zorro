@@ -1,0 +1,87 @@
+api_keys: {}
+data:
+  data_path: null
+  include_categories:
+  - benign
+  - compromised_lib
+  - malicious_intent
+  max_samples_per_category: 30
+  test_split_ratio: 0.3
+  use_cached_data: true
+description: Evaluation of HuggingFace models including PEFT adapters
+enable_statistical_testing: true
+execution:
+  cost_limit_usd: 5.0
+  delay_between_requests: 0.1
+  max_concurrent_requests: 2
+  max_retries: 3
+  requests_per_minute: 60
+  retry_failed: true
+  timeout_seconds: 120
+models:
+- enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
+  hf_model_id: microsoft/codebert-base-mlm
+  model_path: null
+  name: codebert_base
+  openrouter_id: null
+  parameters: {}
+  type: huggingface
+  use_peft: false
+- enabled: true
+  hf_adapter_id: endorlabs/malicious-package-classifier-bert-mal-only
+  hf_base_model_id: microsoft/codebert-base-mlm
+  hf_model_id: null
+  model_path: null
+  name: endorlabs_malicious_classifier
+  openrouter_id: null
+  parameters: {}
+  type: huggingface
+  use_peft: true
+- enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
+  hf_model_id: null
+  model_path: checkpoints/amil_model.pth
+  name: amil
+  openrouter_id: null
+  parameters: {}
+  type: amil
+  use_peft: false
+- enabled: true
+  hf_adapter_id: null
+  hf_base_model_id: null
+  hf_model_id: null
+  model_path: null
+  name: random_baseline
+  openrouter_id: null
+  parameters:
+    baseline_type: random
+  type: baseline
+  use_peft: false
+name: huggingface_peft_models
+output:
+  create_heatmaps: true
+  create_ranking_charts: true
+  create_scatter_plots: true
+  generate_csv_export: false
+  generate_json_summary: true
+  generate_markdown_report: true
+  output_directory: hf_peft_results
+  save_analysis: true
+  save_raw_results: true
+  save_visualizations: true
+prompts:
+  custom_prompts: {}
+  few_shot: false
+  few_shot_examples_count: 3
+  file_by_file: false
+  max_tokens:
+    few_shot: 1500
+    file_by_file: 800
+    reasoning: 2000
+    zero_shot: 1000
+  reasoning: false
+  zero_shot: true
+statistical_significance_level: 0.05

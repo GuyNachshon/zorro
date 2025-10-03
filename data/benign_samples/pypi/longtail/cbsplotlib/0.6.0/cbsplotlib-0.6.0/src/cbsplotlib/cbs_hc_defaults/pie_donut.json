@@ -1,0 +1,237 @@
+{
+  "template": {
+    "chart": {
+      "type": "pie",
+      "events": {},
+      "animation": false
+    },
+    "title": {
+      "align": "left",
+      "margin": -12
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "legend": {
+      "enabled": true,
+      "useHTML": true,
+      "align": "left",
+      "verticalAlign": "bottom",
+      "padding": 0,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "squareSymbol": false,
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "itemMarginBottom": 6
+    },
+    "plotOptions": {
+      "pie": {
+        "shadow": false,
+        "allowPointSelect": true
+      },
+      "series": {
+        "events": {},
+        "lineWidth": 1.5,
+        "size": "60%",
+        "innerSize": "40%",
+        "showInLegend": true,
+        "dataLabels": {
+          "enabled": true,
+          "connectorColor": "#000000",
+          "connectorWidth": 0,
+          "softConnector": false,
+          "connectorPadding": 0,
+          "distance": 12
+        }
+      }
+    },
+    "tooltip": {
+      "shared": true,
+      "useHTML": true,
+      "followPointer": true
+    },
+    "credits": {
+      "enabled": false
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Sector;Aantal\nLandbouw;14\nRaffinaderijen;6\nIndustrie;17\nEnergiebedrijven;27\nVerkeer en vervoer;16\nOverig;20"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "Aantal",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 14,
+            "yString": "14",
+            "name": "Landbouw"
+          },
+          {
+            "y": 6,
+            "yString": "6",
+            "name": "Raffinaderijen"
+          },
+          {
+            "y": 17,
+            "yString": "17",
+            "name": "Industrie"
+          },
+          {
+            "y": 27,
+            "yString": "27",
+            "name": "Energiebedrijven"
+          },
+          {
+            "y": 16,
+            "yString": "16",
+            "name": "Verkeer en vervoer"
+          },
+          {
+            "y": 20,
+            "yString": "20",
+            "name": "Overig"
+          }
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "Landbouw",
+          "Raffinaderijen",
+          "Industrie",
+          "Energiebedrijven",
+          "Verkeer en vervoer",
+          "Overig"
+        ]
+      }
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Donut",
+    "id": "Donutdonuttemplate.pie.subtype.donut"
+  }
+}

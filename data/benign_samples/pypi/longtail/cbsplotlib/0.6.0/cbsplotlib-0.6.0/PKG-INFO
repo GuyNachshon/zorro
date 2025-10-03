@@ -1,0 +1,50 @@
+Metadata-Version: 2.3
+Name: cbsplotlib
+Version: 0.6.0
+Summary: Frontend to matplotlib to create pictures in the CBS corporate identity
+Project-URL: Documentation, https://pyscaffold.org/
+Project-URL: Homepage, https://github.com/pyscaffold/pyscaffold/
+Author-email: Eelco van Vliet <eelcovv@gmail.nl>
+License: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Requires-Python: >=3.8
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: seaborn
+Provides-Extra: dev
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: ruff>=0.8.0; extra == 'dev'
+Requires-Dist: twine; extra == 'dev'
+Requires-Dist: wheel; extra == 'dev'
+Provides-Extra: testing
+Requires-Dist: pytest; extra == 'testing'
+Requires-Dist: pytest-cov; extra == 'testing'
+Description-Content-Type: text/x-rst
+
+==========
+cbsplotlib
+==========
+
+
+Een library om CBS plaatjes in de huisstijl te maken
+
+
+Omschrijving
+============
+
+Met de cbsplotlib library kan je default instellingen laden om matplotlib plaatjes in de CBS-huisstijl te maken
+
+
+
+.. _pyscaffold-notes:
+
+Note
+====
+
+This project has been set up using PyScaffold 4.0.1. For details and usage
+information on PyScaffold see https://pyscaffold.org/.

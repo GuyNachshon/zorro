@@ -20,6 +20,7 @@ from icn.evaluation.benchmark_framework import BaseModel, BenchmarkSample, Bench
 from icn.evaluation.openrouter_client import OpenRouterClient, BenchmarkRequest, MaliciousPackagePrompts
 from icn.evaluation.llm_response_parser import LLMResponseParser
 from icn.evaluation.prepare_benchmark_data import BenchmarkDataPreparator
+from evaluation.prediction_cache import get_prediction_cache
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,34 @@ class MultiPromptOpenRouterModel(BaseModel):
                                    openrouter_client: OpenRouterClient) -> BenchmarkResult:
         """Make prediction using specific prompt strategy."""
         start_time = time.time()
-        
+
+        # Check cache first
+        cache = get_prediction_cache()
+        sample_id = f"{sample.ecosystem}_{sample.package_name}"
+        cached_result = cache.get(self.original_model_name, sample_id, strategy.name, sample.raw_content)
+
+        if cached_result:
+            logger.debug(f"🎯 Cache hit for {self.original_model_name}:{sample_id}:{strategy.name}")
+            return BenchmarkResult(
+                model_name=self.model_name,
+                sample_id=sample_id,
+                ground_truth=sample.ground_truth_label,
+                prediction=cached_result.prediction,
+                confidence=cached_result.confidence,
+                inference_time_seconds=cached_result.inference_time_seconds,
+                cost_usd=cached_result.cost_usd,
+                explanation=cached_result.reasoning,
+                malicious_indicators=cached_result.malicious_indicators,
+                success=cached_result.success,
+                error_message=cached_result.error_message,
+                metadata={
+                    "prompt_strategy": strategy.name,
+                    "prompt_type": strategy.prompt_type,
+                    "granularity": strategy.granularity,
+                    "cache_hit": True
+                }
+            )
+
         # Generate appropriate prompt based on strategy
         if strategy.prompt_type == "zero_shot":
             prompt = MaliciousPackagePrompts.zero_shot_prompt(sample.raw_content)
@@ -132,29 +160,69 @@ class MultiPromptOpenRouterModel(BaseModel):
         llm_response = await openrouter_client.generate_response(request)
         
         if not llm_response.success:
+            # Store failed request in cache too
+            inference_time = time.time() - start_time
+            cache.put(
+                model_name=self.original_model_name,
+                sample_id=sample_id,
+                prompt_strategy=strategy.name,
+                content=sample.raw_content,
+                prediction=0,
+                confidence=0.0,
+                reasoning="API request failed",
+                malicious_indicators=[],
+                inference_time=inference_time,
+                cost_usd=llm_response.cost_usd,
+                success=False,
+                error_message=llm_response.error_message or "LLM request failed"
+            )
+
             return BenchmarkResult(
                 model_name=self.model_name,
-                sample_id=f"{sample.ecosystem}_{sample.package_name}",
+                sample_id=sample_id,
                 ground_truth=sample.ground_truth_label,
                 prediction=0,
                 confidence=0.0,
-                inference_time_seconds=time.time() - start_time,
+                inference_time_seconds=inference_time,
                 cost_usd=llm_response.cost_usd,
                 success=False,
                 error_message=llm_response.error_message or "LLM request failed",
-                raw_output=llm_response.response_text
+                raw_output=llm_response.response_text,
+                metadata={
+                    "prompt_strategy": strategy.name,
+                    "prompt_type": strategy.prompt_type,
+                    "granularity": strategy.granularity,
+                    "cache_hit": False
+                }
             )
         
         # Parse response
         parsed = self.response_parser.parse_response(llm_response.response_text, self.original_model_name)
-        
+
+        # Store in cache
+        prediction = 1 if parsed.is_malicious else 0
+        inference_time = time.time() - start_time
+        cache.put(
+            model_name=self.original_model_name,
+            sample_id=sample_id,
+            prompt_strategy=strategy.name,
+            content=sample.raw_content,
+            prediction=prediction,
+            confidence=parsed.confidence,
+            reasoning=parsed.reasoning,
+            malicious_indicators=parsed.malicious_indicators,
+            inference_time=inference_time,
+            cost_usd=llm_response.cost_usd,
+            success=True
+        )
+
         return BenchmarkResult(
             model_name=self.model_name,
-            sample_id=f"{sample.ecosystem}_{sample.package_name}",
+            sample_id=sample_id,
             ground_truth=sample.ground_truth_label,
-            prediction=1 if parsed.is_malicious else 0,
+            prediction=prediction,
             confidence=parsed.confidence,
-            inference_time_seconds=time.time() - start_time,
+            inference_time_seconds=inference_time,
             cost_usd=llm_response.cost_usd,
             raw_output=llm_response.response_text,
             explanation=parsed.reasoning,
@@ -167,15 +235,16 @@ class MultiPromptOpenRouterModel(BaseModel):
                 "completion_tokens": llm_response.completion_tokens,
                 "prompt_strategy": strategy.name,
                 "prompt_type": strategy.prompt_type,
-                "granularity": strategy.granularity
+                "granularity": strategy.granularity,
+                "cache_hit": False
             }
         )
     
     async def _predict_file_by_file_strategy(self, sample: BenchmarkSample, strategy: PromptStrategy,
                                            openrouter_client: OpenRouterClient) -> BenchmarkResult:
-        """Handle file-by-file analysis strategy."""
+        """Handle file-by-file analysis strategy with early stopping."""
         start_time = time.time()
-        
+
         if not sample.individual_files:
             logger.warning(f"No individual files for {sample.package_name}, skipping file-by-file")
             return BenchmarkResult(
@@ -188,16 +257,17 @@ class MultiPromptOpenRouterModel(BaseModel):
                 success=False,
                 error_message="No individual files available for file-by-file analysis"
             )
-        
-        # Analyze up to 6 files to control costs
+
+        # Analyze up to 6 files to control costs (with early stopping)
         files_to_analyze = list(sample.individual_files.items())[:6]
         file_analyses = []
         total_cost = 0.0
-        
+        found_malicious = False
+
         for file_path, file_content in files_to_analyze:
             if not file_content.strip():
                 continue
-            
+
             prompt = MaliciousPackagePrompts.file_by_file_prompt(file_path, file_content)
             request = BenchmarkRequest(
                 prompt=prompt,
@@ -206,9 +276,9 @@ class MultiPromptOpenRouterModel(BaseModel):
                 max_tokens=600,
                 metadata={"file_path": file_path, "sample_id": f"{sample.ecosystem}_{sample.package_name}"}
             )
-            
+
             llm_response = await openrouter_client.generate_response(request)
-            
+
             if llm_response.success:
                 parsed = self.response_parser.parse_response(llm_response.response_text, self.original_model_name)
                 file_analyses.append({
@@ -219,7 +289,13 @@ class MultiPromptOpenRouterModel(BaseModel):
                     "malicious_indicators": parsed.malicious_indicators
                 })
                 total_cost += llm_response.cost_usd
-            
+
+                # Early stopping: if we found malicious content with high confidence, stop
+                if parsed.is_malicious and parsed.confidence >= 0.8:
+                    found_malicious = True
+                    logger.info(f"🛑 Early stopping: Found malicious content in {file_path} with confidence {parsed.confidence:.2f}")
+                    break
+
             await asyncio.sleep(0.1)
         
         if not file_analyses:
@@ -237,15 +313,19 @@ class MultiPromptOpenRouterModel(BaseModel):
         # Aggregate results
         malicious_files = [f for f in file_analyses if f.get("is_malicious", False)]
         is_package_malicious = len(malicious_files) > 0
-        
+        total_files_available = len(files_to_analyze)
+
         if is_package_malicious:
             confidence = max([f.get("confidence", 0) for f in malicious_files])
-            explanation = f"File-by-file: {len(malicious_files)}/{len(file_analyses)} files flagged"
+            if found_malicious:
+                explanation = f"File-by-file (early stop): {len(malicious_files)}/{len(file_analyses)} files flagged, stopped at first malicious"
+            else:
+                explanation = f"File-by-file: {len(malicious_files)}/{len(file_analyses)} files flagged"
         else:
             benign_confidences = [f.get("confidence", 0.5) for f in file_analyses if not f.get("is_malicious", False)]
             confidence = np.mean(benign_confidences) if benign_confidences else 0.5
-            explanation = f"File-by-file: 0/{len(file_analyses)} files flagged as malicious"
-        
+            explanation = f"File-by-file: 0/{len(file_analyses)} files analyzed, all benign"
+
         return BenchmarkResult(
             model_name=self.model_name,
             sample_id=f"{sample.ecosystem}_{sample.package_name}",
@@ -258,7 +338,9 @@ class MultiPromptOpenRouterModel(BaseModel):
             success=True,
             metadata={
                 "files_analyzed": len(file_analyses),
+                "total_files_available": total_files_available,
                 "malicious_files": len(malicious_files),
+                "early_stopped": found_malicious,
                 "prompt_strategy": strategy.name,
                 "prompt_type": strategy.prompt_type,
                 "granularity": "file_by_file"
@@ -339,8 +421,22 @@ class PromptEffectivenessAnalyzer:
                     'cost': model_data.loc[best_strategy, 'total_cost']
                 }
         
+        # Convert MultiIndex to string keys for JSON serialization
+        strategy_matrix = {}
+        for (model, strategy), row in grouped.iterrows():
+            key = f"{model}_{strategy}"
+            strategy_matrix[key] = {
+                'model': model,
+                'strategy': strategy,
+                'samples': row['samples'],
+                'accuracy': row['accuracy'],
+                'avg_confidence': row['avg_confidence'],
+                'avg_time': row['avg_time'],
+                'total_cost': row['total_cost']
+            }
+
         return {
-            'strategy_performance_matrix': grouped.to_dict('index'),
+            'strategy_performance_matrix': strategy_matrix,
             'best_strategies_per_model': best_strategies,
             'overall_strategy_ranking': self._rank_strategies_overall()
         }
@@ -475,24 +571,28 @@ class MultiPromptBenchmarkSuite(BenchmarkSuite):
         
         registered = 0
         for model_id in model_ids:
-            if model_id in openrouter_client.models:
-                model_config = openrouter_client.models[model_id]
-                model_name = model_config.name.replace('/', '_')
-                
-                # Create multi-prompt model
-                multi_prompt_model = MultiPromptOpenRouterModel(
-                    model_name=model_name,
-                    openrouter_model_id=model_id,
-                    prompt_strategies=self.prompt_strategies
-                )
-                
-                # Store as special multi-prompt model (not in regular models dict)
-                if not hasattr(self, 'multi_prompt_models'):
-                    self.multi_prompt_models = {}
-                self.multi_prompt_models[model_name] = multi_prompt_model
-                registered += 1
-                
-                logger.info(f"📝 Registered multi-prompt model: {model_name}")
+            # Auto-add missing models with default config
+            if model_id not in openrouter_client.models:
+                logger.info(f"➕ Adding missing model config for: {model_id}")
+                openrouter_client.add_model_config(model_id)
+
+            model_config = openrouter_client.models[model_id]
+            model_name = model_config.name.replace('/', '_')
+
+            # Create multi-prompt model
+            multi_prompt_model = MultiPromptOpenRouterModel(
+                model_name=model_name,
+                openrouter_model_id=model_id,
+                prompt_strategies=self.prompt_strategies
+            )
+
+            # Store as special multi-prompt model (not in regular models dict)
+            if not hasattr(self, 'multi_prompt_models'):
+                self.multi_prompt_models = {}
+            self.multi_prompt_models[model_name] = multi_prompt_model
+            registered += 1
+
+            logger.info(f"📝 Registered multi-prompt model: {model_name}")
         
         return registered
     
@@ -535,7 +635,19 @@ class MultiPromptBenchmarkSuite(BenchmarkSuite):
             all_results.extend(model_results)
         
         self.multi_prompt_results = all_results
-        
+
+        # Save cache after benchmark completion
+        cache = get_prediction_cache()
+        cache.save_cache()
+
+        # Log cache statistics
+        cache_stats = cache.get_stats()
+        logger.info(f"📊 Cache Statistics:")
+        logger.info(f"   Total entries: {cache_stats['total_entries']}")
+        logger.info(f"   Hit rate: {cache_stats['hit_rate']:.1%} ({cache_stats['hits']}/{cache_stats['hits'] + cache_stats['misses']})")
+        logger.info(f"   Cost saved: ${cache_stats['total_cost_saved_usd']:.4f}")
+        logger.info(f"   Time saved: {cache_stats['total_time_saved_seconds']:.1f}s")
+
         # Convert to DataFrame for analysis
         return self._multi_prompt_results_to_dataframe()
     

@@ -1,0 +1,21 @@
+Metadata-Version: 1.1
+Name: EzPyGame
+Version: 0.3.1
+Summary: An easier way to use pygame
+Home-page: https://github.com/Mahi/EzPyGame
+Author: Markus Meskanen
+Author-email: markusmeskanen@gmail.com
+License: MIT
+Download-URL: https://github.com/Mahi/EzPyGame/archive/0.3.1.tar.gz
+Description: UNKNOWN
+Keywords: pygame,game,gaming,games,ez,easy,ezpg
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Games/Entertainment
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6

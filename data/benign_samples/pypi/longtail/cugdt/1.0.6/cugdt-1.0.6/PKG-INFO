@@ -1,0 +1,21 @@
+Metadata-Version: 1.1
+Name: cugdt
+Version: 1.0.6
+Summary: 遥感科研工具包
+Home-page: https://gitee.com/HaixuHe/cugdt
+Author: HaixuHe
+Author-email: 20161001925@cug.edu.cn
+License: MIT Licence
+Description: UNKNOWN
+Keywords: pip,tiff,cugdt
+Platform: any
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: Chinese (Simplified)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Libraries

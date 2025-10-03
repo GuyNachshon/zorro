@@ -1,0 +1,29 @@
+general:
+  output_directory: out
+  highcharts_output_directory: highcharts
+plot_settings:
+  # alle plot instellingen per plaatje
+  # de naam van het plaatje wordt afgeleid uit de naam van de key
+  data_per_group:
+    # onderstaande velden kan je gebruiken  om je plaatje te tunen
+    input_file: grouped_data.csv
+    y_max: 60000
+    fig_width_in_inch: 4
+    fig_height_in_inch: 4.5
+    bottom: 0.2
+    bar_width: 0.8
+    left: 0.25
+    top: 0.95
+    radius_corner_background: 1
+    background_margin: -0.01
+    logo_margin_x_in_mm: 1
+    logo_margin_y_in_mm: 1
+    color_palette: koelextended
+    legend_pos:
+    - 0.0
+    - -0.03
+    n_cols: 3
+    highcharts:
+      # deze output_directory wordt aan highcharts_output_directory gekoppeld
+      output_directory: Fig_1_0
+      title: "1.0 Caption for figure data by group"

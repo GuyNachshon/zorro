@@ -91,33 +91,51 @@ class LLMResponseParser:
     def _try_json_parsing(self, response_text: str) -> Optional[ParsedPrediction]:
         """Try to parse response as JSON."""
         try:
-            # Try to find JSON in the response
-            json_match = re.search(r'\{[^{}]*\}', response_text, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(0)
-                data = json.loads(json_str)
-                
-                # Extract required fields
-                is_malicious = data.get('is_malicious', False)
-                if isinstance(is_malicious, str):
-                    is_malicious = is_malicious.lower() in ['true', 'yes', '1', 'malicious']
-                
-                confidence = float(data.get('confidence', 0.5))
-                reasoning = str(data.get('reasoning', ''))
-                indicators = data.get('malicious_indicators', [])
-                if isinstance(indicators, str):
-                    indicators = [indicators]
-                
-                return ParsedPrediction(
-                    is_malicious=bool(is_malicious),
-                    confidence=max(0.0, min(1.0, confidence)),  # Clamp to [0,1]
-                    reasoning=reasoning,
-                    malicious_indicators=indicators,
-                    raw_response=response_text,
-                    parse_success=True,
-                    parse_method="json"
-                )
-            
+            # Multiple JSON extraction strategies
+            json_candidates = []
+
+            # Strategy 1: Find complete JSON objects
+            json_matches = re.finditer(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', response_text, re.DOTALL)
+            for match in json_matches:
+                json_candidates.append(match.group(0))
+
+            # Strategy 2: Find simple key-value patterns that look like JSON
+            simple_json_pattern = r'\{\s*"[^"]+"\s*:\s*[^}]+\}'
+            simple_matches = re.finditer(simple_json_pattern, response_text, re.DOTALL)
+            for match in simple_matches:
+                json_candidates.append(match.group(0))
+
+            # Strategy 3: Try to parse the entire response as JSON
+            json_candidates.append(response_text.strip())
+
+            # Try each candidate
+            for json_str in json_candidates:
+                try:
+                    data = json.loads(json_str)
+
+                    # Extract required fields
+                    is_malicious = data.get('is_malicious', False)
+                    if isinstance(is_malicious, str):
+                        is_malicious = is_malicious.lower() in ['true', 'yes', '1', 'malicious']
+
+                    confidence = float(data.get('confidence', 0.5))
+                    reasoning = str(data.get('reasoning', ''))
+                    indicators = data.get('malicious_indicators', [])
+                    if isinstance(indicators, str):
+                        indicators = [indicators]
+
+                    return ParsedPrediction(
+                        is_malicious=bool(is_malicious),
+                        confidence=max(0.0, min(1.0, confidence)),  # Clamp to [0,1]
+                        reasoning=reasoning,
+                        malicious_indicators=indicators,
+                        raw_response=response_text,
+                        parse_success=True,
+                        parse_method="json"
+                    )
+                except (json.JSONDecodeError, ValueError, KeyError):
+                    continue  # Try next candidate
+
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             logger.debug(f"JSON parsing failed: {e}")
         

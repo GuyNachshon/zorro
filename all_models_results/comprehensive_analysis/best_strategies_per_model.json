@@ -1,0 +1,62 @@
+{
+  "openai_gpt-4o_zero": {
+    "best_strategy": "zero_shot",
+    "best_f1": 0.6666666666666666,
+    "best_accuracy": 0.8461538461538461,
+    "best_cost": 0.06977249999999999,
+    "all_strategies": [
+      {
+        "strategy": "zero_shot",
+        "f1_score": 0.6666666666666666,
+        "accuracy": 0.8461538461538461,
+        "avg_cost": 0.06977249999999999,
+        "avg_time": 6.4367069739561815
+      }
+    ]
+  },
+  "openai_gpt-4o_few": {
+    "best_strategy": "few_shot",
+    "best_f1": 0.9333333333333333,
+    "best_accuracy": 0.9615384615384616,
+    "best_cost": 0.08423192307692308,
+    "all_strategies": [
+      {
+        "strategy": "few_shot",
+        "f1_score": 0.9333333333333333,
+        "accuracy": 0.9615384615384616,
+        "avg_cost": 0.08423192307692308,
+        "avg_time": 7.25095522403717
+      }
+    ]
+  },
+  "anthropic_claude-3.5-sonnet_zero": {
+    "best_strategy": "zero_shot",
+    "best_f1": 0.6666666666666666,
+    "best_accuracy": 0.8181818181818182,
+    "best_cost": 0.09579409090909091,
+    "all_strategies": [
+      {
+        "strategy": "zero_shot",
+        "f1_score": 0.6666666666666666,
+        "accuracy": 0.8181818181818182,
+        "avg_cost": 0.09579409090909091,
+        "avg_time": 11.186178413304416
+      }
+    ]
+  },
+  "anthropic_claude-3.5-sonnet_few": {
+    "best_strategy": "few_shot",
+    "best_f1": 0.7272727272727273,
+    "best_accuracy": 0.8571428571428571,
+    "best_cost": 0.11298571428571424,
+    "all_strategies": [
+      {
+        "strategy": "few_shot",
+        "f1_score": 0.7272727272727273,
+        "accuracy": 0.8571428571428571,
+        "avg_cost": 0.11298571428571424,
+        "avg_time": 13.281902767363048
+      }
+    ]
+  }
+}

@@ -1,0 +1,456 @@
+{
+  "template": {
+    "chart": {
+      "type": "line",
+      "polar": false,
+      "marginBottom": 180,
+      "events": {},
+      "animation": false
+    },
+    "plotOptions": {
+      "series": {
+        "pointPlacement": null,
+        "events": {},
+        "marker": {
+          "enabled": false
+        },
+        "lineWidth": 1.5
+      }
+    },
+    "accessibility": {
+      "enabled": true
+    },
+    "title": {
+      "align": "left",
+      "margin": 35
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "x": -12
+        },
+        "labels": {
+          "y": 30,
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "tickmarkPlacement": "on",
+        "categories": [
+          "1970",
+          "1975",
+          "1980",
+          "1985",
+          "1990",
+          "1995",
+          "2000",
+          "2005",
+          "2010",
+          "2015"
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "endOnTick": true,
+        "startOnTick": true,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 0
+          }
+        ],
+        "softMin": 0
+      }
+    ],
+    "legend": {
+      "enabled": true,
+      "align": "left",
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "squareSymbol": false,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "enabled": true,
+      "shared": true,
+      "followPointer": true,
+      "backgroundColor": "white",
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    },
+    "series": [
+      {
+        "type": "column",
+        "zIndex": -100
+      }
+    ]
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Jaar;Migratiesaldo;Natuurlijke aanwas;Bevolkingsgroei\n1970;45;130;160\n1975;75;70;130\n1980;50;60;110\n1985;-1;50;55\n1990;50;75;125\n1995;20;55;60\n2000;50;60;130\n2005;-30;55;40\n2010;40;55;70\n2015;55;35;65"
+    },
+    "series": [
+      {
+        "name": "Migratiesaldo",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 45,
+            "yString": "45",
+            "name": "1970"
+          },
+          {
+            "y": 75,
+            "yString": "75",
+            "name": "1975"
+          },
+          {
+            "y": 50,
+            "yString": "50",
+            "name": "1980"
+          },
+          {
+            "y": -1,
+            "yString": "-1",
+            "name": "1985"
+          },
+          {
+            "y": 50,
+            "yString": "50",
+            "name": "1990"
+          },
+          {
+            "y": 20,
+            "yString": "20",
+            "name": "1995"
+          },
+          {
+            "y": 50,
+            "yString": "50",
+            "name": "2000"
+          },
+          {
+            "y": -30,
+            "yString": "-30",
+            "name": "2005"
+          },
+          {
+            "y": 40,
+            "yString": "40",
+            "name": "2010"
+          },
+          {
+            "y": 55,
+            "yString": "55",
+            "name": "2015"
+          }
+        ]
+      },
+      {
+        "name": "Natuurlijke aanwas",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 130,
+            "yString": "130",
+            "name": "1970"
+          },
+          {
+            "y": 70,
+            "yString": "70",
+            "name": "1975"
+          },
+          {
+            "y": 60,
+            "yString": "60",
+            "name": "1980"
+          },
+          {
+            "y": 50,
+            "yString": "50",
+            "name": "1985"
+          },
+          {
+            "y": 75,
+            "yString": "75",
+            "name": "1990"
+          },
+          {
+            "y": 55,
+            "yString": "55",
+            "name": "1995"
+          },
+          {
+            "y": 60,
+            "yString": "60",
+            "name": "2000"
+          },
+          {
+            "y": 55,
+            "yString": "55",
+            "name": "2005"
+          },
+          {
+            "y": 55,
+            "yString": "55",
+            "name": "2010"
+          },
+          {
+            "y": 35,
+            "yString": "35",
+            "name": "2015"
+          }
+        ]
+      },
+      {
+        "name": "Bevolkingsgroei",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 160,
+            "yString": "160",
+            "name": "1970"
+          },
+          {
+            "y": 130,
+            "yString": "130",
+            "name": "1975"
+          },
+          {
+            "y": 110,
+            "yString": "110",
+            "name": "1980"
+          },
+          {
+            "y": 55,
+            "yString": "55",
+            "name": "1985"
+          },
+          {
+            "y": 125,
+            "yString": "125",
+            "name": "1990"
+          },
+          {
+            "y": 60,
+            "yString": "60",
+            "name": "1995"
+          },
+          {
+            "y": 130,
+            "yString": "130",
+            "name": "2000"
+          },
+          {
+            "y": 40,
+            "yString": "40",
+            "name": "2005"
+          },
+          {
+            "y": 70,
+            "yString": "70",
+            "name": "2010"
+          },
+          {
+            "y": 65,
+            "yString": "65",
+            "name": "2015"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "1970",
+          "1975",
+          "1980",
+          "1985",
+          "1990",
+          "1995",
+          "2000",
+          "2005",
+          "2010",
+          "2015"
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ],
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl"
+  },
+  "selectedTemplate": {
+    "masterID": "Line",
+    "id": "Linecombinationtemplate.line.subtype.combination"
+  }
+}

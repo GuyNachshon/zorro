@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: django-rest-multitokenauth
+Version: 2.0.0
+Summary: django-rest-multitokenauth is deprecated now. Use drf-multitokenauth instead.
+Classifier: Development Status :: 7 - Inactive
+Description-Content-Type: text/markdown
+
+django-rest-multitokenauth is deprecated now. Use drf-multitokenauth instead.

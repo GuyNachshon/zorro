@@ -1,0 +1,422 @@
+[
+  {
+    "name": "router",
+    "ecosystem": "npm",
+    "version": "2.2.0",
+    "source_url": "https://registry.npmjs.org/router/-/router-2.2.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/router/2.2.0"
+  },
+  {
+    "name": "content-type",
+    "ecosystem": "npm",
+    "version": "1.0.5",
+    "source_url": "https://registry.npmjs.org/content-type/-/content-type-1.0.5.tgz",
+    "local_path": "data/benign_samples/npm/popular/content-type/1.0.5"
+  },
+  {
+    "name": "cookie-session",
+    "ecosystem": "npm",
+    "version": "2.1.1",
+    "source_url": "https://registry.npmjs.org/cookie-session/-/cookie-session-2.1.1.tgz",
+    "local_path": "data/benign_samples/npm/popular/cookie-session/2.1.1"
+  },
+  {
+    "name": "marked",
+    "ecosystem": "npm",
+    "version": "16.3.0",
+    "source_url": "https://registry.npmjs.org/marked/-/marked-16.3.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/marked/16.3.0"
+  },
+  {
+    "name": "etag",
+    "ecosystem": "npm",
+    "version": "1.8.1",
+    "source_url": "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz",
+    "local_path": "data/benign_samples/npm/popular/etag/1.8.1"
+  },
+  {
+    "name": "once",
+    "ecosystem": "npm",
+    "version": "1.4.0",
+    "source_url": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/once/1.4.0"
+  },
+  {
+    "name": "express-session",
+    "ecosystem": "npm",
+    "version": "1.18.2",
+    "source_url": "https://registry.npmjs.org/express-session/-/express-session-1.18.2.tgz",
+    "local_path": "data/benign_samples/npm/popular/express-session/1.18.2"
+  },
+  {
+    "name": "debug",
+    "ecosystem": "npm",
+    "version": "4.4.3",
+    "source_url": "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
+    "local_path": "data/benign_samples/npm/popular/debug/4.4.3"
+  },
+  {
+    "name": "qs",
+    "ecosystem": "npm",
+    "version": "6.14.0",
+    "source_url": "https://registry.npmjs.org/qs/-/qs-6.14.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/qs/6.14.0"
+  },
+  {
+    "name": "body-parser",
+    "ecosystem": "npm",
+    "version": "2.2.0",
+    "source_url": "https://registry.npmjs.org/body-parser/-/body-parser-2.2.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/body-parser/2.2.0"
+  },
+  {
+    "name": "send",
+    "ecosystem": "npm",
+    "version": "1.2.0",
+    "source_url": "https://registry.npmjs.org/send/-/send-1.2.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/send/1.2.0"
+  },
+  {
+    "name": "escape-html",
+    "ecosystem": "npm",
+    "version": "1.0.3",
+    "source_url": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz",
+    "local_path": "data/benign_samples/npm/popular/escape-html/1.0.3"
+  },
+  {
+    "name": "statuses",
+    "ecosystem": "npm",
+    "version": "2.0.2",
+    "source_url": "https://registry.npmjs.org/statuses/-/statuses-2.0.2.tgz",
+    "local_path": "data/benign_samples/npm/popular/statuses/2.0.2"
+  },
+  {
+    "name": "finalhandler",
+    "ecosystem": "npm",
+    "version": "2.1.0",
+    "source_url": "https://registry.npmjs.org/finalhandler/-/finalhandler-2.1.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/finalhandler/2.1.0"
+  },
+  {
+    "name": "cookie-parser",
+    "ecosystem": "npm",
+    "version": "1.4.7",
+    "source_url": "https://registry.npmjs.org/cookie-parser/-/cookie-parser-1.4.7.tgz",
+    "local_path": "data/benign_samples/npm/popular/cookie-parser/1.4.7"
+  },
+  {
+    "name": "accepts",
+    "ecosystem": "npm",
+    "version": "1.3.8",
+    "source_url": "https://registry.npmjs.org/accepts/-/accepts-1.3.8.tgz",
+    "local_path": "data/benign_samples/npm/popular/accepts/1.3.8"
+  },
+  {
+    "name": "parseurl",
+    "ecosystem": "npm",
+    "version": "1.3.3",
+    "source_url": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.3.tgz",
+    "local_path": "data/benign_samples/npm/popular/parseurl/1.3.3"
+  },
+  {
+    "name": "proxy-addr",
+    "ecosystem": "npm",
+    "version": "2.0.7",
+    "source_url": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.7.tgz",
+    "local_path": "data/benign_samples/npm/popular/proxy-addr/2.0.7"
+  },
+  {
+    "name": "content-disposition",
+    "ecosystem": "npm",
+    "version": "0.5.4",
+    "source_url": "https://registry.npmjs.org/content-disposition/-/content-disposition-0.5.4.tgz",
+    "local_path": "data/benign_samples/npm/popular/content-disposition/0.5.4"
+  },
+  {
+    "name": "hbs",
+    "ecosystem": "npm",
+    "version": "4.2.0",
+    "source_url": "https://registry.npmjs.org/hbs/-/hbs-4.2.0.tgz",
+    "local_path": "data/benign_samples/npm/popular/hbs/4.2.0"
+  },
+  {
+    "name": "cookie",
+    "ecosystem": "npm",
+    "version": "1.0.2",
+    "source_url": "https://registry.npmjs.org/cookie/-/cookie-1.0.2.tgz",
+    "local_path": "data/benign_samples/npm/popular/cookie/1.0.2"
+  },
+  {
+    "name": "validator",
+    "ecosystem": "npm",
+    "version": "13.15.15",
+    "source_url": "https://registry.npmjs.org/validator/-/validator-13.15.15.tgz",
+    "local_path": "data/benign_samples/npm/longtail/validator/13.15.15"
+  },
+  {
+    "name": "converter",
+    "ecosystem": "npm",
+    "version": "0.0.5",
+    "source_url": "https://registry.npmjs.org/converter/-/converter-0.0.5.tgz",
+    "local_path": "data/benign_samples/npm/longtail/converter/0.0.5"
+  },
+  {
+    "name": "openssl-wrapper",
+    "ecosystem": "npm",
+    "version": "0.3.4",
+    "source_url": "https://registry.npmjs.org/openssl-wrapper/-/openssl-wrapper-0.3.4.tgz",
+    "local_path": "data/benign_samples/npm/longtail/openssl-wrapper/0.3.4"
+  },
+  {
+    "name": "eslint-formatter-pretty",
+    "ecosystem": "npm",
+    "version": "6.0.1",
+    "source_url": "https://registry.npmjs.org/eslint-formatter-pretty/-/eslint-formatter-pretty-6.0.1.tgz",
+    "local_path": "data/benign_samples/npm/longtail/eslint-formatter-pretty/6.0.1"
+  },
+  {
+    "name": "utility",
+    "ecosystem": "npm",
+    "version": "2.5.0",
+    "source_url": "https://registry.npmjs.org/utility/-/utility-2.5.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/utility/2.5.0"
+  },
+  {
+    "name": "client",
+    "ecosystem": "npm",
+    "version": "0.0.1",
+    "source_url": "https://registry.npmjs.org/client/-/client-0.0.1.tgz",
+    "local_path": "data/benign_samples/npm/longtail/client/0.0.1"
+  },
+  {
+    "name": "cli",
+    "ecosystem": "npm",
+    "version": "1.0.1",
+    "source_url": "https://registry.npmjs.org/cli/-/cli-1.0.1.tgz",
+    "local_path": "data/benign_samples/npm/longtail/cli/1.0.1"
+  },
+  {
+    "name": "command-line-tool",
+    "ecosystem": "npm",
+    "version": "0.8.0",
+    "source_url": "https://registry.npmjs.org/command-line-tool/-/command-line-tool-0.8.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/command-line-tool/0.8.0"
+  },
+  {
+    "name": "cli-cursor",
+    "ecosystem": "npm",
+    "version": "5.0.0",
+    "source_url": "https://registry.npmjs.org/cli-cursor/-/cli-cursor-5.0.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/cli-cursor/5.0.0"
+  },
+  {
+    "name": "wrapper",
+    "ecosystem": "npm",
+    "version": "0.1.0",
+    "source_url": "https://registry.npmjs.org/wrapper/-/wrapper-0.1.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/wrapper/0.1.0"
+  },
+  {
+    "name": "formatter",
+    "ecosystem": "npm",
+    "version": "0.4.2",
+    "source_url": "https://registry.npmjs.org/formatter/-/formatter-0.4.2.tgz",
+    "local_path": "data/benign_samples/npm/longtail/formatter/0.4.2"
+  },
+  {
+    "name": "vite",
+    "ecosystem": "npm",
+    "version": "7.1.5",
+    "source_url": "https://registry.npmjs.org/vite/-/vite-7.1.5.tgz",
+    "local_path": "data/benign_samples/npm/longtail/vite/7.1.5"
+  },
+  {
+    "name": "is-generator-function",
+    "ecosystem": "npm",
+    "version": "1.1.0",
+    "source_url": "https://registry.npmjs.org/is-generator-function/-/is-generator-function-1.1.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/is-generator-function/1.1.0"
+  },
+  {
+    "name": "helper",
+    "ecosystem": "npm",
+    "version": "0.0.13",
+    "source_url": "https://registry.npmjs.org/helper/-/helper-0.0.13.tgz",
+    "local_path": "data/benign_samples/npm/longtail/helper/0.0.13"
+  },
+  {
+    "name": "is-generator-fn",
+    "ecosystem": "npm",
+    "version": "3.0.0",
+    "source_url": "https://registry.npmjs.org/is-generator-fn/-/is-generator-fn-3.0.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/is-generator-fn/3.0.0"
+  },
+  {
+    "name": "socket.io-client",
+    "ecosystem": "npm",
+    "version": "4.8.1",
+    "source_url": "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.8.1.tgz",
+    "local_path": "data/benign_samples/npm/longtail/socket.io-client/4.8.1"
+  },
+  {
+    "name": "webpack-cli",
+    "ecosystem": "npm",
+    "version": "6.0.1",
+    "source_url": "https://registry.npmjs.org/webpack-cli/-/webpack-cli-6.0.1.tgz",
+    "local_path": "data/benign_samples/npm/longtail/webpack-cli/6.0.1"
+  },
+  {
+    "name": "parser",
+    "ecosystem": "npm",
+    "version": "0.1.4",
+    "source_url": "https://registry.npmjs.org/parser/-/parser-0.1.4.tgz",
+    "local_path": "data/benign_samples/npm/longtail/parser/0.1.4"
+  },
+  {
+    "name": "yargs-parser",
+    "ecosystem": "npm",
+    "version": "22.0.0",
+    "source_url": "https://registry.npmjs.org/yargs-parser/-/yargs-parser-22.0.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/yargs-parser/22.0.0"
+  },
+  {
+    "name": "mjml-wrapper",
+    "ecosystem": "npm",
+    "version": "4.15.3",
+    "source_url": "https://registry.npmjs.org/mjml-wrapper/-/mjml-wrapper-4.15.3.tgz",
+    "local_path": "data/benign_samples/npm/longtail/mjml-wrapper/4.15.3"
+  },
+  {
+    "name": "tool",
+    "ecosystem": "npm",
+    "version": "21.0.0",
+    "source_url": "https://registry.npmjs.org/tool/-/tool-21.0.0.tgz",
+    "local_path": "data/benign_samples/npm/longtail/tool/21.0.0"
+  },
+  {
+    "name": "requests",
+    "ecosystem": "pypi",
+    "version": "2.32.5",
+    "source_url": "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/requests/2.32.5"
+  },
+  {
+    "name": "urllib3",
+    "ecosystem": "pypi",
+    "version": "2.5.0",
+    "source_url": "https://files.pythonhosted.org/packages/15/22/9ee70a2574a4f4599c47dd506532914ce044817c7752a79b6a51286319bc/urllib3-2.5.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/urllib3/2.5.0"
+  },
+  {
+    "name": "setuptools",
+    "ecosystem": "pypi",
+    "version": "80.9.0",
+    "source_url": "https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/setuptools/80.9.0"
+  },
+  {
+    "name": "certifi",
+    "ecosystem": "pypi",
+    "version": "2025.8.3",
+    "source_url": "https://files.pythonhosted.org/packages/dc/67/960ebe6bf230a96cda2e0abcf73af550ec4f090005363542f0765df162e0/certifi-2025.8.3.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/certifi/2025.8.3"
+  },
+  {
+    "name": "charset-normalizer",
+    "ecosystem": "pypi",
+    "version": "3.4.3",
+    "source_url": "https://files.pythonhosted.org/packages/83/2d/5fd176ceb9b2fc619e63405525573493ca23441330fcdaee6bef9460e924/charset_normalizer-3.4.3.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/charset-normalizer/3.4.3"
+  },
+  {
+    "name": "idna",
+    "ecosystem": "pypi",
+    "version": "3.10",
+    "source_url": "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/idna/3.10"
+  },
+  {
+    "name": "pip",
+    "ecosystem": "pypi",
+    "version": "25.2",
+    "source_url": "https://files.pythonhosted.org/packages/20/16/650289cd3f43d5a2fadfd98c68bd1e1e7f2550a1a5326768cddfbcedb2c5/pip-25.2.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/pip/25.2"
+  },
+  {
+    "name": "wheel",
+    "ecosystem": "pypi",
+    "version": "0.45.1",
+    "source_url": "https://files.pythonhosted.org/packages/8a/98/2d9906746cdc6a6ef809ae6338005b3f21bb568bea3165cfc6a243fdc25c/wheel-0.45.1.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/wheel/0.45.1"
+  },
+  {
+    "name": "six",
+    "ecosystem": "pypi",
+    "version": "1.17.0",
+    "source_url": "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/popular/six/1.17.0"
+  },
+  {
+    "name": "0",
+    "ecosystem": "pypi",
+    "version": "0.0.0",
+    "source_url": "https://files.pythonhosted.org/packages/8c/e6/83748ba1e232167de61f2bf31ec53f4b7acdd1ced52bdf3ea3366ea48132/0-0.0.0-py2.py3-none-any.whl",
+    "local_path": "data/benign_samples/pypi/longtail/0/0.0.0"
+  },
+  {
+    "name": "authz-analyzer",
+    "ecosystem": "pypi",
+    "version": "0.1.13",
+    "source_url": "https://files.pythonhosted.org/packages/3d/5f/52136fd17a16f7ab785c8970b2928857ab0570e9e117c29cc521a5210174/authz_analyzer-0.1.13.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/authz-analyzer/0.1.13"
+  },
+  {
+    "name": "cbsplotlib",
+    "ecosystem": "pypi",
+    "version": "0.6.0",
+    "source_url": "https://files.pythonhosted.org/packages/79/8a/737c689690027d47cb4f20f991bc29c91d9f363a0fba3a47c87d8d1efec7/cbsplotlib-0.6.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/cbsplotlib/0.6.0"
+  },
+  {
+    "name": "cugdt",
+    "ecosystem": "pypi",
+    "version": "1.0.6",
+    "source_url": "https://files.pythonhosted.org/packages/ec/88/9cd8cb593c9ef166d01e398bb301b2a363e1b236355c90a8d4c0c86bbb4a/cugdt-1.0.6.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/cugdt/1.0.6"
+  },
+  {
+    "name": "django-rest-multitokenauth",
+    "ecosystem": "pypi",
+    "version": "2.0.0",
+    "source_url": "https://files.pythonhosted.org/packages/45/10/7a942c52c9a3da2b83659621d1ab2ab5c59098576d87152c93664d7f2477/django-rest-multitokenauth-2.0.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/django-rest-multitokenauth/2.0.0"
+  },
+  {
+    "name": "EzPyGame",
+    "ecosystem": "pypi",
+    "version": "0.3.1",
+    "source_url": "https://files.pythonhosted.org/packages/50/7b/28494382f26d702d63015f0933074cdd5e2eb1cf7bc6532cca7833df8067/EzPyGame-0.3.1.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/EzPyGame/0.3.1"
+  },
+  {
+    "name": "git-github-reflog",
+    "ecosystem": "pypi",
+    "version": "0.0.1",
+    "source_url": "https://files.pythonhosted.org/packages/f4/38/6d2403b252dde28abcb19508b045589fdb9c13bbaac903f2f163d35768c4/git-github-reflog-0.0.1.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/git-github-reflog/0.0.1"
+  },
+  {
+    "name": "inpout",
+    "ecosystem": "pypi",
+    "version": "1.0.8",
+    "source_url": "https://files.pythonhosted.org/packages/65/98/3e6e39de33a00d967b05cb911a928fc7136abca30b747afe00c2e6d464a2/inpout-1.0.8.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/inpout/1.0.8"
+  },
+  {
+    "name": "libravore",
+    "ecosystem": "pypi",
+    "version": "1.0",
+    "source_url": "https://files.pythonhosted.org/packages/53/bf/61546b64b26ecc1e749d0af00cc5642be10e9fbb9120c1870e5e78a90569/libravore-1.0.tar.gz",
+    "local_path": "data/benign_samples/pypi/longtail/libravore/1.0"
+  }
+]

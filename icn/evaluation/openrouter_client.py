@@ -13,8 +13,10 @@ from pathlib import Path
 import aiohttp
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
+load_dotenv()
 
 
 @dataclass
@@ -74,7 +76,8 @@ class OpenRouterClient:
 
     def _initialize_model_configs(self) -> Dict[str, ModelConfig]:
         """Initialize configurations for available models."""
-        return {
+        # Core models with known configurations
+        known_models = {
             # OpenAI Models
             "openai/gpt-4o": ModelConfig(
                 name="openai/gpt-4o",
@@ -155,6 +158,21 @@ class OpenRouterClient:
                 description="Latest Llama 3.3"
             ),
         }
+
+        return known_models
+
+    def add_model_config(self, model_id: str, provider: str = "Unknown",
+                        context_length: int = 8000, cost_per_1k_tokens: float = 0.01,
+                        description: str = "") -> None:
+        """Add a new model configuration dynamically."""
+        if model_id not in self.models:
+            self.models[model_id] = ModelConfig(
+                name=model_id,
+                provider=provider,
+                context_length=context_length,
+                cost_per_1k_tokens=cost_per_1k_tokens,
+                description=description or f"Model {model_id}"
+            )
 
     async def __aenter__(self):
         """Async context manager entry."""
@@ -395,26 +413,57 @@ class OpenRouterClient:
 class MaliciousPackagePrompts:
     """Standard prompts for malicious package detection."""
 
+    # Class-level custom prompts (can be set from config)
+    _custom_prompts = {}
+
+    @classmethod
+    def set_custom_prompts(cls, custom_prompts: dict):
+        """Set custom prompts from configuration."""
+        cls._custom_prompts = custom_prompts
+
     @staticmethod
     def zero_shot_prompt(package_content: str) -> str:
         """Zero-shot malicious package detection prompt."""
-        return f"""Analyze the following package code for malicious behavior. Respond with a JSON object containing:
-- "is_malicious": boolean (true if malicious, false if benign)  
-- "confidence": float (0.0 to 1.0)
-- "reasoning": string (explanation of your analysis)
-- "malicious_indicators": list of strings (specific indicators found)
+        # Use custom prompt if available, otherwise use default
+        if 'zero_shot' in MaliciousPackagePrompts._custom_prompts:
+            custom_prompt = MaliciousPackagePrompts._custom_prompts['zero_shot']
+            return custom_prompt.format(code_content=package_content)
+
+        # Default prompt
+        return f"""Analyze this package code for malicious behavior.
 
 Package code:
 ```
 {package_content}
 ```
 
-Response (JSON only):"""
+IMPORTANT: Respond in this EXACT format (valid JSON only):
+{{"is_malicious": true_or_false, "confidence": 0.8, "reasoning": "your explanation here", "malicious_indicators": ["list", "of", "indicators"]}}
+
+Look for: suspicious network calls, obfuscated code, eval/exec usage, credential harvesting, cryptocurrency mining.
+
+JSON Response:"""
 
     @staticmethod
     def few_shot_prompt(package_content: str, examples: List[Dict[str, Any]]) -> str:
         """Few-shot prompt with examples."""
+        # Use custom prompt if available
+        if 'few_shot' in MaliciousPackagePrompts._custom_prompts:
+            custom_prompt = MaliciousPackagePrompts._custom_prompts['few_shot']
+            # Format examples for custom prompt
+            examples_text = ""
+            for i, example in enumerate(examples, 1):
+                label = "malicious" if example["is_malicious"] else "benign"
+                examples_text += f"""Example {i} ({label}):
+```
+{example["content"]}
+```
+Analysis: {example["reasoning"]}
 
+"""
+            return custom_prompt.format(examples=examples_text.strip(), code_content=package_content)
+
+        # Default prompt
         examples_text = ""
         for i, example in enumerate(examples, 1):
             label = "malicious" if example["is_malicious"] else "benign"
@@ -427,7 +476,7 @@ Analysis: {example["reasoning"]}
 
 """
 
-        return f"""Analyze packages for malicious behavior. Here are some examples:
+        return f"""Analyze packages for malicious behavior. Learn from these examples:
 
 {examples_text}
 
@@ -436,17 +485,20 @@ Now analyze this package:
 {package_content}
 ```
 
-Respond with a JSON object containing:
-- "is_malicious": boolean
-- "confidence": float (0.0 to 1.0) 
-- "reasoning": string
-- "malicious_indicators": list of strings
+IMPORTANT: Respond in this EXACT JSON format:
+{{"is_malicious": true_or_false, "confidence": 0.8, "reasoning": "your explanation", "malicious_indicators": ["list", "of", "indicators"]}}
 
-Response (JSON only):"""
+JSON Response:"""
 
     @staticmethod
     def reasoning_prompt(package_content: str) -> str:
         """Prompt designed for reasoning models like GPT o1."""
+        # Use custom prompt if available
+        if 'reasoning' in MaliciousPackagePrompts._custom_prompts:
+            custom_prompt = MaliciousPackagePrompts._custom_prompts['reasoning']
+            return custom_prompt.format(code_content=package_content)
+
+        # Default prompt
         return f"""<thinking>
 I need to carefully analyze this package code for malicious behavior. Let me think through this step by step:
 
@@ -465,19 +517,29 @@ Analyze this package code for malicious behavior:
 {package_content}
 ```
 
-Provide a thorough analysis including:
-- Overall assessment (malicious/benign)
-- Confidence level (0.0 to 1.0)
-- Step-by-step reasoning
-- Specific malicious indicators (if any)
-- Risk assessment
+Provide a thorough analysis in this EXACT JSON format:
+{{"is_malicious": true_or_false, "confidence": 0.85, "reasoning": "detailed step-by-step explanation", "malicious_indicators": ["specific", "indicators", "found"]}}
 
-Response as JSON:
-{{"is_malicious": boolean, "confidence": float, "reasoning": "detailed explanation", "malicious_indicators": [list]}}"""
+JSON Response:"""
 
     @staticmethod
     def file_by_file_prompt(file_path: str, file_content: str) -> str:
         """Prompt for analyzing individual files."""
+        # Use custom prompt if available
+        if 'file_by_file' in MaliciousPackagePrompts._custom_prompts:
+            custom_prompt = MaliciousPackagePrompts._custom_prompts['file_by_file']
+            # Determine file type from extension
+            file_type = file_path.split('.')[-1] if '.' in file_path else 'unknown'
+            # Extract package name from path (basic heuristic)
+            package_name = file_path.split('/')[0] if '/' in file_path else 'unknown-package'
+            return custom_prompt.format(
+                file_path=file_path,
+                file_type=file_type,
+                package_name=package_name,
+                file_content=file_content
+            )
+
+        # Default prompt
         return f"""Analyze this individual file from a package for malicious behavior:
 
 File: {file_path}
@@ -493,14 +555,10 @@ Focus on:
 - Network operations or file system access
 - Any signs of malicious intent
 
-Respond with JSON containing:
-- "is_malicious": boolean (true if this file is malicious)
-- "confidence": float (0.0 to 1.0)  
-- "reasoning": string (explanation of analysis)
-- "malicious_indicators": list of strings (specific suspicious patterns found)
-- "risk_level": string ("high", "medium", "low", "none")
+IMPORTANT: Respond in this EXACT JSON format:
+{{"is_malicious": true_or_false, "confidence": 0.9, "reasoning": "explanation of analysis", "malicious_indicators": ["patterns", "found"], "risk_level": "high"}}
 
-Response (JSON only):"""
+JSON Response:"""
 
     @staticmethod
     def package_aggregation_prompt(package_name: str, file_analyses: List[Dict]) -> str:

@@ -1,0 +1,525 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+import sys
+import os
+import subprocess
+import requests
+import getpass
+import textwrap
+import time
+from colorama import init, Fore, Style
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--naughty",
+        help="Ignore Github's requested poll-interval (naughty naughty)",
+        action="store_true")
+parser.add_argument("--events", help="List supported events",
+        action="store_true")
+parser.add_argument("--desc", help="Display helpful descriptions in the " + \
+        "event log", action="store_true")
+parser.add_argument("--version", help="Display the version",
+        action="store_true")
+args = parser.parse_args()
+
+try:
+    # Win32
+    from msvcrt import getch
+except ImportError:
+    # UNIX
+    def getch():
+        import tty, termios
+        fd = sys.stdin.fileno()
+        old = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            return sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old)
+
+init()
+
+__version__ = "0.0.1"
+
+# Initialize the pager stuff. Note, this will probably only work on *nixes
+def get_max_lines():
+    max_lines = None
+    try:
+        max_lines = subprocess.check_output(['tput', 'lines'])
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        max_lines = os.environ.get('LINES', 30)
+    return int(max_lines)
+
+MAX_PAGE_LINES = get_max_lines()
+CURRENT_LINE = 0
+PAGE_TEXT = Style.BRIGHT + \
+    "Press any key to continue, Q to quit...\r" + Style.NORMAL
+CLEAR_TEXT = ' ' * len(PAGE_TEXT) + "\r"
+
+# Event Handlers
+def commit_comment_event_handler(event):
+    comment_id = event['payload']['comment']['id']
+    author = event['payload']['comment']['user']['login']
+    author_url = event['payload']['comment']['user']['html_url']
+    comment_url = event['payload']['comment']['html_url']
+    commit_sha = event['payload']['comment']['commit_id']
+    body = event['payload']['comment']['body']
+    pager(u"SHA:       {0}".format(commit_sha))
+    pager(u"Author:    {0} <{1}>".format(author, author_url))
+    pager(u"ID:        {0}".format(comment_id))
+    pager(u"URL:       {0}".format(comment_url))
+    pager()
+    pager_message(body)
+    pager()
+
+def create_event_handler(event):
+    ref_type = event['payload']['ref_type']
+    desc = event['payload']['description']
+    pager(u"Type:      " + Fore.BLUE + Style.BRIGHT + ref_type + \
+            Fore.RESET + Style.NORMAL)
+    if ref_type == 'branch' or ref_type == 'tag':
+        branch_ref = event['payload']['ref']
+        pager(u"Ref:       {0}".format(branch_ref))
+    pager()
+    pager_message(desc)
+    pager()
+
+def delete_event_handler(event):
+    ref_type = event['payload']['ref_type']
+    ref = event['payload']['ref']
+    pager(u'Type:      ' + Fore.BLUE + Style.BRIGHT + ref_type + \
+            Fore.RESET + Style.NORMAL)
+    pager(u'Ref:       {0}'.format(ref))
+    pager()
+
+def fork_event_handler(event):
+    owner = event['payload']['forkee']['owner']['login']
+    owner_url = event['payload']['forkee']['owner']['html_url']
+    full_name = event['payload']['forkee']['full_name']
+    private = event['payload']['forkee']['private']
+    fork_url = event['payload']['forkee']['html_url']
+    pager(u"Author:    {0} <{1}>".format(owner, owner_url))
+    pager(u"Fullname:  {0}\t\tPrivate: {1}".format(full_name, private))
+    pager(u"URL:       {0}".format(fork_url))
+    pager()
+
+def gollum_event_handler(event):
+    pager()
+    for p in event['payload']['pages']:
+        action = p['action']
+        page_name = p['page_name']
+        page_url = p['html_url']
+        page_sha = p['sha']
+        pager(u' Page Name: {0}\t\tPage Url: {1}'.format(page_name, page_url))
+        pager(u" Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+                Style.NORMAL + "\t\tSHA:      " + page_sha)
+        pager()
+
+def issue_comment_event_handler(event):
+    created = event['payload']['comment']['created_at']
+    updated = event['payload']['comment']['updated_at']
+    comment_url = event['payload']['comment']['html_url']
+    pager(u'Created:   {0}'.format(created))
+    pager(u'Updated:   {0}'.format(updated))
+    pager(u'URL:       {0}'.format(comment_url))
+    if 'issue' in event['payload']:
+        issue_number = event['payload']['issue']['number']
+        issue_url = event['payload']['issue']['html_url']
+        issue_title = event['payload']['issue']['title']
+        pager(u'Issue:     {0} <{1}>'.format(issue_number, issue_url))
+        pager()
+        pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
+    comment_text = event['payload']['comment']['body']
+    pager()
+    pager_message(comment_text)
+    pager()
+
+def issues_event_handler(event):
+    created = event['payload']['issue']['created_at']
+    updated = event['payload']['issue']['updated_at']
+    issue_url = event['payload']['issue']['html_url']
+    pager(u"Created:   {0}".format(created))
+    pager(u"Updated:   {0}".format(updated))
+    pager(u"URL:       {0}".format(issue_url))
+    action = event['payload']['action']
+    state = event['payload']['issue']['state']
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    if action == 'assigned' or action == 'unassigned':
+        assignee = event['payload']['issue']['assignee']['login']
+        assignee_url = event['payload']['issue']['assignee']['url']
+        pager(u"Assignee: {0} <{1}>".format(assignee, assignee_url))
+    # FIXME - Would be nice to also handle label changes, but I can't
+    # seem to generate one of those actions to test
+    issue_title = event['payload']['issue']['title']
+    issue_body = event['payload']['issue']['body']
+    pager()
+    pager(' ' + Style.BRIGHT + issue_title + Style.NORMAL)
+    pager()
+    pager_message(issue_body)
+    pager()
+
+def member_event_handler(event):
+    new_member = event['payload']['member']['login']
+    new_member_url = event['payload']['member']['html_url']
+    action = event['payload']['action']
+    pager(u"Member:    {0} <{1}>".format(new_member, new_member_url))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL)
+    pager()
+
+def pull_request_event_handler(event):
+    pr = event['payload']['number']
+    pr_url = event['payload']['pull_request']['html_url']
+    action = event['payload']['action']
+    state = event['payload']['pull_request']['state']
+    created = event['payload']['pull_request']['created_at']
+    updated = event['payload']['pull_request']['updated_at']
+    pr_user = event['payload']['pull_request']['user']['login']
+    pr_userurl = event['payload']['pull_request']['user']['html_url']
+    head_sha = event['payload']['pull_request']['head']['sha']
+    head_ref = event['payload']['pull_request']['head']['ref']
+    title = event['payload']['pull_request']['title']
+    body = event['payload']['pull_request']['body']
+    pager(u"PR:        #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created:   {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:       {0}".format(head_sha))
+    pager(u"Author:    {0} <{1}>".format(pr_user, pr_userurl))
+    pager(u"Ref:       {0}".format(head_ref))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    if action == 'closed':
+        merged = event['payload']['pull_request']['merged']
+        if merged:
+            pager(u"Merged:    " + Fore.GREEN + Style.BRIGHT + "True" + \
+                    Fore.RESET + Style.NORMAL)
+        else:
+            pager(u"Merged:    " + Fore.RED + Style.BRIGHT + "False" + \
+                    Fore.RESET + Style.NORMAL + " (unmerged commits)")
+
+    pager()
+    pager(" " + Style.BRIGHT + title + Style.NORMAL)
+    pager()
+    pager_message(body)
+    pager()
+
+def pull_request_review_comment_event_handler(event):
+    pr = event['payload']['pull_request']['number']
+    pr_url = event['payload']['pull_request']['html_url']
+    created = event['payload']['pull_request']['created_at']
+    updated = event['payload']['pull_request']['updated_at']
+    head_sha = event['payload']['pull_request']['head']['sha']
+    head_ref = event['payload']['pull_request']['head']['ref']
+    pr_author = event['payload']['comment']['user']['login']
+    pr_authorurl = event['payload']['comment']['user']['html_url']
+    action = event['payload']['action']
+    state = event['payload']['pull_request']['state']
+    comment_url = event['payload']['comment']['html_url']
+    comment = event['payload']['comment']['body']
+    pager(u"PR:        #{0} <{1}>".format(pr, pr_url))
+    pager(u"Created:   {0}\tUpdated: {1}".format(created, updated))
+    pager(u"SHA:       {0}".format(head_sha))
+    pager(u"Author:    {0} <{1}>".format(pr_author, pr_authorurl))
+    pager(u"Ref:       {0}".format(head_ref))
+    pager(u"URL:       {0}".format(comment_url))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\t\tState: " + Fore.BLUE + Style.BRIGHT + \
+            state + Fore.RESET + Style.NORMAL)
+    pager()
+    pager_message(comment)
+    pager()
+
+def push_event_handler(event):
+    head_sha = event['payload']['head']
+    ref = event['payload']['ref']
+    # Find the associated message for HEAD
+    message = 'Unknown'
+    author = 'Unknown'
+    email = 'Unknown'
+    for commit in event['payload']['commits']:
+        if commit['sha'] == head_sha:
+            message = commit['message']
+            author = commit['author']['name']
+            email = commit['author']['email']
+
+    pager(u"SHA:       {0}".format(head_sha))
+    pager(u"Author:    {0} <{1}>".format(author, email))
+    pager(u"Ref:       {0}".format(ref))
+    pager()
+
+    pager_message(message)
+    pager()
+
+def release_event_handler(event):
+    action = event['payload']['action']
+    tag_name = event['payload']['release']['tag_name']
+    rel_name = event['payload']['release']['name']
+    rel_url = event['payload']['release']['html_url']
+    rel_body = event['payload']['release']['body']
+    prerelease = str(event['payload']['release']['prerelease'])
+    created = event['payload']['release']['created_at']
+    published = event['payload']['release']['published_at']
+    author = event['payload']['release']['author']['login']
+    author_url = event['payload']['release']['author']['html_url']
+    pager(u"Created:   {0}\tPublished: {1}".format(created, published))
+    pager(u"Author:    {0} <{1}>".format(author, author_url))
+    pager(u"Tag:       {0}".format(tag_name))
+    pager(u"URL:       {0}".format(rel_url))
+    pager(u"Action:    " + Fore.BLUE + Style.BRIGHT + action + Fore.RESET + \
+            Style.NORMAL + "\t\tPre-Release: " + Fore.BLUE + Style.BRIGHT + \
+            prerelease + Fore.RESET + Style.NORMAL)
+    pager()
+    pager(u" " + Style.BRIGHT + rel_name + Style.NORMAL)
+    pager()
+    pager_message(rel_body)
+    pager()
+
+def watch_event_handler(event):
+    pager(u"Action:    {0}".format(event['payload']['action']))
+    pager()
+
+event_handlers = {
+        'CommitCommentEvent' : {
+            'method' : commit_comment_event_handler,
+            'desc' : 'A commit comment is created'
+            },
+        'CreateEvent' : {
+            'method' : create_event_handler,
+            'desc' : 'A created repository, branch or tag'
+            },
+        'DeleteEvent' : {
+            'method' : delete_event_handler,
+            'desc' : 'A deleted branch or tag'
+            },
+        'ForkEvent' : {
+            'method' : fork_event_handler,
+            'desc' : 'A user forked the repository'
+            },
+        'GollumEvent' : {
+            'method' : gollum_event_handler,
+            'desc' : 'A Wiki page is created or updated'
+            },
+        'IssueCommentEvent' : {
+            'method' : issue_comment_event_handler,
+            'desc' : 'A comment is created on an issue or pull-request'
+            },
+        'IssuesEvent' : {
+            'method' : issues_event_handler,
+            'desc' : 'An issue is assigned, unassigned, labeled, ' + \
+                    'unlabeled, opened, closed, or reopened'
+            },
+        'MemberEvent' : {
+            'method' : member_event_handler,
+            'desc' : 'A user is added as a collaborator'
+            },
+        'PullRequestEvent' : {
+            'method' : pull_request_event_handler,
+            'desc' : 'A pull request is assigned, unassigned, labeled, ' + \
+                    'unlabeled, opened, closed, reopened, or synchronized'
+            },
+        'PullRequestReviewCommentEvent' : {
+            'method' : pull_request_review_comment_event_handler,
+            'desc' : 'A comment is created on a portion of the unified ' + \
+                    'diff of a pull request'
+            },
+        'PushEvent' : {
+            'method' : push_event_handler,
+            'desc' : 'The repository is pushed to'
+            },
+        'ReleaseEvent' : {
+            'method' : release_event_handler,
+            'desc' : 'A release is published'
+            },
+        'WatchEvent' : {
+            'method' : watch_event_handler,
+            'desc' : 'A user has starred the repository'
+            }
+        }
+
+# The pagination method
+def pager(line=""):
+    global CURRENT_LINE
+    global MAX_PAGE_LINES
+    global PAGE_TEXT
+    global CLEAR_TEXT
+    if CURRENT_LINE > MAX_PAGE_LINES - 3:
+        print(PAGE_TEXT, end="")
+        c = getch()
+        print(CLEAR_TEXT, end="")
+        CURRENT_LINE = 0
+        MAX_PAGE_LINES = get_max_lines()
+        if c == 'q' or c == 'Q' or ord(c) == 3:
+            sys.exit(0)
+
+    print(line)
+    CURRENT_LINE = CURRENT_LINE + 1
+
+# Indent a message
+def pager_message(message):
+    pretty_message = textwrap.wrap(message)
+    for l in pretty_message:
+        pager(u'   ' + l)
+
+# Main event parsing method
+def parse_event(event):
+    event_id = event['id']
+    event_type = event['type']
+    event_user = event['actor']['login']
+    event_userurl = event['actor']['url']
+    event_timestamp = event['created_at']
+
+    # Header
+    if args.desc and event_type in event_handlers:
+        pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + ' - ' + \
+                event_handlers[event_type]['desc'] + Fore.RESET)
+    else:
+        pager(u'' + Fore.YELLOW + event_id + u' ' + event_type + Fore.RESET)
+    pager('User:      {0} <{1}>'.format(event_user, event_userurl))
+    pager('Date:      {0}'.format(event_timestamp))
+    if event_type in event_handlers:
+        event_handlers[event_type]['method'](event)
+    else:
+        # Catch-all for everything else
+        pager(u"{0} {1} {2}".format(event_id, event_type, event_user))
+        pager()
+
+# Main request parser
+def parse_requests(req):
+    events = req.json()
+    for e in events:
+        parse_event(e)
+
+# Generate a request
+def get_request(rurl, u, p, pt):
+    if passtoken:
+        req = requests.get(rurl, headers={'Authorization':
+            'token {0}'.format(pt)})
+    else:
+        req = requests.get(rurl, auth=(u, p))
+    return req
+
+# Main Entry point
+if args.events:
+    key_len = len(max(event_handlers.keys(), key=len))
+    for eh in sorted(event_handlers.keys()):
+        pager('  {0} : {1}'.format(eh.rjust(key_len),
+            event_handlers[eh]['desc']))
+    sys.exit(0)
+elif args.version:
+    print(__version__)
+    sys.exit(0)
+
+username = None
+password = None
+passtoken = None
+
+try:
+    passtoken = subprocess.check_output(['git', 'config', 'github.token'])
+    passtoken = passtoken.strip()
+except subprocess.CalledProcessError:
+    # No passtoken, get username and possibly password
+    passtoken = None
+    try:
+        username = subprocess.check_output(['git', 'config', 'github.username'])
+        username = username.strip()
+    except subprocess.CalledProcessError:
+        print("No Github username found!")
+        print("Please set with:")
+        print("\tgit config github.username <username>")
+        sys.exit(1)
+
+    try:
+        password = subprocess.check_output(['git', 'config',
+            'github.password'])
+        password = password.strip()
+    except subprocess.CalledProcessError:
+        password = None
+
+try:
+    repouser = subprocess.check_output(['git', 'config', 'github.repouser'])
+    repouser = repouser.strip()
+except subprocess.CalledProcessError:
+    print("No Github repo username found!")
+    print("Please set with:")
+    print("\tgit config github.repouser <repo username>")
+    sys.exit(1)
+
+try:
+    reponame = subprocess.check_output(['git', 'config', 'github.reponame'])
+    reponame = reponame.strip()
+except subprocess.CalledProcessError:
+    print("No Github repo name found!")
+    print("Please set with:")
+    print("\tgit config github.reponame <repo name>")
+    sys.exit(1)
+
+if password is None and passtoken is None:
+    password = getpass.getpass("Please enter password: ")
+
+# Type conversion for Python3
+if isinstance(username, bytes):
+    username = username.decode('utf-8')
+if isinstance(repouser, bytes):
+    repouser = repouser.decode('utf-8')
+if isinstance(reponame, bytes):
+    reponame = reponame.decode('utf-8')
+if isinstance(password, bytes):
+    password = password.decode('utf-8')
+if isinstance(passtoken, bytes):
+    passtoken = passtoken.decode('utf-8')
+
+url = "https://api.github.com/repos/{0}/{1}/events".format(
+        repouser, reponame)
+
+r = get_request(url, username, password, passtoken)
+
+if r.status_code == requests.codes.unauthorized:
+    print("Response from Github: Unauthorized")
+    print("Please check authentication and try again...")
+    sys.exit(1)
+elif r.status_code == requests.codes.not_found:
+    print("Response from Github: 404 Not Found")
+    print("Please check that repouser and reponame are valid in your config...")
+    sys.exit(1)
+elif r.status_code == requests.codes.forbidden:
+    print("Response from Github: 403 Forbidden")
+    if int(r.headers['X-RateLimit-Remaining']) < 1:
+        print("You have exceeded your rate limit! See " + \
+                "'https://developer.github.com/v3/#rate-limiting'")
+    else:
+        print("Check your permissions and try again...")
+    sys.exit(1)
+
+action_time = time.clock()
+
+poll_interval = float(r.headers['x-poll-interval'])
+
+next_url = None
+if 'next' in r.links:
+    next_url = r.links['next']['url']
+
+more = True
+
+while more:
+    parse_requests(r)
+    if next_url is not None:
+        post_action_time = time.clock()
+        if not args.naughty:
+            if post_action_time - action_time < poll_interval:
+                wait_time = poll_interval - (post_action_time - action_time)
+                print("\nSleeping for {0} seconds...\n".format(wait_time))
+                time.sleep(float(wait_time))
+
+        r = get_request(next_url, username, password, passtoken)
+        poll_interval = r.headers['x-poll-interval']
+        action_time = time.clock()
+
+        next_url = None
+        if 'next' in r.links:
+            next_url = r.links['next']['url']
+    else:
+        more = False
+

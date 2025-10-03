@@ -1,0 +1,604 @@
+{
+  "template": {
+    "chart": {
+      "type": "spline",
+      "polar": false,
+      "marginBottom": 180,
+      "events": {},
+      "animation": false
+    },
+    "plotOptions": {
+      "series": {
+        "pointPlacement": null,
+        "events": {},
+        "marker": {
+          "enabled": false
+        },
+        "lineWidth": 1.5
+      }
+    },
+    "accessibility": {
+      "enabled": true
+    },
+    "title": {
+      "align": "left",
+      "margin": 35
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "x": -12
+        },
+        "labels": {
+          "y": 30,
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "tickmarkPlacement": "on",
+        "categories": [
+          {
+            "name": "2013",
+            "categories": [
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2014",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2015",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2016",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2017",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli"
+            ]
+          }
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "endOnTick": true,
+        "startOnTick": true,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 0
+          }
+        ],
+        "softMin": 0
+      }
+    ],
+    "legend": {
+      "enabled": true,
+      "align": "left",
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "squareSymbol": false,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "enabled": true,
+      "shared": true,
+      "followPointer": true,
+      "backgroundColor": "white",
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": true,
+      "csvData": "Jaar;Maand;Index\n2013;augustus;113,4\n2013;september;113,4\n2013;oktober;112,2\n2013;november;112,1\n2013;december;112,5\n2014;januari;112,4\n2014;februari;112,5\n2014;maart;111,6\n2014;april;112,1\n2014;mei;112,2\n2014;juni;112,6\n2014;juli;112,4\n2014;augustus;111,9\n2014;september;111,5\n2014;oktober;109,9\n2014;november;108,0\n2014;december;103,5\n2015;januari;100,4\n2015;februari;102,5\n2015;maart;104,1\n2015;april;105,9\n2015;mei;106,8\n2015;juni;106,6\n2015;juli;105,7\n2015;augustus;102,8\n2015;september;101,3\n2015;oktober;100,2\n2015;november;100,5\n2015;december;98,3\n2016;januari;96,2\n2016;februari;95,3\n2016;maart;96,5\n2016;april;97,3\n2016;mei;98,8\n2016;juni;100,1\n2016;juli;99,9\n2016;augustus;99,4\n2016;september;100,1\n2016;oktober;101,6\n2016;november;101,3\n2016;december;103,7\n2017;januari;105,3\n2017;februari;106,3\n2017;maart;106,0\n2017;april;105,9\n2017;mei;104,5\n2017;juni;103,2\n2017;juli;102,8"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "Index",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 113.4,
+            "yString": "113.4"
+          },
+          {
+            "y": 113.4,
+            "yString": "113.4"
+          },
+          {
+            "y": 112.2,
+            "yString": "112.2"
+          },
+          {
+            "y": 112.1,
+            "yString": "112.1"
+          },
+          {
+            "y": 112.5,
+            "yString": "112.5"
+          },
+          {
+            "y": 112.4,
+            "yString": "112.4"
+          },
+          {
+            "y": 112.5,
+            "yString": "112.5"
+          },
+          {
+            "y": 111.6,
+            "yString": "111.6"
+          },
+          {
+            "y": 112.1,
+            "yString": "112.1"
+          },
+          {
+            "y": 112.2,
+            "yString": "112.2"
+          },
+          {
+            "y": 112.6,
+            "yString": "112.6"
+          },
+          {
+            "y": 112.4,
+            "yString": "112.4"
+          },
+          {
+            "y": 111.9,
+            "yString": "111.9"
+          },
+          {
+            "y": 111.5,
+            "yString": "111.5"
+          },
+          {
+            "y": 109.9,
+            "yString": "109.9"
+          },
+          {
+            "y": 108,
+            "yString": "108.0"
+          },
+          {
+            "y": 103.5,
+            "yString": "103.5"
+          },
+          {
+            "y": 100.4,
+            "yString": "100.4"
+          },
+          {
+            "y": 102.5,
+            "yString": "102.5"
+          },
+          {
+            "y": 104.1,
+            "yString": "104.1"
+          },
+          {
+            "y": 105.9,
+            "yString": "105.9"
+          },
+          {
+            "y": 106.8,
+            "yString": "106.8"
+          },
+          {
+            "y": 106.6,
+            "yString": "106.6"
+          },
+          {
+            "y": 105.7,
+            "yString": "105.7"
+          },
+          {
+            "y": 102.8,
+            "yString": "102.8"
+          },
+          {
+            "y": 101.3,
+            "yString": "101.3"
+          },
+          {
+            "y": 100.2,
+            "yString": "100.2"
+          },
+          {
+            "y": 100.5,
+            "yString": "100.5"
+          },
+          {
+            "y": 98.3,
+            "yString": "98.3"
+          },
+          {
+            "y": 96.2,
+            "yString": "96.2"
+          },
+          {
+            "y": 95.3,
+            "yString": "95.3"
+          },
+          {
+            "y": 96.5,
+            "yString": "96.5"
+          },
+          {
+            "y": 97.3,
+            "yString": "97.3"
+          },
+          {
+            "y": 98.8,
+            "yString": "98.8"
+          },
+          {
+            "y": 100.1,
+            "yString": "100.1"
+          },
+          {
+            "y": 99.9,
+            "yString": "99.9"
+          },
+          {
+            "y": 99.4,
+            "yString": "99.4"
+          },
+          {
+            "y": 100.1,
+            "yString": "100.1"
+          },
+          {
+            "y": 101.6,
+            "yString": "101.6"
+          },
+          {
+            "y": 101.3,
+            "yString": "101.3"
+          },
+          {
+            "y": 103.7,
+            "yString": "103.7"
+          },
+          {
+            "y": 105.3,
+            "yString": "105.3"
+          },
+          {
+            "y": 106.3,
+            "yString": "106.3"
+          },
+          {
+            "y": 106,
+            "yString": "106.0"
+          },
+          {
+            "y": 105.9,
+            "yString": "105.9"
+          },
+          {
+            "y": 104.5,
+            "yString": "104.5"
+          },
+          {
+            "y": 103.2,
+            "yString": "103.2"
+          },
+          {
+            "y": 102.8,
+            "yString": "102.8"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          {
+            "name": "2013",
+            "categories": [
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2014",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2015",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2016",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli",
+              "augustus",
+              "september",
+              "oktober",
+              "november",
+              "december"
+            ]
+          },
+          {
+            "name": "2017",
+            "categories": [
+              "januari",
+              "februari",
+              "maart",
+              "april",
+              "mei",
+              "juni",
+              "juli"
+            ]
+          }
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Line",
+    "id": "Linesplinetemplate.line.subtype.spline"
+  }
+}

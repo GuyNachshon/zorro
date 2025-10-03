@@ -1,0 +1,51 @@
+{
+  "name": "formatter",
+  "description": "Simple String Variable Replacement Formatter",
+  "author": "Damon Oehlman <damon.oehlman@gmail.com>",
+  "keywords": [
+    "string",
+    "formatting",
+    "variable",
+    "replacement"
+  ],
+  "bin": {
+    "formatter": "bin/formatter"
+  },
+  "version": "0.4.2",
+  "devDependencies": {
+    "@randomgoods/tap-spec": "^5.0.3",
+    "tape": "4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DamonOehlman/formatter.git"
+  },
+  "bugs": {
+    "url": "http://github.com/DamonOehlman/formatter/issues"
+  },
+  "scripts": {
+    "test": "node test/all.js | tap-spec",
+    "embellish": "embellish README.md"
+  },
+  "testling": {
+    "files": "test/all.js",
+    "browsers": [
+      "ie/9..latest",
+      "firefox/20..latest",
+      "firefox/nightly",
+      "chrome/25..latest",
+      "chrome/canary",
+      "safari/latest",
+      "opera/15..latest",
+      "opera/next",
+      "iphone/latest",
+      "ipad/latest",
+      "android/latest"
+    ]
+  },
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "license": "MIT"
+}

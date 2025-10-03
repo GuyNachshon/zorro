@@ -1,0 +1,569 @@
+{
+  "template": {
+    "chart": {
+      "type": "column",
+      "inverted": false,
+      "animation": false,
+      "polar": false,
+      "events": {}
+    },
+    "plotOptions": {
+      "series": {
+        "stacking": null,
+        "pointPlacement": null,
+        "events": {},
+        "maxPointWidth": 60,
+        "marker": {
+          "enabled": false
+        }
+      },
+      "column": {
+        "pointPadding": 0.04,
+        "groupPadding": 0.08,
+        "borderWidth": 0.5
+      }
+    },
+    "title": {
+      "align": "left",
+      "margin": 35
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 0,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "x": -12
+        },
+        "labels": {
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "tickmarkPlacement": "between",
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "categories": [
+          "2012",
+          "2013",
+          "2014",
+          "2015",
+          "2016",
+          "2017"
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "endOnTick": true,
+        "startOnTick": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "reversedStacks": false,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 4
+          }
+        ],
+        "max": "100"
+      }
+    ],
+    "legend": {
+      "enabled": true,
+      "align": "left",
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "squareSymbol": false,
+      "reversed": false,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "shared": true,
+      "followPointer": true,
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Gebruik social media;12 tot 18;18 tot 25;25 tot 35;35 tot 45;45 tot 55;55 tot 65;65 tot 75;75 jaar of ouder\n2012;93,5;97,3;86,8;72,5;58,7;43,3;23,6;5,2\n2013;91,7;97,0;91,0;79,0;66,0;50,5;28,7;9,4\n2014;94,4;98,5;94,0;88,3;79,3;64,3;39,8;13,0\n2015;93,9;95,6;95,0;90,3;84,0;70,0;48,8;18,1\n2016;95,5;95,4;94,0;93,1;88,8;78,9;54,7;22,0\n2017;96,9;99,1;98,0;95,8;91,0;83,6;63,9;34,7"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "12 tot 18",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 93.5,
+            "yString": "93.5",
+            "name": "2012"
+          },
+          {
+            "y": 91.7,
+            "yString": "91.7",
+            "name": "2013"
+          },
+          {
+            "y": 94.4,
+            "yString": "94.4",
+            "name": "2014"
+          },
+          {
+            "y": 93.9,
+            "yString": "93.9",
+            "name": "2015"
+          },
+          {
+            "y": 95.5,
+            "yString": "95.5",
+            "name": "2016"
+          },
+          {
+            "y": 96.9,
+            "yString": "96.9",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "18 tot 25",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 97.3,
+            "yString": "97.3",
+            "name": "2012"
+          },
+          {
+            "y": 97,
+            "yString": "97.0",
+            "name": "2013"
+          },
+          {
+            "y": 98.5,
+            "yString": "98.5",
+            "name": "2014"
+          },
+          {
+            "y": 95.6,
+            "yString": "95.6",
+            "name": "2015"
+          },
+          {
+            "y": 95.4,
+            "yString": "95.4",
+            "name": "2016"
+          },
+          {
+            "y": 99.1,
+            "yString": "99.1",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "25 tot 35",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 86.8,
+            "yString": "86.8",
+            "name": "2012"
+          },
+          {
+            "y": 91,
+            "yString": "91.0",
+            "name": "2013"
+          },
+          {
+            "y": 94,
+            "yString": "94.0",
+            "name": "2014"
+          },
+          {
+            "y": 95,
+            "yString": "95.0",
+            "name": "2015"
+          },
+          {
+            "y": 94,
+            "yString": "94.0",
+            "name": "2016"
+          },
+          {
+            "y": 98,
+            "yString": "98.0",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "35 tot 45",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 72.5,
+            "yString": "72.5",
+            "name": "2012"
+          },
+          {
+            "y": 79,
+            "yString": "79.0",
+            "name": "2013"
+          },
+          {
+            "y": 88.3,
+            "yString": "88.3",
+            "name": "2014"
+          },
+          {
+            "y": 90.3,
+            "yString": "90.3",
+            "name": "2015"
+          },
+          {
+            "y": 93.1,
+            "yString": "93.1",
+            "name": "2016"
+          },
+          {
+            "y": 95.8,
+            "yString": "95.8",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "45 tot 55",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 58.7,
+            "yString": "58.7",
+            "name": "2012"
+          },
+          {
+            "y": 66,
+            "yString": "66.0",
+            "name": "2013"
+          },
+          {
+            "y": 79.3,
+            "yString": "79.3",
+            "name": "2014"
+          },
+          {
+            "y": 84,
+            "yString": "84.0",
+            "name": "2015"
+          },
+          {
+            "y": 88.8,
+            "yString": "88.8",
+            "name": "2016"
+          },
+          {
+            "y": 91,
+            "yString": "91.0",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "55 tot 65",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 43.3,
+            "yString": "43.3",
+            "name": "2012"
+          },
+          {
+            "y": 50.5,
+            "yString": "50.5",
+            "name": "2013"
+          },
+          {
+            "y": 64.3,
+            "yString": "64.3",
+            "name": "2014"
+          },
+          {
+            "y": 70,
+            "yString": "70.0",
+            "name": "2015"
+          },
+          {
+            "y": 78.9,
+            "yString": "78.9",
+            "name": "2016"
+          },
+          {
+            "y": 83.6,
+            "yString": "83.6",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "65 tot 75",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 23.6,
+            "yString": "23.6",
+            "name": "2012"
+          },
+          {
+            "y": 28.7,
+            "yString": "28.7",
+            "name": "2013"
+          },
+          {
+            "y": 39.8,
+            "yString": "39.8",
+            "name": "2014"
+          },
+          {
+            "y": 48.8,
+            "yString": "48.8",
+            "name": "2015"
+          },
+          {
+            "y": 54.7,
+            "yString": "54.7",
+            "name": "2016"
+          },
+          {
+            "y": 63.9,
+            "yString": "63.9",
+            "name": "2017"
+          }
+        ]
+      },
+      {
+        "name": "75 jaar of ouder",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 5.2,
+            "yString": "5.2",
+            "name": "2012"
+          },
+          {
+            "y": 9.4,
+            "yString": "9.4",
+            "name": "2013"
+          },
+          {
+            "y": 13,
+            "yString": "13.0",
+            "name": "2014"
+          },
+          {
+            "y": 18.1,
+            "yString": "18.1",
+            "name": "2015"
+          },
+          {
+            "y": 22,
+            "yString": "22.0",
+            "name": "2016"
+          },
+          {
+            "y": 34.7,
+            "yString": "34.7",
+            "name": "2017"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "2012",
+          "2013",
+          "2014",
+          "2015",
+          "2016",
+          "2017"
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Column",
+    "id": "Columnpercentagetemplate.column.subtype.percent"
+  }
+}

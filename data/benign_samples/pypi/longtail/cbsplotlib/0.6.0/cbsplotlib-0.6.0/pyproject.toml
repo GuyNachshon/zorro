@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+cache-keys = [{ git = { commit = true, tags = true } }]
+
+[project]
+name = "cbsplotlib"
+dynamic = ["version"]
+description = "Frontend to matplotlib to create pictures in the CBS corporate identity"
+readme = "README.rst"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    { name = "Eelco van Vliet", email = "eelcovv@gmail.nl" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "seaborn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff>=0.8.0",
+    "twine",
+    "wheel",
+]
+testing = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.scripts]
+highcharts_html_viewer = "cbsplotlib.htmlviewer:run"
+
+[project.urls]
+Documentation = "https://pyscaffold.org/"
+Homepage = "https://github.com/pyscaffold/pyscaffold/"

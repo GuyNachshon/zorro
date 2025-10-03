@@ -11,7 +11,7 @@ import os
 import sys
 from pathlib import Path
 import json
-
+from dotenv import load_dotenv
 # Add ICN to path
 sys.path.append(str(Path(__file__).parent))
 
@@ -19,6 +19,7 @@ from multi_prompt_benchmark import MultiPromptBenchmarkSuite, PromptEffectivenes
 from icn.evaluation.openrouter_client import OpenRouterClient
 from icn.evaluation.prepare_benchmark_data import BenchmarkDataPreparator
 
+load_dotenv()
 
 def setup_logging(log_level: str = "INFO"):
     """Setup logging configuration."""

@@ -1,0 +1,462 @@
+{
+  "template": {
+    "chart": {
+      "type": "column",
+      "inverted": false,
+      "animation": false,
+      "polar": false,
+      "events": {}
+    },
+    "plotOptions": {
+      "series": {
+        "stacking": null,
+        "pointPlacement": null,
+        "events": {},
+        "maxPointWidth": 60,
+        "marker": {
+          "enabled": false
+        }
+      },
+      "column": {
+        "pointPadding": 0.04,
+        "groupPadding": 0.08,
+        "borderWidth": 0.5
+      }
+    },
+    "title": {
+      "align": "left",
+      "margin": 35
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 0,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "x": -12
+        },
+        "labels": {
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "tickmarkPlacement": "between",
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "categories": [
+          "Nederland",
+          "België",
+          "Duitsland",
+          "Frankrijk",
+          "Luxemburg"
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "endOnTick": true,
+        "startOnTick": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "reversedStacks": false,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 4
+          }
+        ]
+      }
+    ],
+    "legend": {
+      "enabled": true,
+      "align": "left",
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "squareSymbol": false,
+      "reversed": false,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "shared": true,
+      "followPointer": true,
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Land;2012;2013;2014;2015;2016;2017\nNederland;-0,5;0,2;0,9;3,9;1,8;5,6\nBelgië;6,9;0,8;0,6;4,2;2,2;3,8\nDuitsland;9,5;5,0;3,5;5,7;4,4;-5,0\nFrankrijk;5;3,5;5,7;-4,4;2,8;3,7\nLuxemburg;5,7;4,4;6,3;-3,5;4,0;4,9"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "2012",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": -0.5,
+            "yString": "-0.5",
+            "name": "Nederland"
+          },
+          {
+            "y": 6.9,
+            "yString": "6.9",
+            "name": "België"
+          },
+          {
+            "y": 9.5,
+            "yString": "9.5",
+            "name": "Duitsland"
+          },
+          {
+            "y": 5,
+            "yString": "5",
+            "name": "Frankrijk"
+          },
+          {
+            "y": 5.7,
+            "yString": "5.7",
+            "name": "Luxemburg"
+          }
+        ]
+      },
+      {
+        "name": "2013",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 0.2,
+            "yString": "0.2",
+            "name": "Nederland"
+          },
+          {
+            "y": 0.8,
+            "yString": "0.8",
+            "name": "België"
+          },
+          {
+            "y": 5,
+            "yString": "5.0",
+            "name": "Duitsland"
+          },
+          {
+            "y": 3.5,
+            "yString": "3.5",
+            "name": "Frankrijk"
+          },
+          {
+            "y": 4.4,
+            "yString": "4.4",
+            "name": "Luxemburg"
+          }
+        ]
+      },
+      {
+        "name": "2014",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 0.9,
+            "yString": "0.9",
+            "name": "Nederland"
+          },
+          {
+            "y": 0.6,
+            "yString": "0.6",
+            "name": "België"
+          },
+          {
+            "y": 3.5,
+            "yString": "3.5",
+            "name": "Duitsland"
+          },
+          {
+            "y": 5.7,
+            "yString": "5.7",
+            "name": "Frankrijk"
+          },
+          {
+            "y": 6.3,
+            "yString": "6.3",
+            "name": "Luxemburg"
+          }
+        ]
+      },
+      {
+        "name": "2015",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 3.9,
+            "yString": "3.9",
+            "name": "Nederland"
+          },
+          {
+            "y": 4.2,
+            "yString": "4.2",
+            "name": "België"
+          },
+          {
+            "y": 5.7,
+            "yString": "5.7",
+            "name": "Duitsland"
+          },
+          {
+            "y": -4.4,
+            "yString": "-4.4",
+            "name": "Frankrijk"
+          },
+          {
+            "y": -3.5,
+            "yString": "-3.5",
+            "name": "Luxemburg"
+          }
+        ]
+      },
+      {
+        "name": "2016",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 1.8,
+            "yString": "1.8",
+            "name": "Nederland"
+          },
+          {
+            "y": 2.2,
+            "yString": "2.2",
+            "name": "België"
+          },
+          {
+            "y": 4.4,
+            "yString": "4.4",
+            "name": "Duitsland"
+          },
+          {
+            "y": 2.8,
+            "yString": "2.8",
+            "name": "Frankrijk"
+          },
+          {
+            "y": 4,
+            "yString": "4.0",
+            "name": "Luxemburg"
+          }
+        ]
+      },
+      {
+        "name": "2017",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 5.6,
+            "yString": "5.6",
+            "name": "Nederland"
+          },
+          {
+            "y": 3.8,
+            "yString": "3.8",
+            "name": "België"
+          },
+          {
+            "y": -5,
+            "yString": "-5.0",
+            "name": "Duitsland"
+          },
+          {
+            "y": 3.7,
+            "yString": "3.7",
+            "name": "Frankrijk"
+          },
+          {
+            "y": 4.9,
+            "yString": "4.9",
+            "name": "Luxemburg"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "Nederland",
+          "België",
+          "Duitsland",
+          "Frankrijk",
+          "Luxemburg"
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Column",
+    "id": "Columnbasictemplate.column.subtype.basic"
+  }
+}

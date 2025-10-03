@@ -1,0 +1,429 @@
+{
+  "template": {
+    "chart": {
+      "type": "bar",
+      "inverted": true,
+      "spacingLeft": 54,
+      "marginRight": 45,
+      "animation": false,
+      "polar": false,
+      "events": {}
+    },
+    "plotOptions": {
+      "series": {
+        "stacking": "percent",
+        "pointPlacement": null,
+        "events": {},
+        "maxPointWidth": 60
+      },
+      "bar": {
+        "pointPadding": 0.04,
+        "groupPadding": 0.08,
+        "borderWidth": 1
+      }
+    },
+    "title": {
+      "align": "left",
+      "x": -42
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 0,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "rotation": 0
+        },
+        "labels": {
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "tickmarkPlacement": "between",
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "categories": [
+          "Berichten plaatsen op chat site of discussieplatforum",
+          "Weblogs lezen of schrijven",
+          "Tekstberichten uitwisselen",
+          "Professioneel netwerk",
+          "Ander sociaal netwerk"
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "endOnTick": true,
+        "startOnTick": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "reversedStacks": false,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 4
+          }
+        ],
+        "max": "100"
+      }
+    ],
+    "legend": {
+      "align": "left",
+      "reversed": false,
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "squareSymbol": false,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "shared": true,
+      "followPointer": true,
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Gebruik;12-24 jaar;25-44 jaar;45-64 jaar;65-74 jaar;75 jaar of ouder\nBerichten plaatsen op chat site of discussieplatforum;38;30;20;10;3\nWeblogs lezen of schrijven;30;28;19;11;5\nTekstberichten uitwisselen;93;89;64;38;6\nProfessioneel netwerk;19;41;24;9;1\nAnder sociaal netwerk;80;77;47;29;10"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "12-24 jaar",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 38,
+            "yString": "38",
+            "name": "Berichten plaatsen op chat site of discussieplatforum"
+          },
+          {
+            "y": 30,
+            "yString": "30",
+            "name": "Weblogs lezen of schrijven"
+          },
+          {
+            "y": 93,
+            "yString": "93",
+            "name": "Tekstberichten uitwisselen"
+          },
+          {
+            "y": 19,
+            "yString": "19",
+            "name": "Professioneel netwerk"
+          },
+          {
+            "y": 80,
+            "yString": "80",
+            "name": "Ander sociaal netwerk"
+          }
+        ]
+      },
+      {
+        "name": "25-44 jaar",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 30,
+            "yString": "30",
+            "name": "Berichten plaatsen op chat site of discussieplatforum"
+          },
+          {
+            "y": 28,
+            "yString": "28",
+            "name": "Weblogs lezen of schrijven"
+          },
+          {
+            "y": 89,
+            "yString": "89",
+            "name": "Tekstberichten uitwisselen"
+          },
+          {
+            "y": 41,
+            "yString": "41",
+            "name": "Professioneel netwerk"
+          },
+          {
+            "y": 77,
+            "yString": "77",
+            "name": "Ander sociaal netwerk"
+          }
+        ]
+      },
+      {
+        "name": "45-64 jaar",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 20,
+            "yString": "20",
+            "name": "Berichten plaatsen op chat site of discussieplatforum"
+          },
+          {
+            "y": 19,
+            "yString": "19",
+            "name": "Weblogs lezen of schrijven"
+          },
+          {
+            "y": 64,
+            "yString": "64",
+            "name": "Tekstberichten uitwisselen"
+          },
+          {
+            "y": 24,
+            "yString": "24",
+            "name": "Professioneel netwerk"
+          },
+          {
+            "y": 47,
+            "yString": "47",
+            "name": "Ander sociaal netwerk"
+          }
+        ]
+      },
+      {
+        "name": "65-74 jaar",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 10,
+            "yString": "10",
+            "name": "Berichten plaatsen op chat site of discussieplatforum"
+          },
+          {
+            "y": 11,
+            "yString": "11",
+            "name": "Weblogs lezen of schrijven"
+          },
+          {
+            "y": 38,
+            "yString": "38",
+            "name": "Tekstberichten uitwisselen"
+          },
+          {
+            "y": 9,
+            "yString": "9",
+            "name": "Professioneel netwerk"
+          },
+          {
+            "y": 29,
+            "yString": "29",
+            "name": "Ander sociaal netwerk"
+          }
+        ]
+      },
+      {
+        "name": "75 jaar of ouder",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 3,
+            "yString": "3",
+            "name": "Berichten plaatsen op chat site of discussieplatforum"
+          },
+          {
+            "y": 5,
+            "yString": "5",
+            "name": "Weblogs lezen of schrijven"
+          },
+          {
+            "y": 6,
+            "yString": "6",
+            "name": "Tekstberichten uitwisselen"
+          },
+          {
+            "y": 1,
+            "yString": "1",
+            "name": "Professioneel netwerk"
+          },
+          {
+            "y": 10,
+            "yString": "10",
+            "name": "Ander sociaal netwerk"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "Berichten plaatsen op chat site of discussieplatforum",
+          "Weblogs lezen of schrijven",
+          "Tekstberichten uitwisselen",
+          "Professioneel netwerk",
+          "Ander sociaal netwerk"
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Bar",
+    "id": "Barbarstackedpercentagetemplate.bar.subtype.stacked.percent"
+  }
+}

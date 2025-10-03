@@ -1,0 +1,614 @@
+{
+  "evaluation_name": "all_models_comprehensive",
+  "start_time": "2025-09-17T14:17:50.759011",
+  "end_time": "2025-09-17T14:29:38.479906",
+  "duration_seconds": 707.720895,
+  "config": {
+    "name": "all_models_comprehensive",
+    "description": "Comprehensive evaluation of ALL model types - external, local, and baselines",
+    "models": [
+      {
+        "name": "gpt4o",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "openai/gpt-4o",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "claude",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "anthropic/claude-3.5-sonnet",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_coder",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen-3-coder-32b-instruct",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_coder_3",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-coder:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_3_8b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-8b",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_3_4b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-4b:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_3_0.6b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-0.6b-04-28",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen_3_1.7b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-1.7b",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen3_next_80b_a3b_instruct",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-next-80b-a3b-instruct",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen3_next_80b_a3b_thinking",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-next-80b-a3b-thinking",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "llama_3.3_8b_instruct",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "meta-llama/llama-3.3-8b-instruct:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "gemma_3n_e4b_it",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "google/gemma-3n-e4b-it:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "gemma_3n_e2b_it",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "google/gemma-3n-e2b-it:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "devstral_small_2505",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "mistralai/devstral-small-2505:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "mistral_small_32b_24b_it",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "mistralai/mistral-small-3.2-24b-instruct:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "mistral_small_1.1",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "mistralai/devstral-small",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "hunyuan_a13b_instruct",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "tencent/hunyuan-a13b-instruct:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "gpt_oss_20b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "openai/gpt-oss-20b:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "qwen3_30b_a3b_thinking_2507",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "qwen/qwen3-30b-a3b-thinking-2507",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "seed_oss_36b_instruct",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "bytedance/seed-oss-36b-instruct",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "nemotron_nano_9b_v2",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "nvidia/nemotron-nano-9b-v2:free",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "ernie_4.5_21b_a3b",
+        "type": "openrouter",
+        "enabled": true,
+        "openrouter_id": "baidu/ernie-4.5-21b-a3b",
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "codebert_base",
+        "type": "huggingface",
+        "enabled": false,
+        "openrouter_id": null,
+        "hf_model_id": "microsoft/codebert-base-mlm",
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "endorlabs_malicious_classifier",
+        "type": "huggingface",
+        "enabled": true,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": "microsoft/codebert-base-mlm",
+        "hf_adapter_id": "endorlabs/malicious-package-classifier-bert-mal-only",
+        "use_peft": true,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "icn_model",
+        "type": "icn",
+        "enabled": false,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {}
+      },
+      {
+        "name": "amil_model",
+        "type": "amil",
+        "enabled": false,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {
+          "batch_size": 32,
+          "learning_rate": "2e-4",
+          "max_units": 50
+        }
+      },
+      {
+        "name": "cpg_model",
+        "type": "cpg",
+        "enabled": false,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {
+          "batch_size": 16,
+          "learning_rate": "1e-4",
+          "hidden_dim": 256,
+          "num_layers": 3
+        }
+      },
+      {
+        "name": "neobert_model",
+        "type": "neobert",
+        "enabled": false,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {
+          "batch_size": 8,
+          "learning_rate": "5e-5",
+          "max_length": 512,
+          "pooling_strategy": "attention"
+        }
+      },
+      {
+        "name": "heuristic_baseline",
+        "type": "baseline",
+        "enabled": true,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {
+          "baseline_type": "heuristic"
+        }
+      },
+      {
+        "name": "random_baseline",
+        "type": "baseline",
+        "enabled": true,
+        "openrouter_id": null,
+        "hf_model_id": null,
+        "hf_base_model_id": null,
+        "hf_adapter_id": null,
+        "use_peft": false,
+        "model_path": null,
+        "parameters": {
+          "baseline_type": "random"
+        }
+      }
+    ],
+    "prompts": {
+      "zero_shot": true,
+      "few_shot": true,
+      "reasoning": true,
+      "file_by_file": false,
+      "custom_prompts": {
+        "zero_shot": "You are a security expert analyzing package code for malicious behavior.\n\nCode to analyze:\n```\n{code_content}\n```\n\nFocus on these red flags:\n- Cryptocurrency mining operations\n- Data harvesting (browser data, SSH keys, environment variables)\n- Remote code execution capabilities\n- Suspicious network communication\n- Installation hooks that download additional payloads\n\nClassification: [MALICIOUS/BENIGN]\nConfidence: [0.0-1.0]\nReasoning: [Brief explanation]\n",
+        "few_shot": "You are a security expert. Learn from these examples, then analyze the target package.\n\n{examples}\n\nNow analyze this package using the same methodology:\n```\n{code_content}\n```\n\nKey indicators to check:\n- Network requests to suspicious domains\n- File system access patterns\n- Process execution attempts\n- Cryptocurrency mining signatures\n- Data collection behaviors\n- Obfuscation techniques\n\nProvide your analysis in the same format:\nClassification: [MALICIOUS/BENIGN]\nConfidence: [0.0-1.0]\nIndicators: [List key findings]\nReasoning: [Detailed explanation]\n",
+        "reasoning": "Analyze this package code using advanced threat detection methodology:\n\nCode:\n```\n{code_content}\n```\n\nStep-by-step analysis:\n1. **Static Analysis**: Examine code structure and imports\n2. **Behavioral Analysis**: Identify system interactions\n3. **Network Analysis**: Check for external communications\n4. **Persistence Analysis**: Look for installation hooks\n5. **Obfuscation Detection**: Identify evasion techniques\n6. **Risk Scoring**: Calculate threat level\n\nProvide detailed analysis for each step, then conclude with:\nClassification: [MALICIOUS/BENIGN]\nConfidence: [0.0-1.0]\nFinal Risk Score: [1-10]\n",
+        "file_by_file": "Analyze this individual file from a package for malicious behavior.\n\nFile: {file_path}\nFile Type: {file_type}\nPackage Context: {package_name}\n\nCode:\n```\n{file_content}\n```\n\nFile-specific analysis checklist:\n- **Purpose**: What is this file supposed to do?\n- **Suspicious Imports**: Unusual or dangerous libraries\n- **Network Activity**: External connections or data transmission\n- **File Operations**: Reading/writing sensitive files\n- **Process Control**: System commands or subprocess calls\n- **Obfuscation**: Encoded strings, dynamic imports, eval usage\n- **Installation Hooks**: Package installation behavior\n- **Context Clues**: How does this fit with other package files?\n\nFile Risk Assessment:\nRisk Level: [LOW/MEDIUM/HIGH/CRITICAL]\nConfidence: [0.0-1.0]\nMalicious Indicators: [List specific findings]\nBenign Indicators: [List legitimate functionality]\nRecommendation: [ALLOW/QUARANTINE/BLOCK]\nReasoning: [Detailed file-specific analysis]\n"
+      },
+      "few_shot_examples_count": 3,
+      "max_tokens": {
+        "zero_shot": 1000,
+        "few_shot": 1500,
+        "reasoning": 2000,
+        "file_by_file": 800
+      }
+    },
+    "data": {
+      "max_samples_per_category": 30,
+      "test_split_ratio": 0.3,
+      "use_cached_data": true,
+      "data_path": null,
+      "include_categories": [
+        "benign",
+        "compromised_lib",
+        "malicious_intent"
+      ]
+    },
+    "execution": {
+      "max_concurrent_requests": 2,
+      "cost_limit_usd": 100.0,
+      "timeout_seconds": 120,
+      "retry_failed": true,
+      "max_retries": 3,
+      "delay_between_requests": 0.1,
+      "requests_per_minute": 60
+    },
+    "output": {
+      "output_directory": "all_models_results",
+      "save_raw_results": true,
+      "save_analysis": true,
+      "save_visualizations": true,
+      "generate_markdown_report": true,
+      "generate_json_summary": true,
+      "generate_csv_export": false,
+      "create_heatmaps": true,
+      "create_scatter_plots": true,
+      "create_ranking_charts": true
+    },
+    "api_keys": {
+      "openrouter": "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"
+    },
+    "statistical_significance_level": 0.05,
+    "enable_statistical_testing": true
+  },
+  "data_summary": {
+    "samples_count": 26,
+    "categories": [
+      "compromised_lib",
+      "benign",
+      "malicious_intent"
+    ]
+  },
+  "evaluation_results": {
+    "openrouter": {
+      "model_count": 22,
+      "results_df": "                             model_name                sample_id  ground_truth  prediction  ...                                      error_message  prompt_strategy  prompt_type  granularity\n0               openai_gpt-4o_zero_shot  npm_content-disposition             0           0  ...                                               None        zero_shot    zero_shot      package\n1                openai_gpt-4o_few_shot  npm_content-disposition             0           0  ...                                               None         few_shot     few_shot      package\n2               openai_gpt-4o_zero_shot                 npm_vant             1           0  ...                                               None        zero_shot    zero_shot      package\n3                openai_gpt-4o_few_shot                 npm_vant             1           1  ...                                               None         few_shot     few_shot      package\n4               openai_gpt-4o_zero_shot          npm_body-parser             0           0  ...                                               None        zero_shot    zero_shot      package\n...                                 ...                      ...           ...         ...  ...                                                ...              ...          ...          ...\n1139   baidu_ernie-4.5-21b-a3b_few_shot              pypi_inpout             0           0  ...  Cannot connect to host openrouter.ai:443 ssl:d...         few_shot     few_shot      package\n1140  baidu_ernie-4.5-21b-a3b_zero_shot            npm_formatter             0           0  ...  Cannot connect to host openrouter.ai:443 ssl:d...        zero_shot    zero_shot      package\n1141   baidu_ernie-4.5-21b-a3b_few_shot            npm_formatter             0           0  ...  Cannot connect to host openrouter.ai:443 ssl:d...         few_shot     few_shot      package\n1142  baidu_ernie-4.5-21b-a3b_zero_shot    npm_command-line-tool             0           0  ...  Cannot connect to host openrouter.ai:443 ssl:d...        zero_shot    zero_shot      package\n1143   baidu_ernie-4.5-21b-a3b_few_shot    npm_command-line-tool             0           0  ...  Cannot connect to host openrouter.ai:443 ssl:d...         few_shot     few_shot      package\n\n[1144 rows x 12 columns]",
+      "total_cost": 8.484284999999998,
+      "total_requests": 95,
+      "benchmark_suite": "<multi_prompt_benchmark.MultiPromptBenchmarkSuite object at 0x111201940>"
+    },
+    "huggingface": {
+      "error": "No HuggingFace models could be loaded in service"
+    },
+    "baseline": {
+      "model_count": 2,
+      "results_df": "            model_name                   sample_id  ground_truth  prediction  confidence  inference_time cost_usd  success error_message\n0   heuristic_baseline     npm_content-disposition             0           1    0.900000        0.000309     None     True          None\n1   heuristic_baseline                    npm_vant             1           0    0.300000        0.001135     None     True          None\n2   heuristic_baseline             npm_body-parser             0           1    0.600000        0.000184     None     True          None\n3   heuristic_baseline                   npm_1imit             1           0    0.300000        0.000166     None     True          None\n4   heuristic_baseline   npm_is-generator-function             0           0    0.300000        0.000062     None     True          None\n5   heuristic_baseline                    npm_tool             0           0    0.300000        0.000320     None     True          None\n6   heuristic_baseline                    npm_vant             1           0    0.300000        0.000441     None     True          None\n7   heuristic_baseline                npm_parseurl             0           0    0.300000        0.000029     None     True          None\n8   heuristic_baseline             pypi_cbsplotlib             0           0    0.300000        0.000739     None     True          None\n9   heuristic_baseline     pypi_charset-normalizer             0           1    0.900000        0.000582     None     True          None\n10  heuristic_baseline        npm_000webhost-admin             1           0    0.300000        0.000027     None     True          None\n11  heuristic_baseline              npm_cli-cursor             0           0    0.300000        0.000024     None     True          None\n12  heuristic_baseline        npm_000webhost-cloud             1           0    0.300000        0.000015     None     True          None\n13  heuristic_baseline               pypi_EzPyGame             0           0    0.300000        0.000182     None     True          None\n14  heuristic_baseline                    npm_vant             1           0    0.300000        0.000453     None     True          None\n15  heuristic_baseline                   npm_debug             0           0    0.300000        0.000178     None     True          None\n16  heuristic_baseline             pypi_setuptools             0           1    0.600000        0.000387     None     True          None\n17  heuristic_baseline            npm_content-type             0           0    0.300000        0.000031     None     True          None\n18  heuristic_baseline                      pypi_0             0           0    0.300000        0.000006     None     True          None\n19  heuristic_baseline                pypi_certifi             0           0    0.300000        0.000097     None     True          None\n20  heuristic_baseline  npm_eslint-plugin-prettier             1           0    0.300000        0.000068     None     True          None\n21  heuristic_baseline               npm_got-fetch             1           0    0.300000        0.000204     None     True          None\n22  heuristic_baseline                     npm_hbs             0           0    0.300000        0.000072     None     True          None\n23  heuristic_baseline                 pypi_inpout             0           1    0.900000        0.000142     None     True          None\n24  heuristic_baseline               npm_formatter             0           0    0.300000        0.000127     None     True          None\n25  heuristic_baseline       npm_command-line-tool             0           0    0.300000        0.000037     None     True          None\n26     random_baseline     npm_content-disposition             0           0    0.477978        0.003349     None     True          None\n27     random_baseline                    npm_vant             1           0    0.491308        0.000026     None     True          None\n28     random_baseline             npm_body-parser             0           1    0.448821        0.000011     None     True          None\n29     random_baseline                   npm_1imit             1           0    0.451421        0.000008     None     True          None\n30     random_baseline   npm_is-generator-function             0           1    0.537268        0.000008     None     True          None\n31     random_baseline                    npm_tool             0           1    0.429660        0.000007     None     True          None\n32     random_baseline                    npm_vant             1           0    0.545646        0.000007     None     True          None\n33     random_baseline                npm_parseurl             0           1    0.400690        0.000006     None     True          None\n34     random_baseline             pypi_cbsplotlib             0           0    0.501072        0.000006     None     True          None\n35     random_baseline     pypi_charset-normalizer             0           0    0.433612        0.000007     None     True          None\n36     random_baseline        npm_000webhost-admin             1           0    0.500180        0.000006     None     True          None\n37     random_baseline              npm_cli-cursor             0           0    0.516345        0.000006     None     True          None\n38     random_baseline        npm_000webhost-cloud             1           1    0.486146        0.000006     None     True          None\n39     random_baseline               pypi_EzPyGame             0           0    0.574725        0.000006     None     True          None\n40     random_baseline                    npm_vant             1           1    0.575443        0.000006     None     True          None\n41     random_baseline                   npm_debug             0           0    0.545189        0.000006     None     True          None\n42     random_baseline             pypi_setuptools             0           0    0.527627        0.000006     None     True          None\n43     random_baseline            npm_content-type             0           0    0.574962        0.000006     None     True          None\n44     random_baseline                      pypi_0             0           0    0.583915        0.000006     None     True          None\n45     random_baseline                pypi_certifi             0           1    0.519659        0.000006     None     True          None\n46     random_baseline  npm_eslint-plugin-prettier             1           0    0.412734        0.000006     None     True          None\n47     random_baseline               npm_got-fetch             1           0    0.423171        0.000005     None     True          None\n48     random_baseline                     npm_hbs             0           0    0.515219        0.000006     None     True          None\n49     random_baseline                 pypi_inpout             0           0    0.506032        0.000006     None     True          None\n50     random_baseline               npm_formatter             0           0    0.433550        0.000006     None     True          None\n51     random_baseline       npm_command-line-tool             0           1    0.467288        0.000006     None     True          None",
+      "benchmark_suite": "<icn.evaluation.benchmark_framework.BenchmarkSuite object at 0x110978050>"
+    }
+  },
+  "analysis_results": {
+    "openrouter": {
+      "prompt_effectiveness": {
+        "strategy_performance_matrix": {
+          "anthropic_few_shot": {
+            "model": "anthropic",
+            "strategy": "few_shot",
+            "samples": 21.0,
+            "accuracy": 0.8571,
+            "avg_confidence": 0.9286,
+            "avg_time": 13.2819,
+            "total_cost": 2.3727
+          },
+          "anthropic_zero_shot": {
+            "model": "anthropic",
+            "strategy": "zero_shot",
+            "samples": 22.0,
+            "accuracy": 0.8182,
+            "avg_confidence": 0.9008,
+            "avg_time": 11.1862,
+            "total_cost": 2.1075
+          },
+          "openai_few_shot": {
+            "model": "openai",
+            "strategy": "few_shot",
+            "samples": 26.0,
+            "accuracy": 0.9615,
+            "avg_confidence": 0.9346,
+            "avg_time": 7.251,
+            "total_cost": 2.19
+          },
+          "openai_zero_shot": {
+            "model": "openai",
+            "strategy": "zero_shot",
+            "samples": 26.0,
+            "accuracy": 0.8462,
+            "avg_confidence": 0.9135,
+            "avg_time": 6.4367,
+            "total_cost": 1.8141
+          }
+        },
+        "best_strategies_per_model": {
+          "openai": {
+            "strategy": "few_shot",
+            "accuracy": 0.9615,
+            "confidence": 0.9346,
+            "cost": 2.19
+          },
+          "anthropic": {
+            "strategy": "few_shot",
+            "accuracy": 0.8571,
+            "confidence": 0.9286,
+            "cost": 2.3727
+          }
+        },
+        "overall_strategy_ranking": [
+          {
+            "strategy": "few_shot",
+            "accuracy": 0.9149,
+            "confidence": 0.9319,
+            "avg_time": 9.9456,
+            "avg_cost": 0.0971,
+            "efficiency_score": 9.326197757390418,
+            "samples": 47
+          },
+          {
+            "strategy": "zero_shot",
+            "accuracy": 0.8333,
+            "confidence": 0.9076,
+            "avg_time": 8.6135,
+            "avg_cost": 0.0817,
+            "efficiency_score": 10.076178960096737,
+            "samples": 48
+          }
+        ]
+      },
+      "comparison_report": "# Multi-Prompt Benchmarking Analysis Report\n\nGenerated: 2025-09-17T14:29:34.214462\n\n## Overall Strategy Ranking\n\n| Strategy | Accuracy | Avg Confidence | Avg Cost ($) | Efficiency Score | Samples |\n|----------|----------|----------------|--------------|------------------|---------|\n| few_shot | 0.915 | 0.932 | $0.0971 | 9.33 | 47 |\n| zero_shot | 0.833 | 0.908 | $0.0817 | 10.08 | 48 |\n\n## Best Strategy Per Model\n\n**openai**: few_shot (Accuracy: 0.962, Cost: $2.1900)\n**anthropic**: few_shot (Accuracy: 0.857, Cost: $2.3727)\n\n## Strategy Performance Matrix\n\n| Model | p | n |\n|-------|---|---|\n| o | N/A | N/A |\n| a | N/A | N/A |\n"
+    },
+    "comprehensive": "# Comprehensive Model Comparison Report\n\nGenerated: 2025-09-17T14:29:34.233540\nTotal Models Tested: 4\nTotal Strategies: 2\nTotal Predictions: 95\n\n## Executive Summary\n\n### \ud83c\udfc6 Top 5 Overall Performers (Weighted Composite Score)\n\n| Rank | Model | Strategy | Score | F1 | Accuracy | Avg Cost | Avg Time |\n|------|-------|----------|-------|----|---------|---------|---------| \n| 1 | openai_gpt-4o_few | few_shot | 0.934 | 0.933 | 0.962 | $0.0842 | 7.25s |\n| 2 | openai_gpt-4o_zero | zero_shot | 0.770 | 0.667 | 0.846 | $0.0698 | 6.44s |\n| 3 | anthropic_claude-3.5-sonnet_few | few_shot | 0.760 | 0.727 | 0.857 | $0.1130 | 13.28s |\n| 4 | anthropic_claude-3.5-sonnet_zero | zero_shot | 0.728 | 0.667 | 0.818 | $0.0958 | 11.19s |\n\n### \ud83d\udcb0 Most Cost-Effective Models\n\n1. **openai_gpt-4o_few** (few_shot): 11.0 F1 per $1\n2. **openai_gpt-4o_zero** (zero_shot): 9.4 F1 per $1\n3. **anthropic_claude-3.5-sonnet_zero** (zero_shot): 6.9 F1 per $1\n4. **anthropic_claude-3.5-sonnet_few** (few_shot): 6.4 F1 per $1\n\n## Best Strategy Per Model\n\n### openai_gpt-4o_zero\n- **Best Strategy**: zero_shot\n- **Performance**: F1=0.667, Accuracy=0.846\n- **Cost**: $0.0698 per prediction\n\nAll Strategies Comparison:\n  - zero_shot: F1=0.667, Cost=$0.0698\n\n### openai_gpt-4o_few\n- **Best Strategy**: few_shot\n- **Performance**: F1=0.933, Accuracy=0.962\n- **Cost**: $0.0842 per prediction\n\nAll Strategies Comparison:\n  - few_shot: F1=0.933, Cost=$0.0842\n\n### anthropic_claude-3.5-sonnet_zero\n- **Best Strategy**: zero_shot\n- **Performance**: F1=0.667, Accuracy=0.818\n- **Cost**: $0.0958 per prediction\n\nAll Strategies Comparison:\n  - zero_shot: F1=0.667, Cost=$0.0958\n\n### anthropic_claude-3.5-sonnet_few\n- **Best Strategy**: few_shot\n- **Performance**: F1=0.727, Accuracy=0.857\n- **Cost**: $0.1130 per prediction\n\nAll Strategies Comparison:\n  - few_shot: F1=0.727, Cost=$0.1130\n\n## Cost Bracket Analysis\n\n### Premium (> $0.05)\nBest performers in this bracket:\n1. openai_gpt-4o_few (few_shot): F1=0.933, Cost=$0.0842\n2. anthropic_claude-3.5-sonnet_few (few_shot): F1=0.727, Cost=$0.1130\n3. anthropic_claude-3.5-sonnet_zero (zero_shot): F1=0.667, Cost=$0.0958\n\n## Statistical Significance Tests\n\nNo statistically significant differences found between model-strategy combinations.\n\n## Detailed Performance Matrix\n\n| Model | Strategy | F1 | Precision | Recall | Accuracy | Avg Cost | Avg Time | Samples |\n|-------|----------|----|-----------|---------|---------|---------|---------|---------|\n| openai_gpt-4o_few | few_shot | 0.933 | 1.000 | 0.875 | 0.962 | $0.0842 | 7.25s | 26 |\n| openai_gpt-4o_zero | zero_shot | 0.667 | 1.000 | 0.500 | 0.846 | $0.0698 | 6.44s | 26 |\n| anthropic_claude-3.5-sonnet_few | few_shot | 0.727 | 1.000 | 0.571 | 0.857 | $0.1130 | 13.28s | 21 |\n| anthropic_claude-3.5-sonnet_zero | zero_shot | 0.667 | 1.000 | 0.500 | 0.818 | $0.0958 | 11.19s | 22 |\n\n## Recommendations\n\n### For Maximum Performance\nUse **openai_gpt-4o_few** with **few_shot** strategy.\n- Expected F1 Score: 0.933\n- Expected Cost: $0.0842 per prediction\n\n### For Cost-Effectiveness\nUse **openai_gpt-4o_few** with **few_shot** strategy.\n- Expected F1 Score: 0.933\n- Expected Cost: $0.0842 per prediction\n- Cost-Effectiveness: 11.0 F1 per $1\n\n### Strategy Recommendations\n- **few_shot** shows the best average performance across all models\n- Consider testing **reasoning** prompts with o1 models for complex analysis\n- Use **zero_shot** prompts for quick, cost-effective screening\n",
+    "baseline": {
+      "metrics": {
+        "heuristic_baseline": {
+          "heuristic_baseline_roc_auc": 0.3611111111111111,
+          "heuristic_baseline_pr_auc": 0.15384615384615385,
+          "heuristic_baseline_accuracy": 0.5,
+          "heuristic_baseline_precision": 0.0,
+          "heuristic_baseline_recall": 0.0,
+          "heuristic_baseline_f1": 0.0,
+          "heuristic_baseline_true_positives": 0,
+          "heuristic_baseline_false_positives": 5,
+          "heuristic_baseline_true_negatives": 13,
+          "heuristic_baseline_false_negatives": 8,
+          "heuristic_baseline_sensitivity": 0.0,
+          "heuristic_baseline_specificity": 0.7222222222222222,
+          "heuristic_baseline_positive_predictive_value": 0.0,
+          "heuristic_baseline_negative_predictive_value": 0.6190476190476191,
+          "heuristic_baseline_fpr_at_95tpr": 1.0,
+          "heuristic_baseline_fpr_at_90tpr": 1.0,
+          "heuristic_baseline_num_samples": 26,
+          "heuristic_baseline_num_positive": 8,
+          "heuristic_baseline_num_negative": 18,
+          "heuristic_baseline_class_balance": 0.3076923076923077,
+          "heuristic_baseline_score_mean": 0.3923076923076923,
+          "heuristic_baseline_score_std": 0.19985201625794738,
+          "heuristic_baseline_score_min": 0.3,
+          "heuristic_baseline_score_max": 0.9,
+          "heuristic_baseline_avg_inference_time": 0.00023140357090876653,
+          "heuristic_baseline_total_cost_usd": 0,
+          "heuristic_baseline_success_rate": 1.0
+        },
+        "random_baseline": {
+          "random_baseline_roc_auc": 0.41666666666666663,
+          "random_baseline_pr_auc": 0.2710013166102268,
+          "random_baseline_accuracy": 0.38461538461538464,
+          "random_baseline_precision": 0.21428571428571427,
+          "random_baseline_recall": 0.375,
+          "random_baseline_f1": 0.2727272727272727,
+          "random_baseline_true_positives": 3,
+          "random_baseline_false_positives": 11,
+          "random_baseline_true_negatives": 7,
+          "random_baseline_false_negatives": 5,
+          "random_baseline_sensitivity": 0.375,
+          "random_baseline_specificity": 0.3888888888888889,
+          "random_baseline_positive_predictive_value": 0.21428571428571427,
+          "random_baseline_negative_predictive_value": 0.5833333333333334,
+          "random_baseline_fpr_at_95tpr": 0.9444444444444444,
+          "random_baseline_fpr_at_90tpr": 0.9444444444444444,
+          "random_baseline_num_samples": 26,
+          "random_baseline_num_positive": 8,
+          "random_baseline_num_negative": 18,
+          "random_baseline_class_balance": 0.3076923076923077,
+          "random_baseline_score_mean": 0.49537159213742804,
+          "random_baseline_score_std": 0.053541220844380726,
+          "random_baseline_score_min": 0.4006896256903746,
+          "random_baseline_score_max": 0.5839154428596023,
+          "random_baseline_avg_inference_time": 0.0001357885507436899,
+          "random_baseline_total_cost_usd": 0,
+          "random_baseline_success_rate": 1.0
+        }
+      },
+      "report": "\n# ICN Malicious Package Detection Benchmark Report\n\nGenerated: 2025-09-17T14:29:34.247985\n\n## Overview\n- Models tested: 2\n- Samples evaluated: 26\n- Total predictions: 52\n\n## Model Performance Summary\n\n| Model | F1 Score | Precision | Recall | ROC-AUC | Avg Time (s) | Success Rate |\n|-------|----------|-----------|---------|---------|--------------|--------------|\n| heuristic_baseline | 0.000 | 0.000 | 0.000 | 0.361 | 0.000 | 1.000 |\n| random_baseline | 0.273 | 0.214 | 0.375 | 0.417 | 0.000 | 1.000 |\n"
+    }
+  }
+}

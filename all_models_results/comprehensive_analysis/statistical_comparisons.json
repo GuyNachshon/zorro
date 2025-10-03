@@ -1,0 +1,56 @@
+[
+  {
+    "model_a": "anthropic_claude-3.5-sonnet_zero_zero_shot",
+    "model_b": "openai_gpt-4o_few_few_shot",
+    "metric": "correct",
+    "p_value": 0.10969440539791316,
+    "is_significant": "False",
+    "effect_size": 0.4725063881537495,
+    "winner": null
+  },
+  {
+    "model_a": "openai_gpt-4o_few_few_shot",
+    "model_b": "openai_gpt-4o_zero_zero_shot",
+    "metric": "correct",
+    "p_value": 0.1644128554744228,
+    "is_significant": "False",
+    "effect_size": 0.3913635377141621,
+    "winner": null
+  },
+  {
+    "model_a": "anthropic_claude-3.5-sonnet_few_few_shot",
+    "model_b": "openai_gpt-4o_few_few_shot",
+    "metric": "correct",
+    "p_value": 0.2106514037155375,
+    "is_significant": "False",
+    "effect_size": 0.3725792613664591,
+    "winner": null
+  },
+  {
+    "model_a": "anthropic_claude-3.5-sonnet_few_few_shot",
+    "model_b": "anthropic_claude-3.5-sonnet_zero_zero_shot",
+    "metric": "correct",
+    "p_value": 0.7368946984420729,
+    "is_significant": "False",
+    "effect_size": 0.10319569104061757,
+    "winner": null
+  },
+  {
+    "model_a": "anthropic_claude-3.5-sonnet_zero_zero_shot",
+    "model_b": "openai_gpt-4o_zero_zero_shot",
+    "metric": "correct",
+    "p_value": 0.8007639450817313,
+    "is_significant": "False",
+    "effect_size": 0.07352794263091274,
+    "winner": null
+  },
+  {
+    "model_a": "anthropic_claude-3.5-sonnet_few_few_shot",
+    "model_b": "openai_gpt-4o_zero_zero_shot",
+    "metric": "correct",
+    "p_value": 0.9184587787879253,
+    "is_significant": "False",
+    "effect_size": 0.03020549223370217,
+    "winner": null
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "model": "openai_gpt-4o_few",
+    "strategy": "few_shot",
+    "composite_score": 0.9342048921895564,
+    "f1_score": 0.9333333333333333,
+    "accuracy": 0.9615384615384616,
+    "precision": 1.0,
+    "recall": 0.875,
+    "avg_confidence": 0.9346153846153845,
+    "avg_cost": 0.08423192307692308,
+    "avg_time": 7.25095522403717,
+    "sample_count": 26,
+    "cost_efficiency": 0.8303520259202266,
+    "speed_efficiency": 0.8877201768452597
+  },
+  {
+    "model": "openai_gpt-4o_zero",
+    "strategy": "zero_shot",
+    "composite_score": 0.7698717948717949,
+    "f1_score": 0.6666666666666666,
+    "accuracy": 0.8461538461538461,
+    "precision": 1.0,
+    "recall": 0.5,
+    "avg_confidence": 0.9134615384615383,
+    "avg_cost": 0.06977249999999999,
+    "avg_time": 6.4367069739561815,
+    "sample_count": 26,
+    "cost_efficiency": 1.0,
+    "speed_efficiency": 1.0
+  },
+  {
+    "model": "anthropic_claude-3.5-sonnet_few",
+    "strategy": "few_shot",
+    "composite_score": 0.7598229726674808,
+    "f1_score": 0.7272727272727273,
+    "accuracy": 0.8571428571428571,
+    "precision": 1.0,
+    "recall": 0.5714285714285714,
+    "avg_confidence": 0.9285714285714284,
+    "avg_cost": 0.11298571428571424,
+    "avg_time": 13.281902767363048,
+    "sample_count": 21,
+    "cost_efficiency": 0.6208892091740821,
+    "speed_efficiency": 0.4846611532664415
+  },
+  {
+    "model": "anthropic_claude-3.5-sonnet_zero",
+    "strategy": "zero_shot",
+    "composite_score": 0.7282097647629526,
+    "f1_score": 0.6666666666666666,
+    "accuracy": 0.8181818181818182,
+    "precision": 1.0,
+    "recall": 0.5,
+    "avg_confidence": 0.9007575757575755,
+    "avg_cost": 0.09579409090909091,
+    "avg_time": 11.186178413304416,
+    "sample_count": 22,
+    "cost_efficiency": 0.731165501274965,
+    "speed_efficiency": 0.5754540364083317
+  }
+]

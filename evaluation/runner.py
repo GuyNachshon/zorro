@@ -13,6 +13,8 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from .config import EvaluationConfig, ModelConfig
+from .model_service import get_model_service, shutdown_model_service
+from .service_aware_model import create_service_aware_model
 from multi_prompt_benchmark import MultiPromptBenchmarkSuite
 from benchmark_visualization import BenchmarkVisualizer
 from comprehensive_model_comparison import ComprehensiveModelComparator
@@ -88,6 +90,13 @@ class EvaluationRunner:
         except Exception as e:
             logger.error(f"💥 Evaluation failed: {e}")
             raise
+        finally:
+            # Cleanup: shutdown model service if it was used
+            try:
+                await shutdown_model_service()
+                logger.info("🛑 Model service shutdown")
+            except:
+                pass  # Service might not have been initialized
 
     async def _prepare_data(self):
         """Prepare benchmark data based on configuration."""
@@ -184,6 +193,12 @@ class EvaluationRunner:
         benchmark.prompt_strategies = enabled_strategies
 
         async with OpenRouterClient(api_key=self.config.api_keys['openrouter']) as openrouter_client:
+            # Set custom prompts if provided
+            if self.config.prompts.custom_prompts:
+                from icn.evaluation.openrouter_client import MaliciousPackagePrompts
+                MaliciousPackagePrompts.set_custom_prompts(self.config.prompts.custom_prompts)
+                logger.info(f"🎨 Using {len(self.config.prompts.custom_prompts)} custom prompts")
+
             # Register models
             model_ids = [m.openrouter_id for m in models if m.openrouter_id]
             registered = benchmark.register_openrouter_models(openrouter_client, model_ids)
@@ -311,33 +326,47 @@ class EvaluationRunner:
         }
 
     async def _run_huggingface_models(self, models: List[ModelConfig], test_samples):
-        """Run HuggingFace models."""
+        """Run HuggingFace models using ModelService."""
         benchmark = BenchmarkSuite(output_dir=str(self.output_dir / "huggingface"))
         benchmark.load_samples(test_samples)
 
-        # Register HuggingFace models
+        # Get model service and pre-load models
+        model_service = await get_model_service()
+
+        logger.info("🔄 Pre-loading HuggingFace models in service...")
+        load_results = await model_service.load_models_from_config(models)
+
+        successful_models = [name for name, success in load_results.items() if success]
+        if not successful_models:
+            return {'error': 'No HuggingFace models could be loaded in service'}
+
+        logger.info(f"✅ Loaded {len(successful_models)} models in service: {successful_models}")
+
+        # Register service-aware models
         for model_config in models:
-            if model_config.hf_model_id:
-                model = HuggingFaceModel(
-                    model_name=model_config.name,
-                    model_id=model_config.hf_model_id
-                )
-                benchmark.register_model(model)
+            if model_config.name in successful_models:
+                service_model = create_service_aware_model(model_config)
+                benchmark.register_model(service_model)
 
         if not benchmark.models:
             return {'error': 'No HuggingFace models could be registered'}
 
-        # Run benchmark
+        # Run benchmark (models will use the service)
         results_df = await benchmark.run_benchmark(
             max_concurrent=self.config.execution.max_concurrent_requests
         )
 
         benchmark.save_results("huggingface_results.json")
 
+        # Get service status for debugging
+        service_status = model_service.get_service_status()
+
         return {
             'model_count': len(benchmark.models),
             'results_df': results_df,
-            'benchmark_suite': benchmark
+            'benchmark_suite': benchmark,
+            'service_status': service_status,
+            'load_results': load_results
         }
 
     async def _run_baseline_models(self, models: List[ModelConfig], test_samples):

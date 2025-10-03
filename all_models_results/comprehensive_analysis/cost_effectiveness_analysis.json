@@ -1,0 +1,96 @@
+{
+  "most_cost_effective": [
+    {
+      "model": "openai_gpt-4o_few",
+      "strategy": "few_shot",
+      "f1_score": 0.9333333333333333,
+      "avg_cost": 0.08423192307692308,
+      "cost_effectiveness": 10.950513606163575
+    },
+    {
+      "model": "openai_gpt-4o_zero",
+      "strategy": "zero_shot",
+      "f1_score": 0.6666666666666666,
+      "avg_cost": 0.06977249999999999,
+      "cost_effectiveness": 9.419854698741274
+    },
+    {
+      "model": "anthropic_claude-3.5-sonnet_zero",
+      "strategy": "zero_shot",
+      "f1_score": 0.6666666666666666,
+      "avg_cost": 0.09579409090909091,
+      "cost_effectiveness": 6.887472782742497
+    },
+    {
+      "model": "anthropic_claude-3.5-sonnet_few",
+      "strategy": "few_shot",
+      "f1_score": 0.7272727272727273,
+      "avg_cost": 0.11298571428571424,
+      "cost_effectiveness": 6.380384873930433
+    }
+  ],
+  "cost_brackets": {
+    "budget": [],
+    "moderate": [],
+    "premium": [
+      {
+        "model": "openai_gpt-4o_few",
+        "strategy": "few_shot",
+        "f1_score": 0.9333333333333333,
+        "avg_cost": 0.08423192307692308,
+        "cost_effectiveness": 10.950513606163575
+      },
+      {
+        "model": "anthropic_claude-3.5-sonnet_few",
+        "strategy": "few_shot",
+        "f1_score": 0.7272727272727273,
+        "avg_cost": 0.11298571428571424,
+        "cost_effectiveness": 6.380384873930433
+      },
+      {
+        "model": "anthropic_claude-3.5-sonnet_zero",
+        "strategy": "zero_shot",
+        "f1_score": 0.6666666666666666,
+        "avg_cost": 0.09579409090909091,
+        "cost_effectiveness": 6.887472782742497
+      },
+      {
+        "model": "openai_gpt-4o_zero",
+        "strategy": "zero_shot",
+        "f1_score": 0.6666666666666666,
+        "avg_cost": 0.06977249999999999,
+        "cost_effectiveness": 9.419854698741274
+      }
+    ]
+  },
+  "cost_vs_performance": [
+    {
+      "model": "anthropic_claude-3.5-sonnet_few",
+      "strategy": "few_shot",
+      "f1_score": 0.7272727272727273,
+      "avg_cost": 0.11298571428571424,
+      "cost_effectiveness": 6.380384873930433
+    },
+    {
+      "model": "anthropic_claude-3.5-sonnet_zero",
+      "strategy": "zero_shot",
+      "f1_score": 0.6666666666666666,
+      "avg_cost": 0.09579409090909091,
+      "cost_effectiveness": 6.887472782742497
+    },
+    {
+      "model": "openai_gpt-4o_few",
+      "strategy": "few_shot",
+      "f1_score": 0.9333333333333333,
+      "avg_cost": 0.08423192307692308,
+      "cost_effectiveness": 10.950513606163575
+    },
+    {
+      "model": "openai_gpt-4o_zero",
+      "strategy": "zero_shot",
+      "f1_score": 0.6666666666666666,
+      "avg_cost": 0.06977249999999999,
+      "cost_effectiveness": 9.419854698741274
+    }
+  ]
+}

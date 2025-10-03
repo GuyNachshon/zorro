@@ -219,26 +219,54 @@ class ICNBenchmarkModel(BaseModel):
 
 class HuggingFaceModel(BaseModel):
     """HuggingFace model wrapper for benchmarking."""
-    
-    def __init__(self, model_name: str, model_id: str, device: str = "cuda"):
+
+    def __init__(self, model_name: str, model_id: str, device: str = "cuda",
+                 base_model_id: str = None, adapter_id: str = None, use_peft: bool = False):
         super().__init__(model_name)
         self.model_id = model_id
+        self.base_model_id = base_model_id  # For PEFT models
+        self.adapter_id = adapter_id        # For PEFT adapters
+        self.use_peft = use_peft
         self.device = device
         self.model = None
         self.tokenizer = None
     
     def _load_model(self):
-        """Load HuggingFace model."""
+        """Load HuggingFace model (with PEFT support)."""
         if self.model is None:
             from transformers import AutoTokenizer, AutoModelForSequenceClassification
             import torch
-            
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
-            self.model = AutoModelForSequenceClassification.from_pretrained(self.model_id)
-            self.model.to(self.device)
-            self.model.eval()
-            
-            logger.info(f"✅ HuggingFace model loaded: {self.model_id}")
+
+            if self.use_peft:
+                # Load PEFT model
+                try:
+                    from peft import PeftModel
+
+                    # Load base model and tokenizer
+                    self.tokenizer = AutoTokenizer.from_pretrained(self.base_model_id)
+                    base_model = AutoModelForSequenceClassification.from_pretrained(self.base_model_id)
+
+                    # Load PEFT adapter
+                    self.model = PeftModel.from_pretrained(base_model, self.adapter_id)
+                    self.model.to(self.device)
+                    self.model.eval()
+
+                    logger.info(f"✅ PEFT model loaded: base={self.base_model_id}, adapter={self.adapter_id}")
+
+                except ImportError:
+                    logger.error("PEFT library not available. Install with: pip install peft")
+                    raise
+                except Exception as e:
+                    logger.error(f"Failed to load PEFT model: {e}")
+                    raise
+            else:
+                # Load regular HuggingFace model
+                self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+                self.model = AutoModelForSequenceClassification.from_pretrained(self.model_id)
+                self.model.to(self.device)
+                self.model.eval()
+
+                logger.info(f"✅ HuggingFace model loaded: {self.model_id}")
     
     async def predict(self, sample: BenchmarkSample) -> BenchmarkResult:
         """Run HuggingFace model prediction."""
@@ -445,21 +473,22 @@ class OpenRouterModel(BaseModel):
                 logger.warning(f"No individual files for {sample.package_name}, falling back to package-level analysis")
                 return await self._predict_package_level(sample, openrouter_client)
             
-            # Analyze each file individually
+            # Analyze each file individually with early stopping
             file_analyses = []
             total_cost = 0.0
             total_tokens = 0
-            
+            found_malicious = False
+
             # Limit files to avoid excessive API calls (max 8 files)
             files_to_analyze = list(sample.individual_files.items())[:8]
-            
+
             for file_path, file_content in files_to_analyze:
                 if not file_content.strip():
                     continue
-                    
+
                 # Create file-specific prompt
                 prompt = MaliciousPackagePrompts.file_by_file_prompt(file_path, file_content)
-                
+
                 # Create request
                 request = BenchmarkRequest(
                     prompt=prompt,
@@ -468,27 +497,33 @@ class OpenRouterModel(BaseModel):
                     max_tokens=800,  # Smaller for individual files
                     metadata={"file_path": file_path, "sample_id": f"{sample.ecosystem}_{sample.package_name}"}
                 )
-                
+
                 # Get LLM response
                 llm_response = await openrouter_client.generate_response(request)
-                
+
                 if llm_response.success:
                     # Parse individual file response
                     parsed = self.response_parser.parse_response(llm_response.response_text, self.model_name)
-                    
+
                     file_analysis = {
                         "file_path": file_path,
                         "is_malicious": parsed.is_malicious,
                         "confidence": parsed.confidence,
                         "reasoning": parsed.reasoning,
                         "malicious_indicators": parsed.malicious_indicators,
-                        "risk_level": "high" if parsed.confidence > 0.8 and parsed.is_malicious else 
+                        "risk_level": "high" if parsed.confidence > 0.8 and parsed.is_malicious else
                                      "medium" if parsed.confidence > 0.5 and parsed.is_malicious else "low"
                     }
-                    
+
                     file_analyses.append(file_analysis)
                     total_cost += llm_response.cost_usd
                     total_tokens += llm_response.total_tokens
+
+                    # Early stopping: if we found malicious content with high confidence, stop
+                    if parsed.is_malicious and parsed.confidence >= 0.8:
+                        found_malicious = True
+                        logger.info(f"🛑 Early stopping: Found malicious content in {file_path} with confidence {parsed.confidence:.2f}")
+                        break
                     
                     # Small delay to respect rate limits
                     await asyncio.sleep(0.1)
@@ -507,9 +542,10 @@ class OpenRouterModel(BaseModel):
             
             # Aggregate the results using simple statistical method
             aggregated_result = self._simple_aggregation(
-                sample, file_analyses, total_cost, total_tokens, time.time() - start_time
+                sample, file_analyses, total_cost, total_tokens, time.time() - start_time,
+                early_stopped=found_malicious, total_files_available=len(files_to_analyze)
             )
-            
+
             return aggregated_result
             
         except Exception as e:
@@ -524,8 +560,9 @@ class OpenRouterModel(BaseModel):
                 error_message=str(e)
             )
     
-    def _simple_aggregation(self, sample: BenchmarkSample, file_analyses: List[Dict], 
-                           total_cost: float, total_tokens: int, total_time: float) -> BenchmarkResult:
+    def _simple_aggregation(self, sample: BenchmarkSample, file_analyses: List[Dict],
+                           total_cost: float, total_tokens: int, total_time: float,
+                           early_stopped: bool = False, total_files_available: int = None) -> BenchmarkResult:
         """Simple statistical aggregation of file analyses."""
         
         malicious_files = [f for f in file_analyses if f.get("is_malicious", False)]
@@ -554,7 +591,12 @@ class OpenRouterModel(BaseModel):
                 confidence = 0.5
         
         # Create explanation
-        explanation = f"File-by-file analysis: {malicious_count}/{total_files} files flagged as malicious."
+        if early_stopped:
+            explanation = f"File-by-file (early stop): {malicious_count}/{total_files} files analyzed, stopped at first high-confidence malicious file."
+        else:
+            files_checked = f"{total_files}/{total_files_available}" if total_files_available else str(total_files)
+            explanation = f"File-by-file analysis: {malicious_count}/{files_checked} files flagged as malicious."
+
         if malicious_files:
             top_risk_files = sorted(malicious_files, key=lambda x: x.get('confidence', 0), reverse=True)[:3]
             explanation += f" Highest risk files: {[f['file_path'] for f in top_risk_files]}"

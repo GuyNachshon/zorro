@@ -1,0 +1,515 @@
+{
+  "template": {
+    "chart": {
+      "type": "bar",
+      "inverted": true,
+      "spacingLeft": 54,
+      "marginRight": 45,
+      "animation": false,
+      "polar": false,
+      "events": {}
+    },
+    "plotOptions": {
+      "series": {
+        "stacking": "normal",
+        "pointPlacement": null,
+        "events": {},
+        "maxPointWidth": 60
+      },
+      "bar": {
+        "pointPadding": 0.04,
+        "groupPadding": 0.08,
+        "borderWidth": 1
+      }
+    },
+    "title": {
+      "align": "left",
+      "x": -42
+    },
+    "subtitle": {
+      "align": "left"
+    },
+    "xAxis": [
+      {
+        "drawHorizontalBorders": false,
+        "lineColor": "#666666",
+        "lineWidth": 1,
+        "tickColor": "#C6C6C6",
+        "tickLength": 0,
+        "title": {
+          "align": "high",
+          "style": {
+            "color": "#000000"
+          },
+          "useHTML": true,
+          "rotation": 0
+        },
+        "labels": {
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "tickmarkPlacement": "between",
+        "startOnTick": false,
+        "showFirstLabel": true,
+        "endOnTick": false,
+        "showLastLabel": true,
+        "categories": [
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39"
+        ]
+      }
+    ],
+    "yAxis": [
+      {
+        "lineColor": "#666666",
+        "lineWidth": 0,
+        "tickColor": "#C6C6C6",
+        "tickLength": 9,
+        "title": {
+          "text": null,
+          "useHTML": true
+        },
+        "gridLineColor": "#666666",
+        "gridLineWidth": 0.25,
+        "showFirstLabel": true,
+        "showLastLabel": true,
+        "endOnTick": true,
+        "startOnTick": true,
+        "tickmarkPlacement": "on",
+        "gridLineInterpolation": null,
+        "labels": {
+          "enabled": true,
+          "autoRotation": false,
+          "style": {
+            "color": "#000000",
+            "fontSize": "11px"
+          }
+        },
+        "reversedStacks": false,
+        "plotLines": [
+          {
+            "value": "0",
+            "width": 2,
+            "color": "#666666",
+            "zIndex": 4
+          }
+        ]
+      }
+    ],
+    "legend": {
+      "align": "left",
+      "reversed": false,
+      "verticalAlign": "bottom",
+      "y": -40,
+      "padding": 0,
+      "symbolRadius": 0,
+      "symbolHeight": 10,
+      "symbolWidth": 25,
+      "squareSymbol": false,
+      "itemStyle": {
+        "fontWeight": "normal",
+        "color": "#000000",
+        "fontSize": "12px"
+      },
+      "itemHiddenStyle": {
+        "color": "#757575"
+      },
+      "symbolPadding": 10,
+      "itemDistance": 25,
+      "itemMarginBottom": 6,
+      "useHTML": true
+    },
+    "tooltip": {
+      "shared": true,
+      "followPointer": true,
+      "useHTML": true
+    },
+    "credits": {
+      "enabled": false
+    },
+    "barType": {
+      "negative": true
+    }
+  },
+  "options": {
+    "chart": {
+      "style": {
+        "fontFamily": "\"Akko W01 Regular\", \"Calibri Light\", sans-serif",
+        "fontSize": "12px",
+        "color": "#000"
+      },
+      "height": 450
+    },
+    "colorSelection": "Cold",
+    "colors": [
+      "#00a1cd",
+      "#0058b8",
+      "#afcb05",
+      "#53a31d",
+      "#f39200",
+      "#af0e80",
+      "#ffcc00",
+      "#e94c0a",
+      "#0581a2",
+      "#163a72",
+      "#899d0c",
+      "#488225",
+      "#ce7c00",
+      "#82045e",
+      "#e1b600",
+      "#b23d02"
+    ],
+    "title": {
+      "useHTML": true,
+      "style": {
+        "fontFamily": "\"Soho W01 Medium\", \"Cambria\", sans-serif",
+        "fontSize": "17px",
+        "color": "#000"
+      }
+    },
+    "subtitle": {},
+    "plotOptions": {
+      "series": {
+        "dataLabels": {}
+      }
+    },
+    "exporting": {
+      "chartOptions": {
+        "isExporting": true
+      },
+      "buttons": {
+        "contextButton": {
+          "menuItems": [
+            {
+              "textKey": "printChart"
+            },
+            {
+              "separator": true
+            },
+            {
+              "textKey": "downloadPNG"
+            },
+            {
+              "textKey": "downloadJPEG"
+            },
+            {
+              "textKey": "downloadSVG"
+            },
+            {
+              "textKey": "downloadCSV"
+            }
+          ]
+        }
+      }
+    },
+    "sources": {
+      "prefix": "Bron: CBS,",
+      "text": ""
+    },
+    "legend": {
+      "noDataEnabled": false
+    },
+    "credits": false,
+    "footNote": {
+      "text": null
+    },
+    "settings": {
+      "hasGroupedCategories": false,
+      "csvData": "Leeftijd;Mannen;Vrouwen\n20;-17,0;15,0\n21;-19,6;17,2\n22;-22,3;19,2\n23;-24,8;21,2\n24;-27,3;23,1\n25;-29,6;24,7\n26;-31,7;26,1\n27;-33,4;27,0\n28;-34,8;27,6\n29;-36,1;27,8\n30;-37,4;27,8\n31;-38,5;27,8\n32;-39,4;27,7\n33;-40,5;27,9\n34;-41,5;27,8\n35;-42,0;27,7\n36;-42,9;27,6\n37;-43,6;27,5\n38;-44,2;27,1\n39;-44,9;27,2"
+    },
+    "cultureSelection": "Dutch",
+    "selectedCultureId": "nl",
+    "lang": {
+      "downloadJPEG": "Download JPEG afbeelding",
+      "downloadPDF": "Download PDF document",
+      "downloadPNG": "Download PNG afbeelding",
+      "downloadSVG": "Download SVG",
+      "drillUpText": "Terug naar {series.name}",
+      "loading": "Laden...",
+      "noData": "Geen data om weer te geven",
+      "printChart": "Afdrukken",
+      "resetZoom": "Herstel zoom",
+      "resetZoomTitle": "Herstel zoom level 1:1",
+      "legend": {
+        "less": "Minder dan",
+        "more": "of meer",
+        "to": "tot",
+        "noData": "Geen data"
+      },
+      "tooltip": {
+        "nullDataMessage": "Data is onbekend of geheim"
+      },
+      "decimalPoint": ",",
+      "thousandsSep": " "
+    },
+    "series": [
+      {
+        "name": "Mannen",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": -17,
+            "yString": "-17.0",
+            "name": "20"
+          },
+          {
+            "y": -19.6,
+            "yString": "-19.6",
+            "name": "21"
+          },
+          {
+            "y": -22.3,
+            "yString": "-22.3",
+            "name": "22"
+          },
+          {
+            "y": -24.8,
+            "yString": "-24.8",
+            "name": "23"
+          },
+          {
+            "y": -27.3,
+            "yString": "-27.3",
+            "name": "24"
+          },
+          {
+            "y": -29.6,
+            "yString": "-29.6",
+            "name": "25"
+          },
+          {
+            "y": -31.7,
+            "yString": "-31.7",
+            "name": "26"
+          },
+          {
+            "y": -33.4,
+            "yString": "-33.4",
+            "name": "27"
+          },
+          {
+            "y": -34.8,
+            "yString": "-34.8",
+            "name": "28"
+          },
+          {
+            "y": -36.1,
+            "yString": "-36.1",
+            "name": "29"
+          },
+          {
+            "y": -37.4,
+            "yString": "-37.4",
+            "name": "30"
+          },
+          {
+            "y": -38.5,
+            "yString": "-38.5",
+            "name": "31"
+          },
+          {
+            "y": -39.4,
+            "yString": "-39.4",
+            "name": "32"
+          },
+          {
+            "y": -40.5,
+            "yString": "-40.5",
+            "name": "33"
+          },
+          {
+            "y": -41.5,
+            "yString": "-41.5",
+            "name": "34"
+          },
+          {
+            "y": -42,
+            "yString": "-42.0",
+            "name": "35"
+          },
+          {
+            "y": -42.9,
+            "yString": "-42.9",
+            "name": "36"
+          },
+          {
+            "y": -43.6,
+            "yString": "-43.6",
+            "name": "37"
+          },
+          {
+            "y": -44.2,
+            "yString": "-44.2",
+            "name": "38"
+          },
+          {
+            "y": -44.9,
+            "yString": "-44.9",
+            "name": "39"
+          }
+        ]
+      },
+      {
+        "name": "Vrouwen",
+        "isSerie": true,
+        "borderColor": "#FFFFFF",
+        "data": [
+          {
+            "y": 15,
+            "yString": "15.0",
+            "name": "20"
+          },
+          {
+            "y": 17.2,
+            "yString": "17.2",
+            "name": "21"
+          },
+          {
+            "y": 19.2,
+            "yString": "19.2",
+            "name": "22"
+          },
+          {
+            "y": 21.2,
+            "yString": "21.2",
+            "name": "23"
+          },
+          {
+            "y": 23.1,
+            "yString": "23.1",
+            "name": "24"
+          },
+          {
+            "y": 24.7,
+            "yString": "24.7",
+            "name": "25"
+          },
+          {
+            "y": 26.1,
+            "yString": "26.1",
+            "name": "26"
+          },
+          {
+            "y": 27,
+            "yString": "27.0",
+            "name": "27"
+          },
+          {
+            "y": 27.6,
+            "yString": "27.6",
+            "name": "28"
+          },
+          {
+            "y": 27.8,
+            "yString": "27.8",
+            "name": "29"
+          },
+          {
+            "y": 27.8,
+            "yString": "27.8",
+            "name": "30"
+          },
+          {
+            "y": 27.8,
+            "yString": "27.8",
+            "name": "31"
+          },
+          {
+            "y": 27.7,
+            "yString": "27.7",
+            "name": "32"
+          },
+          {
+            "y": 27.9,
+            "yString": "27.9",
+            "name": "33"
+          },
+          {
+            "y": 27.8,
+            "yString": "27.8",
+            "name": "34"
+          },
+          {
+            "y": 27.7,
+            "yString": "27.7",
+            "name": "35"
+          },
+          {
+            "y": 27.6,
+            "yString": "27.6",
+            "name": "36"
+          },
+          {
+            "y": 27.5,
+            "yString": "27.5",
+            "name": "37"
+          },
+          {
+            "y": 27.1,
+            "yString": "27.1",
+            "name": "38"
+          },
+          {
+            "y": 27.2,
+            "yString": "27.2",
+            "name": "39"
+          }
+        ]
+      }
+    ],
+    "xAxis": [
+      {
+        "categories": [
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39"
+        ]
+      }
+    ],
+    "yAxis": [
+      {}
+    ]
+  },
+  "selectedTemplate": {
+    "masterID": "Bar",
+    "id": "Barbarnegativestacktemplate.bar.subtype.stacked.negative"
+  }
+}

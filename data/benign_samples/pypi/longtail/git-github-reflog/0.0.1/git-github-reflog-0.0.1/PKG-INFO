@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: git-github-reflog
+Version: 0.0.1
+Summary: reflog like interaction with Github
+Home-page: https://github.com/criswell/github-reflog
+Author: Sam Hart
+Author-email: hartsn@gmail.com
+License: UNKNOWN
+Description: A git extension for viewing the event log of a Github project.
+Keywords: git github development
+Platform: UNKNOWN
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)
+Classifier: Topic :: Software Development :: Version Control
+Classifier: Topic :: Utilities
