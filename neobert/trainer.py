@@ -145,6 +145,9 @@ class NeoBERTTrainer:
             train_preds = []
             train_labels = []
 
+            # Gradient accumulation for memory efficiency
+            accumulation_steps = 4  # Effective batch size = batch_size * accumulation_steps
+
             # Create progress bar
             with Progress(
                 SpinnerColumn(),
@@ -161,13 +164,13 @@ class NeoBERTTrainer:
                     labels = batch['labels'].to(self.device)
                     package_units = batch['package_units']  # List of Lists of PackageUnit
 
-                    # Forward pass - process each package
-                    optimizer.zero_grad()
+                    # Forward pass - process each package with unit limit
                     batch_logits = []
 
                     for units in package_units:
                         # Each units is a List[PackageUnit] for one package
-                        output = self.model(units)
+                        # max_units=50 to prevent OOM
+                        output = self.model(units, max_units=50)
 
                         # Extract logit
                         if hasattr(output, 'logits'):
@@ -180,20 +183,23 @@ class NeoBERTTrainer:
                     # Stack logits into batch tensor
                     logits = torch.stack(batch_logits)
 
-                    # Compute loss
-                    loss = criterion(logits, labels)
+                    # Compute loss (normalize by accumulation steps)
+                    loss = criterion(logits, labels) / accumulation_steps
 
                     # Backward pass
                     loss.backward()
 
-                    # Gradient clipping
-                    torch.nn.utils.clip_grad_norm_(
-                        self.model.parameters(),
-                        self.training_config.gradient_clip_norm
-                    )
+                    # Update weights every accumulation_steps
+                    if (batch_idx + 1) % accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
+                        # Gradient clipping
+                        torch.nn.utils.clip_grad_norm_(
+                            self.model.parameters(),
+                            self.training_config.gradient_clip_norm
+                        )
 
-                    optimizer.step()
-                    scheduler.step()
+                        optimizer.step()
+                        scheduler.step()
+                        optimizer.zero_grad()
 
                     # Track metrics
                     train_loss += loss.item()
@@ -284,7 +290,7 @@ class NeoBERTTrainer:
 
                 for units in package_units:
                     # Each units is a List[PackageUnit] for one package
-                    output = self.model(units)
+                    output = self.model(units, max_units=50)
 
                     # Extract logit
                     if hasattr(output, 'logits'):

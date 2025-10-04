@@ -75,7 +75,7 @@ class NeoBERTConfig:
     
     # Device and performance
     device: str = "auto"
-    batch_size: int = 32
+    batch_size: int = 8  # Reduced for package-level training (use gradient accumulation)
     gradient_checkpointing: bool = True  # Save memory
     mixed_precision: bool = True  # Use fp16 training
 
@@ -113,8 +113,8 @@ class TrainingConfig:
     })
     
     # Basic training
-    batch_size: int = 32
-    max_packages_per_batch: int = 32
+    batch_size: int = 4  # Reduced for package-level training (each package has many units)
+    max_packages_per_batch: int = 4
     learning_rate: float = 2e-5
     weight_decay: float = 1e-4
     gradient_clip_norm: float = 1.0

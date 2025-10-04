@@ -116,14 +116,19 @@ class NeoBERTClassifier(nn.Module):
             nn.Linear(self.config.classifier_hidden_dim // 4, 3)  # install, runtime, test
         )
     
-    def forward(self, units: List[PackageUnit]) -> NeoBERTOutput:
+    def forward(self, units: List[PackageUnit], max_units: int = 50) -> NeoBERTOutput:
         """Forward pass through the complete model."""
-        
+
         start_time = time.time()
-        
+
         if not units:
             return self._empty_output()
-        
+
+        # Limit units to prevent OOM (sample most important ones)
+        original_count = len(units)
+        if len(units) > max_units:
+            units = self._sample_important_units(units, max_units)
+
         # Encode units
         unit_embeddings = self.encoder(units)  # (num_units, embedding_dim)
         
@@ -415,6 +420,34 @@ class NeoBERTClassifier(nn.Module):
         
         return analysis
     
+    def _sample_important_units(self, units: List[PackageUnit], max_units: int) -> List[PackageUnit]:
+        """Sample most important units when package is too large."""
+
+        # Score units by importance
+        scored = []
+        for unit in units:
+            score = 0
+
+            # Risky APIs boost
+            score += sum(unit.risky_api_counts.values()) * 10
+
+            # Install phase boost
+            if unit.phase_tag == "install":
+                score += 20
+
+            # High entropy boost
+            score += unit.shannon_entropy * 5
+
+            # Medium file size preferred (very small/large less useful)
+            if 100 <= unit.file_size <= 10000:
+                score += 10
+
+            scored.append((score, unit))
+
+        # Sort by score and take top units
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [unit for score, unit in scored[:max_units]]
+
     def _empty_output(self) -> NeoBERTOutput:
         """Create empty output for edge cases."""
         
