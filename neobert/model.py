@@ -142,12 +142,12 @@ class NeoBERTClassifier(nn.Module):
         if logits.dim() == 0:
             # Single package
             prediction = int(probabilities > 0.5)
-            confidence = float(probabilities if prediction == 1 else 1 - probabilities)
+            confidence = float(probabilities.detach() if prediction == 1 else 1 - probabilities.detach())
         else:
             # Batch of packages
             predictions = (probabilities > 0.5).int()
             prediction = predictions[0].item() if len(predictions) == 1 else predictions
-            confidence = float(probabilities[0] if prediction == 1 else 1 - probabilities[0])
+            confidence = float(probabilities[0].detach() if prediction == 1 else 1 - probabilities[0].detach())
         
         # Auxiliary predictions
         api_predictions = None

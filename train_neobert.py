@@ -385,8 +385,9 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
                     processor
                 )
 
-                # Add label (malicious=1)
+                # Add package metadata and label (malicious=1)
                 for unit in units:
+                    unit.package_name = sample.name
                     unit.malicious_label = 1.0
                     all_units.append(unit)
 
@@ -444,8 +445,9 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
                     processor
                 )
 
-                # Add label (benign=0)
+                # Add package metadata and label (benign=0)
                 for unit in units:
+                    unit.package_name = sample.name
                     unit.malicious_label = 0.0
                     all_units.append(unit)
 
@@ -499,18 +501,36 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
         # Replace benign units with augmented
         all_units = malicious_units + augmented_benign
 
-    # Shuffle and split
+    # Group units by package (NeoBERT needs packages, not individual units)
+    click.echo("\n📦 Grouping units by package...")
+    from collections import defaultdict
+    packages = defaultdict(lambda: {"units": [], "label": None})
+
+    for unit in all_units:
+        pkg_name = getattr(unit, 'package_name', 'unknown')
+        label = getattr(unit, 'malicious_label', 0.0)
+        packages[pkg_name]["units"].append(unit)
+        packages[pkg_name]["label"] = label  # All units in package have same label
+
+    # Convert to list of (package_units, label) tuples
+    package_samples = [(pkg_data["units"], pkg_data["label"])
+                      for pkg_data in packages.values()
+                      if len(pkg_data["units"]) > 0]
+
+    click.echo(f"  Grouped {len(all_units):,} units into {len(package_samples):,} packages")
+
+    # Shuffle and split packages (not individual units)
     import random
-    click.echo("\n🔀 Shuffling and splitting data...")
-    random.shuffle(all_units)
+    click.echo("\n🔀 Shuffling and splitting packages...")
+    random.shuffle(package_samples)
 
-    split_idx = int(len(all_units) * (1 - val_split))
-    train_samples = all_units[:split_idx]
-    val_samples = all_units[split_idx:]
+    split_idx = int(len(package_samples) * (1 - val_split))
+    train_samples = package_samples[:split_idx]
+    val_samples = package_samples[split_idx:]
 
-    # Summary statistics
-    train_malicious = sum(1 for u in train_samples if getattr(u, 'malicious_label', 0) > 0.5)
-    val_malicious = sum(1 for u in val_samples if getattr(u, 'malicious_label', 0) > 0.5)
+    # Summary statistics (package_samples are tuples of (units, label))
+    train_malicious = sum(1 for units, label in train_samples if label > 0.5)
+    val_malicious = sum(1 for units, label in val_samples if label > 0.5)
 
     # Chunking statistics
     total_chunks = sum(u.total_chunks for u in all_units)
@@ -520,7 +540,7 @@ def load_full_training_data(malicious_dataset_path: str = "malicious-software-pa
     # Create summary table
     table = Table(title="✅ Dataset Summary", show_header=True, header_style="bold magenta")
     table.add_column("Split", style="cyan", justify="center")
-    table.add_column("Total Units", justify="right", style="bold")
+    table.add_column("Total Packages", justify="right", style="bold")
     table.add_column("Malicious", justify="right", style="red")
     table.add_column("Benign", justify="right", style="green")
     table.add_column("Balance", justify="right")

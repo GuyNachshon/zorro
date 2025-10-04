@@ -32,57 +32,34 @@ console = Console()
 class NeoBERTDataset(Dataset):
     """Dataset for NeoBERT training."""
 
-    def __init__(self, samples: List[PackageUnit]):
-        self.samples = samples
+    def __init__(self, package_samples: List[tuple]):
+        """
+        Args:
+            package_samples: List of (units_list, label) tuples
+        """
+        self.package_samples = package_samples
 
     def __len__(self):
-        return len(self.samples)
+        return len(self.package_samples)
 
     def __getitem__(self, idx):
-        sample = self.samples[idx]
-
-        # Get label (default to 0.0 if not set)
-        label = getattr(sample, 'malicious_label', 0.0)
+        units, label = self.package_samples[idx]
 
         return {
-            'unit_id': sample.unit_id,
-            'token_ids': torch.tensor(sample.token_ids, dtype=torch.long),
+            'package_units': units,  # List of PackageUnit objects
             'label': torch.tensor(label, dtype=torch.float),
-            'risky_api_counts': sample.risky_api_counts,
-            'entropy': sample.shannon_entropy,
-            'phase': sample.phase_tag,
         }
 
 
 def collate_fn(batch):
-    """Collate function to handle variable-length sequences."""
-    # Find max length in batch
-    max_len = max(item['token_ids'].shape[0] for item in batch)
-
-    # Pad sequences
-    token_ids = []
-    attention_masks = []
-    labels = []
-
-    for item in batch:
-        seq_len = item['token_ids'].shape[0]
-
-        # Pad token_ids
-        padded = F.pad(item['token_ids'], (0, max_len - seq_len), value=0)
-        token_ids.append(padded)
-
-        # Create attention mask
-        mask = torch.zeros(max_len, dtype=torch.long)
-        mask[:seq_len] = 1
-        attention_masks.append(mask)
-
-        # Label
-        labels.append(item['label'])
+    """Collate function for package-level batching."""
+    # Each batch item contains a package (list of units) and a label
+    package_units = [item['package_units'] for item in batch]
+    labels = torch.stack([item['label'] for item in batch])
 
     return {
-        'token_ids': torch.stack(token_ids),
-        'attention_mask': torch.stack(attention_masks),
-        'labels': torch.stack(labels),
+        'package_units': package_units,  # List of Lists of PackageUnit
+        'labels': labels,
     }
 
 
@@ -182,22 +159,15 @@ class NeoBERTTrainer:
 
                 for batch_idx, batch in enumerate(train_loader):
                     labels = batch['labels'].to(self.device)
+                    package_units = batch['package_units']  # List of Lists of PackageUnit
 
-                    # Get PackageUnits from batch
-                    # Note: Each sample in train_samples is already a single PackageUnit
-                    # We need to process each one separately since the model expects
-                    # a list of units belonging to ONE package
-                    batch_start = batch_idx * self.training_config.batch_size
-                    batch_end = min(batch_start + self.training_config.batch_size, len(train_samples))
-
-                    # Forward pass - process each unit individually
+                    # Forward pass - process each package
                     optimizer.zero_grad()
                     batch_logits = []
 
-                    for i in range(batch_start, batch_end):
-                        # Wrap single unit in a list (model expects List[PackageUnit])
-                        single_unit = [train_samples[i]]
-                        output = self.model(single_unit)
+                    for units in package_units:
+                        # Each units is a List[PackageUnit] for one package
+                        output = self.model(units)
 
                         # Extract logit
                         if hasattr(output, 'logits'):
@@ -307,18 +277,14 @@ class NeoBERTTrainer:
         with torch.no_grad():
             for batch_idx, batch in enumerate(dataloader):
                 labels = batch['labels'].to(self.device)
+                package_units = batch['package_units']
 
-                # Get PackageUnits for this batch
-                batch_start = batch_idx * self.training_config.batch_size
-                batch_end = min(batch_start + self.training_config.batch_size, len(val_samples))
-
-                # Forward pass - process each unit individually
+                # Forward pass - process each package
                 batch_logits = []
 
-                for i in range(batch_start, batch_end):
-                    # Wrap single unit in a list
-                    single_unit = [val_samples[i]]
-                    output = self.model(single_unit)
+                for units in package_units:
+                    # Each units is a List[PackageUnit] for one package
+                    output = self.model(units)
 
                     # Extract logit
                     if hasattr(output, 'logits'):
