@@ -149,7 +149,8 @@ class NeoBERTEncoder(nn.Module):
         embeddings = []
         
         # Process units in batches for efficiency
-        batch_size = 32
+        # With 2 GPUs (DataParallel), can handle larger batches
+        batch_size = 16  # Medium batches for efficiency
         for i in range(0, len(units), batch_size):
             batch_units = units[i:i + batch_size]
             batch_embeddings = self._process_batch(batch_units)

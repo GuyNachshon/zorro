@@ -169,7 +169,7 @@ class NeoBERTTrainer:
 
                     for units in package_units:
                         # Each units is a List[PackageUnit] for one package
-                        # max_units=50 to prevent OOM
+                        # max_units=50 (can handle more with 2 GPUs)
                         output = self.model(units, max_units=50)
 
                         # Extract logit
@@ -202,11 +202,15 @@ class NeoBERTTrainer:
                         optimizer.zero_grad()
 
                     # Track metrics
-                    train_loss += loss.item()
+                    train_loss += loss.item() * accumulation_steps  # Denormalize for logging
                     train_preds.extend(torch.sigmoid(logits).detach().cpu().numpy())
                     train_labels.extend(labels.cpu().numpy())
 
-                    progress.update(task, advance=1, description=f"[cyan]Epoch {epoch+1}/{num_epochs} [Train] Loss: {loss.item():.4f}")
+                    # Clear GPU cache periodically to prevent fragmentation
+                    if (batch_idx + 1) % 10 == 0:
+                        torch.cuda.empty_cache()
+
+                    progress.update(task, advance=1, description=f"[cyan]Epoch {epoch+1}/{num_epochs} [Train] Loss: {loss.item() * accumulation_steps:.4f}")
 
             avg_train_loss = train_loss / len(train_loader)
             train_auc = roc_auc_score(train_labels, train_preds)

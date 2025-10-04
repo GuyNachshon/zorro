@@ -524,13 +524,21 @@ class NeoBERTClassifier(nn.Module):
         return model
 
 
-def create_neobert_model(config: NeoBERTConfig, device: str = "auto") -> NeoBERTClassifier:
+def create_neobert_model(config: NeoBERTConfig, device: str = "auto", use_data_parallel: bool = True) -> NeoBERTClassifier:
     """Create NeoBERT model with given configuration."""
-    
+
     model = NeoBERTClassifier(config, device)
-    
-    logger.info(f"Created NeoBERT model with {model.count_parameters():,} parameters")
+
+    # Wrap with DataParallel if multiple GPUs available
+    if use_data_parallel and torch.cuda.device_count() > 1:
+        logger.info(f"🚀 Using DataParallel with {torch.cuda.device_count()} GPUs!")
+        logger.info(f"   GPU 0: {torch.cuda.get_device_name(0)}")
+        logger.info(f"   GPU 1: {torch.cuda.get_device_name(1)}")
+        model = torch.nn.DataParallel(model)
+        logger.info(f"   Total GPU memory: {torch.cuda.device_count() * 40:.0f}GB")
+
+    logger.info(f"Created NeoBERT model with {model.module.count_parameters() if hasattr(model, 'module') else model.count_parameters():,} parameters")
     logger.info(f"Pooling strategy: {config.pooling_strategy}")
-    logger.info(f"Device: {model.device}")
-    
+    logger.info(f"Device: {model.module.device if hasattr(model, 'module') else model.device}")
+
     return model

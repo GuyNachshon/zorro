@@ -627,6 +627,9 @@ def train_neobert_model(config=None, data_path=None, batch_size=8, learning_rate
                        benign_cache_path="data/benign_samples", max_malicious=100, max_benign=100):
     """Train NeoBERT model programmatically."""
 
+    # Reduce CUDA memory fragmentation
+    os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
+
     # Setup logging
     setup_logging(log_level)
 
